@@ -1,0 +1,2353 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luke 股市智慧儀表板 v4</title>
+
+  <!-- Live prices — auto-updated by fetch_prices.py (04:00 / 08:30 / 13:30 / 21:00) -->
+  <script src="prices.js"></script>
+  <!-- Daily news — auto-updated by 20:00 scheduled task -->
+  <script>window.NEWS_UPDATE = window.NEWS_UPDATE || null;</script>
+  <script src="news_update.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #f5f4f1;
+      --surface:   #ffffff;
+      --surface2:  #f0eeeb;
+      --border:    #e2deda;
+      --border2:   #ccc8c4;
+      --accent:    #d9654a;
+      --accent-bg: #fdf0ec;
+      --text:      #1e1c1a;
+      --text-muted:#8a8480;
+      --green:     #2d8a52;
+      --green-bg:  #edf7f2;
+      --yellow:    #a07020;
+      --yellow-bg: #fdf6e3;
+      --blue:      #2a6aaa;
+      --blue-bg:   #edf3fb;
+      --purple:    #7a42c8;
+      --purple-bg: #f3eefb;
+      --red:       #c0392b;
+      --red-bg:    #fef0ee;
+      --red-border:#f0c8c0;
+      --radius:    10px;
+      --shadow:    0 1px 3px rgba(0,0,0,.07), 0 1px 8px rgba(0,0,0,.04);
+      --shadow-md: 0 2px 10px rgba(0,0,0,.09);
+    }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system,'Segoe UI','PingFang TC',sans-serif;
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 11px 22px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+      position: sticky; top: 0;
+      background: rgba(245,244,241,.94); backdrop-filter: blur(8px);
+      z-index: 100;
+    }
+    .logo { font-size: 15px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+    .logo span { color: var(--text-muted); font-weight: 400; font-size: 13px; }
+    .header-spacer { flex: 1; }
+    .header-updated { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+    .header-risk-badge {
+      font-size: 11px; padding: 4px 11px; border-radius: 20px;
+      font-weight: 600; white-space: nowrap;
+    }
+    .hbtn {
+      font-size: 12px; padding: 5px 12px; border-radius: 7px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text-muted); cursor: pointer; transition: all .12s;
+      display: inline-flex; align-items: center; gap: 5px;
+      white-space: nowrap; box-shadow: var(--shadow);
+    }
+    .hbtn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Layout ── */
+    .layout { display: flex; flex: 1; }
+
+    /* ── Sidebar ── */
+    aside {
+      width: 168px; flex-shrink: 0; padding: 16px 8px;
+      border-right: 1px solid var(--border);
+      position: sticky; top: 48px;
+      height: calc(100vh - 48px); overflow-y: auto;
+      background: var(--bg);
+    }
+    .nav-label {
+      font-size: 10px; text-transform: uppercase; letter-spacing: .9px;
+      color: var(--text-muted); padding: 0 8px; margin-bottom: 4px;
+    }
+    .nav-section { margin-bottom: 18px; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 7px;
+      width: 100%; padding: 7px 8px; border-radius: 7px;
+      border: none; background: transparent; color: var(--text-muted);
+      font-size: 13px; cursor: pointer; text-align: left; transition: all .12s;
+    }
+    .nav-btn:hover { background: var(--surface); color: var(--text); }
+    .nav-btn.active { background: var(--accent-bg); color: var(--accent); font-weight: 500; }
+    .nav-icon { font-size: 14px; width: 18px; text-align: center; }
+
+    /* ── Main ── */
+    main { flex: 1; padding: 22px 26px; overflow-y: auto; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── Section header ── */
+    .sec-hd {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sec-title { font-size: 15px; font-weight: 700; }
+    .sec-sub { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+    .sec-btn {
+      font-size: 12px; padding: 5px 12px; border-radius: 6px;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text-muted); cursor: pointer; transition: all .12s;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .sec-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .sec-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .sec-btn.primary:hover { background: #c5543b; }
+
+    /* ── Cards ── */
+    .grid { display: grid; gap: 10px; margin-bottom: 22px; }
+    .g3 { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+    .g4 { grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); }
+    .g2 { grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 16px;
+      box-shadow: var(--shadow); transition: all .15s;
+    }
+    .card:hover { border-color: var(--border2); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+
+    /* ── Overview summary cards ── */
+    .sum-label { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
+    .sum-val { font-size: 22px; font-weight: 800; }
+    .sum-sub { font-size: 12px; margin-top: 3px; }
+
+    /* ── Risk Gauge ── */
+    .gauge-wrap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      box-shadow: var(--shadow); text-align: center; margin-bottom: 20px;
+    }
+    .gauge-row { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; justify-content: center; }
+    .gauge-svg { width: 190px; height: 106px; }
+    .gauge-score { font-size: 44px; font-weight: 900; line-height: 1; }
+    .gauge-desc { font-size: 15px; font-weight: 600; margin-top: 4px; }
+    .gauge-hint { font-size: 12px; color: var(--text-muted); margin-top: 3px; max-width: 230px; }
+    .gauge-slider-wrap { margin-top: 12px; }
+    .gauge-slider { width: 185px; accent-color: var(--accent); cursor: pointer; }
+    .gauge-adj-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+
+    /* ── Traffic light indicators ── */
+    .ind-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(205px, 1fr)); gap: 8px; margin-bottom: 22px; }
+    .ind-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 9px; padding: 11px 13px;
+      display: flex; align-items: flex-start; gap: 10px;
+      box-shadow: var(--shadow); cursor: pointer; transition: all .12s;
+    }
+    .ind-card:hover { border-color: var(--border2); }
+    .ind-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+    .dot-green  { background: var(--green);  }
+    .dot-yellow { background: var(--yellow); }
+    .dot-red    { background: var(--red);    }
+    .dot-gray   { background: var(--text-muted); }
+    .ind-name { font-size: 12.5px; font-weight: 600; }
+    .ind-val  { font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+    /* ── Market cards ── */
+    .mkt-flag { font-size: 22px; margin-bottom: 6px; }
+    .mkt-name { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+    .mkt-price { font-size: 19px; font-weight: 800; }
+    .mkt-chg { font-size: 12.5px; font-weight: 600; margin-top: 3px; }
+    .mkt-ytd  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .mkt-na   { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+
+    /* ── Stock cards ── */
+    .stock-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px;
+      box-shadow: var(--shadow); position: relative; transition: all .15s;
+    }
+    .stock-card:hover { border-color: var(--border2); box-shadow: var(--shadow-md); }
+    .stock-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+    .stock-icon {
+      width: 38px; height: 38px; border-radius: 9px;
+      background: var(--accent-bg); border: 1px solid var(--red-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: var(--accent); flex-shrink: 0;
+    }
+    .stock-name { font-size: 14px; font-weight: 700; }
+    .stock-code { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .stock-price { font-size: 24px; font-weight: 800; }
+    .stock-chg   { font-size: 13px; font-weight: 600; margin-top: 3px; }
+    .stock-pnl {
+      margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .pnl-item { font-size: 12px; }
+    .pnl-label { color: var(--text-muted); margin-bottom: 2px; }
+    .pnl-val   { font-size: 13px; font-weight: 600; }
+    .stock-del {
+      position: absolute; top: 10px; right: 10px;
+      background: none; border: none; color: var(--text-muted);
+      cursor: pointer; font-size: 13px; padding: 4px 6px;
+      border-radius: 4px; opacity: 0; transition: all .12s;
+    }
+    .stock-card:hover .stock-del { opacity: 1; }
+    .stock-del:hover { color: var(--red); background: var(--red-bg); }
+    .stock-untracked {
+      font-size: 11px; color: var(--yellow); background: var(--yellow-bg);
+      padding: 2px 8px; border-radius: 4px; display: inline-block; margin-top: 4px;
+    }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-block; font-size: 10px; padding: 2px 8px;
+      border-radius: 10px; font-weight: 600;
+    }
+    .badge-hold  { background: var(--blue-bg);   color: var(--blue);   }
+    .badge-watch { background: var(--surface2);   color: var(--text-muted); }
+    .badge-buy   { background: var(--green-bg);   color: var(--green);  }
+    .badge-sell  { background: var(--red-bg);     color: var(--red);    }
+
+    /* ── Colors ── */
+    .up   { color: var(--red);       }
+    .down { color: var(--green);     }
+    .flat { color: var(--text-muted);}
+
+    /* ── Step 3 Analysis ── */
+    .analysis-form {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      box-shadow: var(--shadow); margin-bottom: 20px;
+    }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 12px; margin-bottom: 14px; }
+    .form-label { font-size: 11.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 5px; display: block; }
+    .form-input, .form-select {
+      width: 100%; padding: 8px 10px;
+      border: 1px solid var(--border); border-radius: 7px;
+      background: var(--bg); color: var(--text); font-size: 13px;
+      outline: none; transition: border-color .15s; font-family: inherit;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(217,101,74,.1); }
+    .result-box {
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);
+    }
+    .result-rec { font-size: 28px; font-weight: 900; margin-bottom: 6px; }
+    .result-bar-wrap { margin-bottom: 14px; }
+    .result-bar-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; display: flex; justify-content: space-between; }
+    .result-bar-bg { height: 8px; border-radius: 4px; background: var(--surface2); overflow: hidden; }
+    .result-bar-fill { height: 100%; border-radius: 4px; transition: width .5s ease; }
+    .result-factors { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .factor-row { display: flex; align-items: center; gap: 8px; font-size: 12.5px; }
+    .factor-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .result-advice {
+      margin-top: 14px; padding: 12px 14px;
+      background: var(--surface2); border-radius: 8px;
+      font-size: 13px; color: var(--text); line-height: 1.6;
+      border-left: 3px solid var(--accent);
+    }
+
+    /* ── Table ── */
+    .tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 22px; }
+    .tbl th {
+      text-align: left; padding: 8px 12px;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text-muted); font-weight: 600;
+    }
+    .tbl td { padding: 8px 12px; border: 1px solid var(--border); vertical-align: top; }
+    .tbl tr:hover td { background: var(--surface2); }
+
+    /* ── Rotation grid ── */
+    .rot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 22px; }
+    .rot-cell { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 14px; }
+    .rot-phase { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--text-muted); margin-bottom: 8px; }
+    .rot-row { font-size: 12.5px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+    .rot-star { color: var(--accent); }
+
+    /* ── Checklist ── */
+    .check-group { margin-bottom: 20px; }
+    .check-group-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px;
+      color: var(--text-muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+    }
+    .check-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 13px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 8px;
+      box-shadow: var(--shadow); margin-bottom: 6px;
+      cursor: pointer; transition: all .12s; user-select: none;
+    }
+    .check-item:hover { border-color: var(--border2); }
+    .check-item.done { opacity: .5; }
+    .check-box {
+      width: 17px; height: 17px; border-radius: 4px;
+      border: 2px solid var(--border2); flex-shrink: 0;
+      margin-top: 1px; display: flex; align-items: center; justify-content: center;
+      font-size: 10px; transition: all .12s;
+    }
+    .check-item.done .check-box { background: var(--green); border-color: var(--green); color: #fff; }
+    .check-text { flex: 1; }
+    .check-main { font-size: 13px; }
+    .check-item.done .check-main { text-decoration: line-through; color: var(--text-muted); }
+    .check-link { font-size: 11px; color: var(--blue); margin-top: 2px; display: block; }
+    .check-thresh { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Research ── */
+    .res-section { margin-bottom: 20px; }
+    .res-h {
+      font-size: 13px; font-weight: 700; color: var(--accent);
+      margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+    }
+    .res-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .res-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; padding: 5px 12px;
+      border: 1px solid var(--border); border-radius: 20px;
+      background: var(--surface); color: var(--text-muted);
+      text-decoration: none; transition: all .12s;
+    }
+    .res-link:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+    .news-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 9px; padding: 13px 15px;
+      box-shadow: var(--shadow); margin-bottom: 8px;
+    }
+    .news-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
+    .news-title { font-size: 13.5px; font-weight: 600; margin-bottom: 4px; }
+    .news-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.65; }
+    .news-date { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
+
+    /* ── Weekly Picks ── */
+    .week-header {
+      background: linear-gradient(135deg, var(--accent-bg) 0%, var(--surface) 100%);
+      border: 1px solid var(--red-border); border-radius: var(--radius);
+      padding: 16px 20px; margin-bottom: 18px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .week-theme-tag {
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px;
+      color: var(--accent); background: var(--accent-bg); padding: 3px 9px;
+      border-radius: 10px; border: 1px solid var(--red-border);
+    }
+    .week-theme-text { font-size: 14px; font-weight: 600; flex: 1; }
+    .week-updated { font-size: 11px; color: var(--text-muted); margin-left: auto; white-space: nowrap; }
+
+    .week-filter-bar {
+      display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .week-filter {
+      font-size: 12px; padding: 5px 14px; border-radius: 20px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text-muted); cursor: pointer; transition: all .12s; font-family: inherit;
+    }
+    .week-filter.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+    .week-filter:hover:not(.active) { border-color: var(--border2); color: var(--text); }
+
+    .pick-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 15px 16px;
+      box-shadow: var(--shadow); transition: all .15s;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .pick-card:hover { border-color: var(--border2); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .pick-top { display: flex; align-items: flex-start; gap: 10px; }
+    .pick-rank {
+      width: 28px; height: 28px; border-radius: 7px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800;
+    }
+    .rank-gold   { background: #fef3c7; color: #92400e; }
+    .rank-silver { background: #f1f5f9; color: #475569; }
+    .rank-bronze { background: #fef0ea; color: #9a3412; }
+    .rank-other  { background: var(--surface2); color: var(--text-muted); }
+    .pick-info { flex: 1; }
+    .pick-name { font-size: 14px; font-weight: 700; }
+    .pick-code { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .pick-sector {
+      font-size: 10px; padding: 2px 7px; border-radius: 8px;
+      background: var(--blue-bg); color: var(--blue); font-weight: 600;
+      display: inline-block; margin-top: 3px;
+    }
+    .pick-rec {
+      font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 8px;
+      white-space: nowrap; align-self: flex-start; flex-shrink: 0;
+    }
+    .rec-buy  { background: var(--green-bg);  color: var(--green);  border: 1px solid #b6e2c8; }
+    .rec-hold { background: var(--blue-bg);   color: var(--blue);   border: 1px solid #bfd6ef; }
+    .rec-watch{ background: var(--yellow-bg); color: var(--yellow); border: 1px solid #e6d09a; }
+    .rec-wait { background: var(--surface2);  color: var(--text-muted); border: 1px solid var(--border); }
+
+    .pick-score-row { display: flex; align-items: center; gap: 10px; }
+    .pick-score-label { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+    .pick-score-bar-bg { flex: 1; height: 6px; border-radius: 3px; background: var(--surface2); overflow: hidden; }
+    .pick-score-bar-fill { height: 100%; border-radius: 3px; transition: width .4s ease; }
+    .pick-score-val { font-size: 13px; font-weight: 800; min-width: 30px; text-align: right; }
+
+    .pick-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+    .pick-meta-item { font-size: 11.5px; color: var(--text-muted); }
+    .pick-meta-item strong { color: var(--text); }
+
+    .pick-reason {
+      font-size: 12px; color: var(--text-muted); line-height: 1.6;
+      background: var(--surface2); border-radius: 7px; padding: 8px 10px;
+      border-left: 3px solid var(--border2);
+    }
+
+    .week-section-title {
+      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px;
+      color: var(--text-muted); margin-bottom: 10px; margin-top: 4px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .week-edit-note {
+      background: var(--yellow-bg); border: 1px solid #e6d09a;
+      border-radius: 9px; padding: 11px 14px; margin-bottom: 18px;
+      font-size: 12px; color: var(--yellow); line-height: 1.6;
+    }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.25);
+      backdrop-filter: blur(3px); z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; box-shadow: 0 8px 40px rgba(0,0,0,.15);
+      width: min(440px, 94vw);
+      transform: translateY(12px) scale(.98); transition: transform .2s;
+    }
+    .modal-overlay.open .modal { transform: none; }
+    .modal-head {
+      padding: 15px 20px 12px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .modal-title { font-size: 14px; font-weight: 700; flex: 1; }
+    .modal-close {
+      width: 26px; height: 26px; border-radius: 6px; border: none;
+      background: var(--surface2); color: var(--text-muted); font-size: 15px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close:hover { background: var(--border); color: var(--text); }
+    .modal-body { padding: 18px 20px; }
+    .modal-form-row { margin-bottom: 13px; }
+    .modal-hint {
+      font-size: 11.5px; color: var(--text-muted);
+      background: var(--surface2); border-radius: 7px; padding: 9px 12px;
+      margin-top: 12px; line-height: 1.55;
+    }
+    .modal-hint code {
+      background: var(--border); border-radius: 3px; padding: 1px 5px;
+      font-family: monospace; font-size: 11px;
+    }
+    .modal-actions { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
+    .btn-cancel {
+      font-size: 12px; padding: 7px 14px; border-radius: 7px;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text-muted); cursor: pointer;
+    }
+    .btn-save {
+      font-size: 12px; padding: 7px 16px; border-radius: 7px;
+      border: none; background: var(--accent); color: #fff;
+      cursor: pointer; font-weight: 600;
+    }
+    .btn-save:hover { background: #c5543b; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 22px; right: 22px;
+      background: var(--text); color: var(--surface);
+      padding: 9px 16px; border-radius: 8px; font-size: 13px;
+      opacity: 0; transform: translateY(6px);
+      transition: all .2s; pointer-events: none; z-index: 999;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ══════════════════════════════════════════
+       泡沫分析面板 (scoped under .ba-wrap)
+    ══════════════════════════════════════════ */
+    .ba-wrap {
+      --ba-bg: #0d1117; --ba-bg2: #161b22; --ba-bg3: #21262d;
+      --ba-border: #30363d; --ba-text: #e6edf3; --ba-text2: #8b949e;
+      --ba-green: #3fb950; --ba-red: #f85149; --ba-yellow: #d29922;
+      --ba-blue: #58a6ff; --ba-purple: #bc8cff; --ba-orange: #ffa657;
+      background: var(--ba-bg); color: var(--ba-text);
+      border-radius: 12px; padding: 28px 24px;
+      font-family: -apple-system,'Segoe UI',sans-serif; line-height: 1.7;
+    }
+    .ba-wrap .ba-hero { padding: 0 0 32px; }
+    .ba-wrap .ba-hero-tag {
+      display: inline-block; background: rgba(88,166,255,.1);
+      border: 1px solid rgba(88,166,255,.3); color: var(--ba-blue);
+      padding: 4px 12px; border-radius: 20px; font-size: .8rem; margin-bottom: 16px;
+    }
+    .ba-wrap .ba-hero h2 {
+      font-size: 2.2rem; font-weight: 800; line-height: 1.2; margin-bottom: 14px;
+      background: linear-gradient(135deg,#e6edf3,#58a6ff);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .ba-wrap .ba-hero p { color: var(--ba-text2); font-size: 1rem; max-width: 660px; }
+    .ba-wrap .ba-alert {
+      background: rgba(248,81,73,.08); border: 1px solid rgba(248,81,73,.3);
+      border-left: 4px solid var(--ba-red); border-radius: 8px;
+      padding: 14px 18px; margin-bottom: 32px;
+    }
+    .ba-wrap .ba-alert .ba-label { color: var(--ba-red); font-weight: 700; font-size: .85rem; margin-bottom: 6px; }
+    .ba-wrap hr.ba-div { border: none; border-top: 1px solid var(--ba-border); margin: 36px 0; }
+    .ba-wrap .ba-sec-title {
+      font-size: 1.4rem; font-weight: 700; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .ba-wrap .ba-sec-sub { color: var(--ba-text2); margin-bottom: 22px; font-size: .9rem; }
+    .ba-wrap .ba-grid { display: grid; gap: 14px; }
+    .ba-wrap .ba-g2 { grid-template-columns: repeat(auto-fit, minmax(420px,1fr)); }
+    .ba-wrap .ba-g3 { grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); }
+    .ba-wrap .ba-g4 { grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); }
+    .ba-wrap .ba-card {
+      background: var(--ba-bg2); border: 1px solid var(--ba-border);
+      border-radius: 12px; padding: 22px; transition: border-color .2s, transform .2s;
+    }
+    .ba-wrap .ba-card:hover { border-color: var(--ba-blue); transform: translateY(-2px); }
+    .ba-wrap .ba-card-title {
+      font-weight: 700; font-size: 1rem; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .ba-wrap .ba-card-body { color: var(--ba-text2); font-size: .9rem; }
+    /* Timeline */
+    .ba-wrap .ba-tl { position: relative; padding-left: 32px; }
+    .ba-wrap .ba-tl::before {
+      content:''; position: absolute; left: 8px; top: 0; bottom: 0;
+      width: 2px; background: var(--ba-border);
+    }
+    .ba-wrap .ba-item { position: relative; margin-bottom: 28px; }
+    .ba-wrap .ba-dot {
+      position: absolute; left: -28px; top: 6px;
+      width: 14px; height: 14px; border-radius: 50%; border: 2px solid;
+      background: var(--ba-bg);
+    }
+    .ba-wrap .ba-item.bubble .ba-dot { border-color: var(--ba-red); background: rgba(248,81,73,.3); }
+    .ba-wrap .ba-item.recovery .ba-dot { border-color: var(--ba-green); background: rgba(63,185,80,.3); }
+    .ba-wrap .ba-item.current .ba-dot { border-color: var(--ba-yellow); background: rgba(210,153,34,.3); animation: baPulse 2s infinite; }
+    @keyframes baPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .ba-wrap .ba-year { font-size: .8rem; color: var(--ba-text2); margin-bottom: 4px; }
+    .ba-wrap .ba-title { font-weight: 700; margin-bottom: 6px; }
+    .ba-wrap .ba-content { color: var(--ba-text2); font-size: .9rem; }
+    .ba-wrap .ba-stats { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+    .ba-wrap .ba-stat {
+      background: var(--ba-bg3); padding: 3px 10px; border-radius: 6px;
+      font-size: .78rem; font-weight: 600;
+    }
+    .ba-wrap .s-red    { color: var(--ba-red); }
+    .ba-wrap .s-green  { color: var(--ba-green); }
+    .ba-wrap .s-yellow { color: var(--ba-yellow); }
+    .ba-wrap .s-blue   { color: var(--ba-blue); }
+    /* Insight */
+    .ba-wrap .ba-insight {
+      background: linear-gradient(135deg,rgba(88,166,255,.08),rgba(188,140,255,.08));
+      border: 1px solid rgba(88,166,255,.2); border-radius: 12px;
+      padding: 22px; margin: 28px 0;
+    }
+    .ba-wrap .ba-insight-title { font-weight: 700; color: var(--ba-blue); margin-bottom: 10px; font-size: 1rem; }
+    .ba-wrap .ba-insight ul { list-style: none; padding: 0; }
+    .ba-wrap .ba-insight li {
+      padding: 5px 0 5px 16px; color: var(--ba-text2); font-size: .9rem;
+      position: relative;
+    }
+    .ba-wrap .ba-insight li::before { content:'→'; position: absolute; left: 0; color: var(--ba-blue); }
+    /* Badge */
+    .ba-wrap .ba-badge {
+      display: inline-block; padding: 2px 9px; border-radius: 12px;
+      font-size: .73rem; font-weight: 600;
+    }
+    .ba-wrap .bb-red    { background: rgba(248,81,73,.15); color: var(--ba-red); }
+    .ba-wrap .bb-green  { background: rgba(63,185,80,.15); color: var(--ba-green); }
+    .ba-wrap .bb-yellow { background: rgba(210,153,34,.15); color: var(--ba-yellow); }
+    .ba-wrap .bb-blue   { background: rgba(88,166,255,.15); color: var(--ba-blue); }
+    .ba-wrap .bb-purple { background: rgba(188,140,255,.15); color: var(--ba-purple); }
+    /* Tabs */
+    .ba-wrap .ba-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .ba-wrap .ba-tab {
+      padding: 7px 16px; border-radius: 8px; border: 1px solid var(--ba-border);
+      background: var(--ba-bg2); color: var(--ba-text2); cursor: pointer;
+      font-size: .85rem; transition: all .2s; font-family: inherit;
+    }
+    .ba-wrap .ba-tab.active, .ba-wrap .ba-tab:hover { background: var(--ba-blue); color: #fff; border-color: var(--ba-blue); }
+    .ba-wrap .ba-tc { display: none; }
+    .ba-wrap .ba-tc.active { display: block; }
+    /* Table */
+    .ba-wrap .ba-tbl { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    .ba-wrap .ba-tbl th {
+      text-align: left; padding: 10px 14px;
+      background: var(--ba-bg3); color: var(--ba-text2);
+      font-weight: 600; border-bottom: 1px solid var(--ba-border);
+    }
+    .ba-wrap .ba-tbl td {
+      padding: 11px 14px; border-bottom: 1px solid var(--ba-border); vertical-align: top;
+    }
+    .ba-wrap .ba-tbl tr:last-child td { border-bottom: none; }
+    .ba-wrap .ba-tbl tr:hover td { background: rgba(88,166,255,.04); }
+    /* Industry matrix */
+    .ba-wrap .ba-matrix {
+      background: var(--ba-bg2); border: 1px solid var(--ba-border);
+      border-radius: 12px; padding: 22px; margin-bottom: 22px;
+    }
+    .ba-wrap .ba-matrix-hd {
+      display: grid; grid-template-columns: 130px repeat(3,1fr);
+      gap: 8px; margin-bottom: 8px;
+    }
+    .ba-wrap .ba-ph {
+      font-size: .76rem; font-weight: 700; color: var(--ba-text2);
+      padding: 4px 10px; text-transform: uppercase; letter-spacing: .05em;
+    }
+    .ba-wrap .ba-pr {
+      display: grid; grid-template-columns: 130px repeat(3,1fr);
+      gap: 8px; margin-bottom: 8px; align-items: start;
+    }
+    .ba-wrap .ba-pl {
+      font-weight: 700; font-size: .83rem; padding: 8px 10px;
+      border-radius: 6px; text-align: center;
+    }
+    .ba-wrap .ba-pc {
+      background: var(--ba-bg3); border-radius: 6px; padding: 9px 11px;
+      font-size: .82rem; color: var(--ba-text2);
+    }
+    .ba-wrap .ba-pc strong { color: var(--ba-text); display: block; margin-bottom: 3px; }
+    /* Pattern blocks */
+    .ba-wrap .ba-pb {
+      background: var(--ba-bg2); border: 1px solid var(--ba-border);
+      border-radius: 12px; padding: 22px; margin-bottom: 16px;
+    }
+    .ba-wrap .ba-pn {
+      font-size: 2.4rem; font-weight: 900; color: var(--ba-border);
+      line-height: 1; margin-bottom: 8px;
+    }
+    .ba-wrap .ba-pt { font-weight: 700; margin-bottom: 8px; }
+    .ba-wrap .ba-pb-body { color: var(--ba-text2); font-size: .88rem; }
+    .ba-wrap .ba-pex {
+      margin-top: 12px; background: var(--ba-bg3); border-radius: 6px;
+      padding: 10px 12px; font-size: .82rem; color: var(--ba-text2);
+      border-left: 3px solid var(--ba-blue);
+    }
+    /* Prompt box */
+    .ba-wrap .ba-prompt {
+      font-family: monospace; font-size: .82rem; background: var(--ba-bg3);
+      padding: 12px; border-radius: 6px; color: var(--ba-text2); line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════════ -->
+<header>
+  <div class="logo">📊 Luke 股市智慧 <span>/ 儀表板 v4</span></div>
+  <div class="header-spacer"></div>
+  <div class="header-updated" id="hdr-updated">載入中…</div>
+  <div class="header-risk-badge" id="hdr-risk-badge"></div>
+  <button class="hbtn" onclick="showPanel('stocks');openAddStock()">＋ 新增持股</button>
+</header>
+
+<!-- ═══════════════════════════════════════════════════
+     LAYOUT
+═══════════════════════════════════════════════════ -->
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <aside>
+    <div class="nav-section">
+      <div class="nav-label">儀表板</div>
+      <button class="nav-btn active" id="nav-overview"   onclick="showPanel('overview')">
+        <span class="nav-icon">🌡️</span> 風險總覽
+      </button>
+      <button class="nav-btn" id="nav-markets"  onclick="showPanel('markets')">
+        <span class="nav-icon">🌍</span> 全球大盤
+      </button>
+      <button class="nav-btn" id="nav-stocks"   onclick="showPanel('stocks')">
+        <span class="nav-icon">📊</span> 我的持股
+      </button>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">工具</div>
+      <button class="nav-btn" id="nav-analysis" onclick="showPanel('analysis')">
+        <span class="nav-icon">🔍</span> 個股分析
+      </button>
+      <button class="nav-btn" id="nav-history"  onclick="showPanel('history')">
+        <span class="nav-icon">📈</span> 歷史對照
+      </button>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">情報</div>
+      <button class="nav-btn" id="nav-research"  onclick="showPanel('research')">
+        <span class="nav-icon">📡</span> 查詢方向
+      </button>
+      <button class="nav-btn" id="nav-checklist" onclick="showPanel('checklist')">
+        <span class="nav-icon">✅</span> 季度清單
+      </button>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">選股</div>
+      <button class="nav-btn" id="nav-weekly" onclick="showPanel('weekly')">
+        <span class="nav-icon">🎯</span> 每周標的
+      </button>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">知識庫</div>
+      <button class="nav-btn" id="nav-bubble" onclick="showPanel('bubble')">
+        <span class="nav-icon">📚</span> 泡沫分析
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main>
+
+    <!-- ═══ PANEL: 風險總覽 ═══ -->
+    <div id="panel-overview" class="panel active">
+      <div class="sec-hd">
+        <div class="sec-title">🌡️ 風險總覽</div>
+        <div class="sec-sub" id="overview-time">—</div>
+      </div>
+
+      <!-- Summary cards -->
+      <div class="grid g4" id="overview-summary"></div>
+
+      <!-- Risk Gauge -->
+      <div class="gauge-wrap">
+        <div class="gauge-row">
+          <div>
+            <svg class="gauge-svg" viewBox="0 0 190 106">
+              <path d="M15 100 A80 80 0 0 1 175 100" fill="none" stroke="#e2deda" stroke-width="14" stroke-linecap="round"/>
+              <path id="gauge-fill" d="M15 100 A80 80 0 0 1 175 100" fill="none" stroke="#d9654a" stroke-width="14" stroke-linecap="round"
+                    stroke-dasharray="251.3" stroke-dashoffset="125.7"/>
+              <text x="10"  y="110" font-size="10" fill="#8a8480">安全</text>
+              <text x="158" y="110" font-size="10" fill="#8a8480">危險</text>
+            </svg>
+          </div>
+          <div>
+            <div class="gauge-score" id="gauge-score">65</div>
+            <div class="gauge-desc"  id="gauge-desc">偏高警戒</div>
+            <div class="gauge-hint"  id="gauge-hint">台股突破歷史新高，AI 浪潮推升估值，保持謹慎</div>
+            <div class="gauge-slider-wrap">
+              <div class="gauge-adj-label">手動調整風險分數（0＝安全，100＝極危險）</div>
+              <input type="range" class="gauge-slider" id="gauge-slider" min="0" max="100" value="65"
+                     oninput="updateGauge(this.value)">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Traffic light indicators -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);">
+        <div style="font-size:13px;font-weight:700;">📋 市場溫度計</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-left:auto;">點擊指標可開啟查詢頁面</div>
+      </div>
+      <div class="ind-grid" id="indicators-grid"></div>
+
+      <!-- Sync risk -->
+      <div class="card" style="margin-bottom:0;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:8px;">⚡ 全球共振風險</div>
+        <div id="sync-risk-text" style="font-size:12.5px;color:var(--text-muted);line-height:1.65;"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PANEL: 全球大盤 ═══ -->
+    <div id="panel-markets" class="panel">
+      <div class="sec-hd">
+        <div class="sec-title">🌍 全球大盤</div>
+        <div class="sec-sub" id="markets-time">—</div>
+      </div>
+      <div class="grid g4" id="markets-grid"></div>
+      <div class="card" style="margin-top:4px;">
+        <div style="font-size:12px;color:var(--text-muted);line-height:1.65;">
+          💡 <strong>數據來源：</strong>Yahoo Finance（yfinance）自動更新。若顯示「未更新」，
+          請執行 <code style="background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:11px;">python fetch_prices.py</code>，
+          或等待排程（04:00 / 08:30 / 13:30 / 21:00）自動執行。
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PANEL: 我的持股 ═══ -->
+    <div id="panel-stocks" class="panel">
+      <div class="sec-hd">
+        <div class="sec-title">📊 我的持股</div>
+        <div class="sec-sub" id="stocks-time">—</div>
+        <button class="sec-btn primary" onclick="openAddStock()">＋ 新增股票</button>
+      </div>
+      <div class="grid g3" id="stocks-grid"></div>
+      <div class="card" style="margin-top:4px;">
+        <div style="font-size:12px;font-weight:600;margin-bottom:6px;">📌 如何讓新增的股票自動抓取即時價格？</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:1.7;">
+          在儀表板新增股票後，若顯示「未追蹤」，請在 Cowork 說：<br>
+          「<strong>把 [代碼] 加進 fetch_prices.py 的 STOCKS 字典，名稱 [名稱]，成本 [價格]，股數 [數量]</strong>」<br>
+          Claude 會自動更新腳本，下次排程執行時即可看到即時價格。
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PANEL: 個股分析 Step 3 ═══ -->
+    <div id="panel-analysis" class="panel">
+      <div class="sec-hd">
+        <div class="sec-title">🔍 個股決策分析 — Step 3</div>
+        <div class="sec-sub">填入當前數據 → 自動評分建議</div>
+      </div>
+
+      <div class="analysis-form">
+        <div class="form-grid">
+          <div>
+            <label class="form-label">股票代碼</label>
+            <input class="form-input" id="a-code" placeholder="e.g. 5289" oninput="autofillStock()">
+          </div>
+          <div>
+            <label class="form-label">股票名稱</label>
+            <input class="form-input" id="a-name" placeholder="e.g. 宜鼎">
+          </div>
+          <div>
+            <label class="form-label">產業類別</label>
+            <select class="form-select" id="a-sector">
+              <option value="ai">AI / 科技</option>
+              <option value="semi">半導體</option>
+              <option value="memory">記憶體</option>
+              <option value="trad">傳產 / 製造</option>
+              <option value="finance">金融</option>
+              <option value="consumer">消費 / 零售</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">當前本益比 P/E</label>
+            <input class="form-input" id="a-pe" type="number" placeholder="e.g. 28">
+          </div>
+          <div>
+            <label class="form-label">市場溫度（自評）</label>
+            <select class="form-select" id="a-phase">
+              <option value="bubble">頂部 / 泡沫</option>
+              <option value="hot">過熱</option>
+              <option value="normal" selected>正常</option>
+              <option value="cool">降溫 / 修正</option>
+              <option value="crash">崩盤 / 底部</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">近期估值趨勢</label>
+            <select class="form-select" id="a-trend">
+              <option value="surge">急漲</option>
+              <option value="rise">上升</option>
+              <option value="flat" selected>平穩</option>
+              <option value="fall">下降</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <button class="sec-btn primary" onclick="runAnalysis()">▶ 開始分析</button>
+          <div style="font-size:12px;color:var(--text-muted);" id="a-live-price"></div>
+        </div>
+      </div>
+
+      <div id="analysis-result" style="display:none;">
+        <div class="result-box" id="result-box">
+          <div class="result-rec" id="result-rec">—</div>
+          <div class="result-bar-wrap">
+            <div class="result-bar-label">
+              <span>風險評分</span>
+              <span id="result-score-pct">0 / 100</span>
+            </div>
+            <div class="result-bar-bg">
+              <div class="result-bar-fill" id="result-bar-fill" style="width:0%;background:var(--green);"></div>
+            </div>
+          </div>
+          <div class="result-factors" id="result-factors"></div>
+          <div class="result-advice" id="result-advice"></div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <div class="sec-hd" style="margin-bottom:10px;"><div class="sec-title" style="font-size:13px;">📊 各產業合理 P/E 參考</div></div>
+          <table class="tbl">
+            <thead><tr><th>產業</th><th>安全</th><th>注意</th><th>危險</th><th>歷史泡沫案例</th></tr></thead>
+            <tbody>
+              <tr><td>AI / 科技</td><td class="down">&lt;25x</td><td class="flat">25–45x</td><td class="up">&gt;45x</td><td>2000 NASDAQ 平均 PE 180x</td></tr>
+              <tr><td>半導體</td><td class="down">&lt;20x</td><td class="flat">20–35x</td><td class="up">&gt;35x</td><td>2021 SOXS 指數 PE 60x+</td></tr>
+              <tr><td>記憶體</td><td class="down">&lt;15x</td><td class="flat">15–25x</td><td class="up">&gt;25x</td><td>景氣循環股，高PE = 景氣頂</td></tr>
+              <tr><td>傳產 / 製造</td><td class="down">&lt;12x</td><td class="flat">12–20x</td><td class="up">&gt;20x</td><td>2007 台股高點傳產平均 18x</td></tr>
+              <tr><td>金融</td><td class="down">&lt;10x</td><td class="flat">10–18x</td><td class="up">&gt;18x</td><td>2007 金融海嘯前美銀 PE 15x</td></tr>
+              <tr><td>消費 / 零售</td><td class="down">&lt;15x</td><td class="flat">15–25x</td><td class="up">&gt;25x</td><td>一般穩定，超過 30x 需謹慎</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PANEL: 歷史對照 ═══ -->
+    <div id="panel-history" class="panel">
+      <div class="sec-hd">
+        <div class="sec-title">📈 歷史泡沫對照</div>
+        <div class="sec-sub">歷史不完全重演，但總是押韻</div>
+      </div>
+
+      <table class="tbl">
+        <thead>
+          <tr><th>時期</th><th>觸發事件</th><th>指標特徵</th><th>崩跌幅</th><th>回本年數</th><th>當時台灣</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1929</strong> 大崩盤</td>
+            <td>信貸過度擴張<br>槓桿投資盛行</td>
+            <td>保證金交易佔比極高<br>PE 32x（歷史頂）<br>散戶瘋狂湧入</td>
+            <td class="up">-89%（3年）</td>
+            <td>25 年</td>
+            <td>日治時代<br>未直接受衝擊</td>
+          </tr>
+          <tr>
+            <td><strong>1989–90</strong> 台股萬點</td>
+            <td>台灣游資氾濫<br>投機文化盛行</td>
+            <td>台股 12682 頂<br>本益比 100x+<br>全民瘋股票</td>
+            <td class="up">-80%（8個月）</td>
+            <td>10 年</td>
+            <td><strong>主角</strong><br>歷史最大教訓</td>
+          </tr>
+          <tr>
+            <td><strong>2000</strong> 科技泡沫</td>
+            <td>網路革命炒作<br>無獲利概念股</td>
+            <td>NASDAQ PE 180x<br>巴菲特指標 150%<br>VIX 長期低迷</td>
+            <td class="up">-78%（NASDAQ）</td>
+            <td>15 年</td>
+            <td>台股 -64%<br>電子股重災</td>
+          </tr>
+          <tr>
+            <td><strong>2007–08</strong> 金融海嘯</td>
+            <td>次貸危機<br>衍生品崩潰</td>
+            <td>殖利率曲線倒掛<br>S&amp;P PE 27x<br>Shiller CAPE 27x</td>
+            <td class="up">-57%（S&amp;P）</td>
+            <td>6 年</td>
+            <td>台股 -60%<br>2008 低點 3955</td>
+          </tr>
+          <tr>
+            <td><strong>2021–22</strong> 升息衝擊</td>
+            <td>Fed 暴力升息<br>疫情泡沫退燒</td>
+            <td>Shiller CAPE 38x<br>ARK PE 100x+<br>散戶 meme 股狂潮</td>
+            <td class="up">-27%（S&amp;P）</td>
+            <td>2 年</td>
+            <td>台股 -37%<br>半導體受創</td>
+          </tr>
+          <tr style="background:var(--accent-bg);">
+            <td><strong>2026 現在</strong> AI 浪潮</td>
+            <td>AI / GPU 需求爆發<br>台股突破 4 萬點</td>
+            <td>台股 PE ~22x<br>S&amp;P Shiller CAPE ~36x<br>VIX 處於低位</td>
+            <td>⚠️ 未知</td>
+            <td>—</td>
+            <td><strong>你現在的位置</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 預警 / 底部訊號 -->
+      <div class="sec-hd" style="margin-bottom:12px;"><div class="sec-title" style="font-size:13px;">🔔 歷史共同訊號</div></div>
+      <div class="grid g2" style="margin-bottom:22px;">
+        <div class="card">
+          <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:8px;">⚠️ 頂部常見訊號</div>
+          <div style="font-size:12.5px;color:var(--text-muted);line-height:1.8;">
+            • 散戶大量湧入，媒體版面被股票佔滿<br>
+            • 融資餘額創新高，槓桿極度擴大<br>
+            • 新股（IPO）暴增，概念股無腦上漲<br>
+            • 計程車司機、路邊攤都在談股票<br>
+            • VIX 跌破 12（市場過度樂觀）<br>
+            • Shiller CAPE &gt; 35x<br>
+            • 巴菲特指標 &gt; 170%
+          </div>
+        </div>
+        <div class="card">
+          <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:8px;">✅ 底部常見訊號</div>
+          <div style="font-size:12.5px;color:var(--text-muted);line-height:1.8;">
+            • VIX 暴衝至 40+（極度恐慌）<br>
+            • 媒體大量「崩盤」「末日」標題<br>
+            • 散戶恐慌出場，股票乏人問津<br>
+            • Fed 開始降息或放話降息<br>
+            • 優質股 PE 跌到歷史低位<br>
+            • 巴菲特開始大量買進<br>
+            • 台股融資餘額大幅萎縮
+          </div>
+        </div>
+      </div>
+
+      <!-- 產業輪動 -->
+      <div class="sec-hd" style="margin-bottom:12px;"><div class="sec-title" style="font-size:13px;">🔄 產業輪動矩陣</div></div>
+      <div class="rot-grid">
+        <div class="rot-cell" style="border-top:3px solid var(--green);">
+          <div class="rot-phase">📈 多頭初升段</div>
+          <div class="rot-row"><span class="rot-star">★★★</span> 金融、地產</div>
+          <div class="rot-row"><span class="rot-star">★★★</span> 消費復甦股</div>
+          <div class="rot-row"><span class="rot-star">★★☆</span> 原物料、工業</div>
+          <div class="rot-row"><span>☆☆☆</span> 公用事業</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">Fed 降息初期，景氣復甦</div>
+        </div>
+        <div class="rot-cell" style="border-top:3px solid var(--yellow);">
+          <div class="rot-phase" style="color:var(--accent);">🔥 多頭主升段 ← 目前位置</div>
+          <div class="rot-row"><span class="rot-star">★★★</span> 科技、AI、半導體</div>
+          <div class="rot-row"><span class="rot-star">★★★</span> 記憶體、伺服器</div>
+          <div class="rot-row"><span class="rot-star">★★☆</span> 能源、原物料</div>
+          <div class="rot-row"><span>☆☆☆</span> 公用事業、債券</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">景氣擴張，科技引領</div>
+        </div>
+        <div class="rot-cell" style="border-top:3px solid var(--red);">
+          <div class="rot-phase">🛡️ 頂部 / 熊市初段</div>
+          <div class="rot-row"><span class="rot-star">★★★</span> 防禦消費（食品、醫藥）</div>
+          <div class="rot-row"><span class="rot-star">★★★</span> 公用事業、電信</div>
+          <div class="rot-row"><span class="rot-star">★★☆</span> 黃金、貴金屬</div>
+          <div class="rot-row"><span>☆☆☆</span> 科技成長股</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">Fed 升息尾段，景氣轉弱</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px;">💡 Luke 的策略提示</div>
+        <div style="font-size:12.5px;color:var(--text-muted);line-height:1.7;">
+          當前位於<strong>多頭主升段</strong>，AI / 半導體已完成一波主升。關鍵觀察：AI 資本支出是否出現削減訊號、
+          台積電 CoWoS 產能利用率、NVDA 財報指引。當「融資餘額創新高」＋「散戶大量湧入」同時出現，
+          開始分批減持高 PE 個股，轉入防禦型資產。
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PANEL: 查詢方向 ═══ -->
+    <div id="panel-research" class="panel">
+      <div class="sec-hd">
+        <div class="sec-title">📡 查詢方向建議</div>
+        <div class="sec-sub" id="research-updated">每日 20:00 自動更新</div>
+      </div>
+
+      <!-- Auto news from news_update.js -->
+      <div id="news-section" style="margin-bottom:24px;"></div>
+
+      <!-- Static links -->
+      <div class="res-section">
+        <div class="res-h">🥇 每週必看 — 大盤預警指標</div>
+        <div class="res-links">
+          <a class="res-link" href="https://longtermtrends.net/market-cap-gdp/" target="_blank">📊 巴菲特指標</a>
+          <a class="res-link" href="https://www.multpl.com/shiller-pe" target="_blank">📈 Shiller CAPE P/E</a>
+          <a class="res-link" href="https://finance.yahoo.com/quote/%5EVIX" target="_blank">😱 VIX 恐慌指數</a>
+          <a class="res-link" href="https://www.twse.com.tw/zh/trading/marginTrading/MI_MARGN.html" target="_blank">🇹🇼 台股融資餘額</a>
+          <a class="res-link" href="https://fred.stlouisfed.org/series/T10Y2Y" target="_blank">📉 殖利率倒掛</a>
+        </div>
+      </div>
+      <div class="res-section">
+        <div class="res-h">🥈 每月看一次</div>
+        <div class="res-links">
+          <a class="res-link" href="https://www.cbc.gov.tw/tw/cp-520.html" target="_blank">🏦 M1B vs M2（央行）</a>
+          <a class="res-link" href="https://www.tradingview.com/symbols/TVC-DXY/" target="_blank">💵 美元指數 DXY</a>
+          <a class="res-link" href="https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html" target="_blank">🎯 CME FedWatch</a>
+          <a class="res-link" href="https://money.cnn.com/data/fear-and-greed/" target="_blank">🧠 CNN 貪婪恐懼</a>
+        </div>
+      </div>
+      <div class="res-section">
+        <div class="res-h">🔬 AI / 半導體產業監控</div>
+        <div class="res-links">
+          <a class="res-link" href="https://technews.tw/" target="_blank">📰 TechNews 科技新報</a>
+          <a class="res-link" href="https://www.semianalysis.com/" target="_blank">🔩 SemiAnalysis</a>
+          <a class="res-link" href="https://www.digitimes.com/" target="_blank">💻 DigiTimes</a>
+          <a class="res-link" href="https://finance.yahoo.com/quote/NVDA" target="_blank">🟢 NVDA 即時</a>
+          <a class="res-link" href="https://finance.yahoo.com/quote/TSM" target="_blank">🔵 TSMC ADR</a>
+        </div>
+      </div>
+      <div class="res-section">
+        <div class="res-h">🎯 散戶情緒雷達</div>
+        <div class="res-links">
+          <a class="res-link" href="https://www.ptt.cc/bbs/Stock/index.html" target="_blank">💬 PTT Stock 板</a>
+          <a class="res-link" href="https://www.dcard.tw/f/invest" target="_blank">📱 Dcard 投資版</a>
+          <a class="res-link" href="https://trends.google.com/trends/explore?geo=TW&q=%E8%B2%B7%E8%82%A1%E7%A5%A8,AI%E8%82%A1,ETF" target="_blank">📊 Google Trends 台灣</a>
+          <a class="res-link" href="https://www.aaii.com/sentimentsurvey" target="_blank">🐂 AAII 散戶情緒</a>
+        </div>
+      </div>
+      <div class="res-section">
+        <div class="res-h">📬 推薦訂閱（每週 &lt;1hr）</div>
+        <div class="res-links">
+          <a class="res-link" href="https://statementdog.com/" target="_blank">🐕 財報狗</a>
+          <a class="res-link" href="https://www.moneydj.com/" target="_blank">💹 MoneyDJ</a>
+          <a class="res-link" href="https://www.morningbrew.com/" target="_blank">☕ Morning Brew</a>
+          <a class="res-link" href="https://www.semianalysis.com/subscribe" target="_blank">🔩 SemiAnalysis Newsletter</a>
+          <a class="res-link" href="https://fred.stlouisfed.org/news/" target="_blank">🏛️ FRED Blog</a>
+        </div>
+      </div>
+
+      <!-- Quick lookup -->
+      <div class="res-section">
+        <div class="res-h">🔍 個股資料快查</div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">
+          <input class="form-input" id="quick-code" placeholder="輸入股票代碼 e.g. 5289" style="max-width:210px;">
+          <button class="sec-btn primary" onclick="openQuickLinks()">查詢</button>
+        </div>
+        <div id="quick-links" class="res-links" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PANEL: 季度清單 ═══ -->
+    <div id="panel-checklist" class="panel">
+      <div class="sec-hd">
+        <div class="sec-title">✅ 季度指標清單</div>
+        <button class="sec-btn" onclick="resetChecklist()">↺ 重置所有</button>
+      </div>
+      <div id="checklist-container"></div>
+    </div>
+
+    <!-- ═══ PANEL: 泡沫分析 ═══ -->
+    <div id="panel-bubble" class="panel">
+      <div class="sec-hd">
+        <div class="sec-title">📚 歷史泡沫規律分析</div>
+        <div class="sec-sub">認知武器庫 v1.0</div>
+      </div>
+
+      <div class="ba-wrap">
+
+        <!-- Hero -->
+        <div class="ba-hero">
+          <div class="ba-hero-tag">🧠 認知武器庫 v1.0 — 2026.05</div>
+          <h2>歷史總是重演<br>但你需要識別規律</h2>
+          <p>從 1929 年到 AI 浪潮，每一輪泡沫都有相同的足跡。這份報告整合歷史數據、預警指標與產業輪動規律，幫你在別人作夢的時候保持清醒——同時找到賺錢的位置。</p>
+        </div>
+
+        <div class="ba-alert">
+          <div class="ba-label">⚠️ 2026 當前警示</div>
+          台股突破4萬點、AI/記憶體個股飆漲、美韓股市同步走強——這個格局在歷史上出現過3次。每次結局不同，但前兆高度相似。讀完這份報告，你會知道現在在哪個位置。
+        </div>
+
+        <hr class="ba-div">
+
+        <!-- SECTION 1: 歷史時間軸 -->
+        <div class="ba-sec-title">📚 歷史泡沫完整時間軸</div>
+        <div class="ba-sec-sub">每一輪技術革命都帶來泡沫，差別只在破裂的時間與深度</div>
+
+        <div class="ba-tl">
+          <div class="ba-item bubble">
+            <div class="ba-dot"></div>
+            <div class="ba-year">1929–1932</div>
+            <div class="ba-title">大蕭條 — 電力/汽車革命後的崩塌</div>
+            <div class="ba-content">1920年代電氣化與汽車工業帶動美股十年大牛市，散戶大量使用10倍槓桿。1929年10月「黑色星期四」，道瓊斯三年內跌89%，美國失業率達25%。<br><br><strong>觸發原因：</strong>信貸過度擴張 + 散戶槓桿爆倉 + 銀行擠兌連鎖反應</div>
+            <div class="ba-stats">
+              <span class="ba-stat s-red">道瓊跌幅 -89%</span>
+              <span class="ba-stat s-yellow">復原耗時 25年</span>
+              <span class="ba-stat s-blue">技術驅動：電力、汽車</span>
+            </div>
+          </div>
+          <div class="ba-item recovery">
+            <div class="ba-dot"></div>
+            <div class="ba-year">1945–1968</div>
+            <div class="ba-title">戰後黃金年代 — 消費電子與製造業繁榮</div>
+            <div class="ba-content">美國製造業稱霸全球，電視、冰箱等家電帶動消費革命。股市穩健上漲20年，無大型泡沫。<br><br><strong>關鍵特徵：</strong>實體產業支撐估值、外貿順差、人口紅利（嬰兒潮）</div>
+            <div class="ba-stats">
+              <span class="ba-stat s-green">道瓊漲幅 +600%</span>
+              <span class="ba-stat s-blue">穩健成長期：無大崩盤</span>
+            </div>
+          </div>
+          <div class="ba-item bubble">
+            <div class="ba-dot"></div>
+            <div class="ba-year">1989–1992</div>
+            <div class="ba-title">日本資產泡沫崩潰 — 最完整的教科書案例</div>
+            <div class="ba-content">日本製造業全球稱霸（半導體、汽車、消費電子），資金湧入房地產與股市。日經指數1989年觸頂38,957點（35年後才重回此水位）。<br><br><strong>你現在的台股4萬點值得對照：</strong>日本當年的基本面同樣優秀，問題出在估值與信貸的脫節。</div>
+            <div class="ba-stats">
+              <span class="ba-stat s-red">日經跌幅 -82%</span>
+              <span class="ba-stat s-yellow">GDP停滯 30年</span>
+              <span class="ba-stat s-blue">驅動：製造業 + 房地產</span>
+            </div>
+          </div>
+          <div class="ba-item bubble">
+            <div class="ba-dot"></div>
+            <div class="ba-year">1995–2000</div>
+            <div class="ba-title">網際網路泡沫 (Dot-com) — 最相似於當前AI浪潮</div>
+            <div class="ba-content">網路被認為「改變一切」，.com公司無需獲利只需成長故事。那斯達克從1995年的1,000點漲至5,049點，2000年3月崩潰，2002年跌至1,114點（-78%）。<br><br><strong>與AI浪潮的對照：</strong>當時的思科/英特爾 = 現在的輝達/台積電；當時的.com燒錢公司 = 現在的AI應用新創；基礎設施公司活下來了，應用層大多死光。</div>
+            <div class="ba-stats">
+              <span class="ba-stat s-red">那斯達克跌 -78%</span>
+              <span class="ba-stat s-yellow">復原耗時 15年</span>
+              <span class="ba-stat s-green">基礎設施倖存</span>
+              <span class="ba-stat s-blue">驅動：網路革命</span>
+            </div>
+          </div>
+          <div class="ba-item bubble">
+            <div class="ba-dot"></div>
+            <div class="ba-year">2003–2008</div>
+            <div class="ba-title">全球金融海嘯 — 衍生性商品的系統性爆炸</div>
+            <div class="ba-content">不是技術泡沫，而是金融工程的崩壞。次貸打包成CDO，評級機構集體失職，全球金融機構互相持有毒資產。雷曼兄弟倒閉觸發連鎖。<br><br><strong>特殊之處：</strong>崩盤前各國股市創新高（台股2007年觸9,859點），崩潰速度比網路泡沫快，但恢復也快（5年內大多回到前高）。</div>
+            <div class="ba-stats">
+              <span class="ba-stat s-red">S&amp;P 500跌 -57%</span>
+              <span class="ba-stat s-green">恢復耗時 5年</span>
+              <span class="ba-stat s-blue">驅動：金融衍生品</span>
+            </div>
+          </div>
+          <div class="ba-item recovery">
+            <div class="ba-dot"></div>
+            <div class="ba-year">2009–2021</div>
+            <div class="ba-title">QE超長牛市 — 低利率與科技巨頭的12年盛宴</div>
+            <div class="ba-content">聯準會史無前例的量化寬鬆，資金無處可去只好追股票。FAANG主導市場，散戶開始規模性入市（Robinhood世代）。Covid後更出現史上最快的V型反彈。<br><br><strong>這段歷史的教訓：</strong>央行政策可以延長泡沫時間，但不能消滅泡沫，只是推遲。</div>
+            <div class="ba-stats">
+              <span class="ba-stat s-green">S&amp;P 500漲 +700%</span>
+              <span class="ba-stat s-blue">QE印鈔驅動</span>
+            </div>
+          </div>
+          <div class="ba-item bubble">
+            <div class="ba-dot"></div>
+            <div class="ba-year">2022</div>
+            <div class="ba-title">升息衝擊 — 成長股大屠殺</div>
+            <div class="ba-content">Fed升息至5.5%，高本益比成長股（尤其ARK類型）腰斬再腰斬。台灣加權指數從18,619點跌至12,600點（-32%）。這次崩盤精準針對「沒有獲利只有故事」的公司。</div>
+            <div class="ba-stats">
+              <span class="ba-stat s-red">那斯達克跌 -33%</span>
+              <span class="ba-stat s-red">ARK系列跌 -70%+</span>
+              <span class="ba-stat s-blue">觸發：升息週期</span>
+            </div>
+          </div>
+          <div class="ba-item current">
+            <div class="ba-dot"></div>
+            <div class="ba-year">2023–2026 🔴 現在</div>
+            <div class="ba-title">AI超級週期 — 台股4萬點，你在這裡</div>
+            <div class="ba-content">ChatGPT觸發AI軍備競賽，輝達市值突破3兆美元，HBM記憶體（SK海力士、三星、美光）暴漲。台灣因台積電、伺服器供應鏈直接受益。台股突破4萬點，韓國KOSPI也創新高。<br><br><strong>歷史對照分析：</strong>最接近1997年網路泡沫初期（漲幅1/3已完成，基本面仍支撐），但也有2000年頂部的特徵（散戶大量入場，槓桿增加）。</div>
+            <div class="ba-stats">
+              <span class="ba-stat s-yellow">台股 40,000+</span>
+              <span class="ba-stat s-yellow">輝達 P/E ~35x</span>
+              <span class="ba-stat s-yellow">散戶開戶數創高</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ba-insight">
+          <div class="ba-insight-title">💡 從歷史提煉的核心規律</div>
+          <ul>
+            <li>每一輪技術革命都是真實的——網路改變了世界，AI也會。但<strong>股價往往比產業成熟早10年到達</strong>。</li>
+            <li>基礎設施公司（台積電、輝達）比應用公司更可能活過泡沫，參考網路泡沫中的思科。</li>
+            <li>散戶大量入場 + 融資餘額激增 = 距離頂部通常剩下6–18個月。</li>
+            <li>崩盤前最後一段漲勢往往是最快、最猛的（FOMO資金進場）。</li>
+            <li>崩盤後最好的買點在「第二次下殺」而非第一次反彈。</li>
+          </ul>
+        </div>
+
+        <hr class="ba-div">
+
+        <!-- SECTION 2: 預警指標 -->
+        <div class="ba-sec-title">🚨 預警指標系統</div>
+        <div class="ba-sec-sub">這些指標在歷史上每次大崩盤前都亮過燈——記住它們</div>
+
+        <div class="ba-tabs">
+          <button class="ba-tab active" onclick="baSwitchTab('ba-valuation',this)">估值指標</button>
+          <button class="ba-tab" onclick="baSwitchTab('ba-sentiment',this)">情緒指標</button>
+          <button class="ba-tab" onclick="baSwitchTab('ba-macro',this)">總體指標</button>
+          <button class="ba-tab" onclick="baSwitchTab('ba-technical',this)">技術指標</button>
+        </div>
+
+        <div id="ba-valuation" class="ba-tc active">
+          <table class="ba-tbl">
+            <thead><tr><th>指標名稱</th><th>計算方式</th><th>危險閾值</th><th>歷史應用</th><th>如何查看</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>巴菲特指標</strong><br><span class="ba-badge bb-red">最重要</span></td>
+                <td>全市場市值 ÷ GDP<br>正常值：80–100%</td>
+                <td><span class="ba-badge bb-red">&gt;180%</span> 極度危險<br><span class="ba-badge bb-yellow">140–180%</span> 警戒</td>
+                <td>2000年網路泡沫頂部：190%<br>2021年疫情頂部：240%<br>現在美股約：195%</td>
+                <td>Longtermtrends.net → Buffett Indicator</td>
+              </tr>
+              <tr>
+                <td><strong>CAPE Shiller P/E</strong><br><span class="ba-badge bb-blue">長期視角</span></td>
+                <td>股價 ÷ 近10年平均實質EPS<br>歷史均值：~17x</td>
+                <td><span class="ba-badge bb-red">&gt;30x</span> 高估<br><span class="ba-badge bb-yellow">25–30x</span> 偏高</td>
+                <td>1929年：32x / 2000年：44x（史上最高）<br>現在美股：約38x</td>
+                <td>multpl.com → Shiller PE Ratio</td>
+              </tr>
+              <tr>
+                <td><strong>台股本益比</strong><br><span class="ba-badge bb-purple">本地指標</span></td>
+                <td>加權指數本益比<br>歷史均值：15–20x</td>
+                <td><span class="ba-badge bb-red">&gt;25x</span> 危險<br><span class="ba-badge bb-yellow">20–25x</span> 警戒</td>
+                <td>2000年網路泡沫：30x+<br>2021年高點：約22x</td>
+                <td>台灣證交所 → 市場概況 → 本益比</td>
+              </tr>
+              <tr>
+                <td><strong>Price/Sales 比</strong><br><span class="ba-badge bb-blue">AI類股必看</span></td>
+                <td>市值 ÷ 年營收<br>AI族群現在：10–60x</td>
+                <td><span class="ba-badge bb-red">&gt;20x</span> 極高</td>
+                <td>2000年泡沫：Cisco P/S=15x（高峰）<br>現在輝達P/S≈25x</td>
+                <td>Macrotrends / 個股財報</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="ba-sentiment" class="ba-tc">
+          <table class="ba-tbl">
+            <thead><tr><th>指標名稱</th><th>觀察內容</th><th>危險訊號</th><th>歷史案例</th><th>如何觀察</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>融資餘額</strong><br><span class="ba-badge bb-red">最直接</span></td>
+                <td>散戶向券商借錢買股的總金額</td>
+                <td>快速攀升 + 創歷史新高 = 警戒<br>融資斷頭時 = 加速崩盤</td>
+                <td>台股2021年融資餘額創歷史新高後3個月開始修正</td>
+                <td>台灣證交所每日公告 → 融資融券</td>
+              </tr>
+              <tr>
+                <td><strong>Put/Call Ratio</strong><br><span class="ba-badge bb-blue">選擇權市場</span></td>
+                <td>賣權/買權比率<br>低 = 大家都在賭漲</td>
+                <td><span class="ba-badge bb-red">&lt;0.7</span> 過度樂觀</td>
+                <td>2000年頂部 P/C Ratio 持續低於0.6</td>
+                <td>CBOE（美股）/ 台灣期交所（台指）</td>
+              </tr>
+              <tr>
+                <td><strong>IPO數量 &amp; 定價</strong><br><span class="ba-badge bb-yellow">市場溫度計</span></td>
+                <td>新股上市頻率與首日漲幅</td>
+                <td>IPO數量暴增 + 首日漲幅&gt;50% = 極度樂觀</td>
+                <td>2021年SPAC熱潮：每月數十家IPO，多數現在跌90%</td>
+                <td>追蹤財經媒體IPO日曆</td>
+              </tr>
+              <tr>
+                <td><strong>計程車司機指標</strong><br><span class="ba-badge bb-purple">民間版本</span></td>
+                <td>非金融業人士大談股票</td>
+                <td>朋友/親戚都在問股票 = 頂部訊號</td>
+                <td>1929年：連鞋匠都在給股票建議<br>2021年：Uber司機談比特幣</td>
+                <td>日常觀察（你的直覺有價值）</td>
+              </tr>
+              <tr>
+                <td><strong>Google Trends</strong><br><span class="ba-badge bb-blue">數據化版本</span></td>
+                <td>搜尋「買股票」「AI股」「如何投資」趨勢</td>
+                <td>搜尋量突然飆升 = 散戶大量湧入</td>
+                <td>2021年Q1「GameStop」爆搜 = 散戶瘋狂期</td>
+                <td>trends.google.com</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="ba-macro" class="ba-tc">
+          <table class="ba-tbl">
+            <thead><tr><th>指標名稱</th><th>觀察內容</th><th>危險訊號</th><th>操作含義</th><th>查詢來源</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>殖利率曲線倒掛</strong><br><span class="ba-badge bb-red">衰退前兆</span></td>
+                <td>10年期公債殖利率 &lt; 2年期</td>
+                <td>倒掛出現後平均12–18個月內出現衰退</td>
+                <td>連續倒掛 = 開始減倉、增加現金部位</td>
+                <td>FRED（美聯儲數據庫）→ T10Y2Y</td>
+              </tr>
+              <tr>
+                <td><strong>聯準會利率方向</strong><br><span class="ba-badge bb-blue">最強驅動力</span></td>
+                <td>升息=資金成本提高；降息=流動性增加</td>
+                <td>快速升息週期 = 高本益比類股承壓</td>
+                <td>Fed開始談降息 = 開始加倉</td>
+                <td>FedWatch Tool（CME）</td>
+              </tr>
+              <tr>
+                <td><strong>VIX恐慌指數</strong><br><span class="ba-badge bb-yellow">市場情緒</span></td>
+                <td>標普500選擇權隱含波動率<br>正常值：15–20</td>
+                <td><span class="ba-badge bb-red">&gt;40</span> 極度恐慌（買點）<br><span class="ba-badge bb-green">&lt;12</span> 過度樂觀（賣點）</td>
+                <td>VIX&lt;12 = 考慮減倉<br>VIX&gt;40 = 分批進場時機</td>
+                <td>Yahoo Finance → ^VIX</td>
+              </tr>
+              <tr>
+                <td><strong>M1/M2 貨幣供給</strong><br><span class="ba-badge bb-blue">台股特有</span></td>
+                <td>台灣M1B與M2比較<br>M1B &gt; M2 = 「黃金交叉」</td>
+                <td>M1B黃金交叉 = 多頭確立<br>死亡交叉 = 資金退出股市</td>
+                <td>台股散戶最愛的「官方確認」指標</td>
+                <td>中央銀行官網 → M1B M2</td>
+              </tr>
+              <tr>
+                <td><strong>美元指數 DXY</strong><br><span class="ba-badge bb-purple">新興市場關鍵</span></td>
+                <td>美元強弱影響資金流向</td>
+                <td>DXY快速升值 = 新興市場資金外逃</td>
+                <td>美元弱 = 台股外資買超</td>
+                <td>Investing.com → DXY</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="ba-technical" class="ba-tc">
+          <table class="ba-tbl">
+            <thead><tr><th>技術指標</th><th>計算方式</th><th>崩盤前訊號</th><th>底部買進訊號</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>月KD值</strong><br><span class="ba-badge bb-red">長線必看</span></td>
+                <td>月線隨機指標<br>K &gt; 80 = 高檔鈍化</td>
+                <td>月KD &gt; 80 + 下彎死叉</td>
+                <td>月KD &lt; 20 + 黃金交叉（罕見機會）</td>
+              </tr>
+              <tr>
+                <td><strong>週RSI</strong><br><span class="ba-badge bb-blue">中線</span></td>
+                <td>相對強弱指數<br>正常範圍：30–70</td>
+                <td>週RSI &gt; 80 持續數週<br>價格新高但RSI不過前高（背離）</td>
+                <td>週RSI &lt; 30 + 止跌訊號</td>
+              </tr>
+              <tr>
+                <td><strong>乖離率</strong><br><span class="ba-badge bb-yellow">台股傳統</span></td>
+                <td>(現價 - 均線) ÷ 均線<br>60MA乖離率</td>
+                <td>60MA乖離 &gt; 30% = 嚴重超漲</td>
+                <td>60MA乖離 &lt; -20% = 超賣買點</td>
+              </tr>
+              <tr>
+                <td><strong>成交量背離</strong><br><span class="ba-badge bb-purple">量價分析</span></td>
+                <td>價格持續創高<br>但成交量逐漸萎縮</td>
+                <td>指數創高 + 成交量比前波低30%以上</td>
+                <td>成交量爆量低點 + 翌日收上開盤價</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <hr class="ba-div">
+
+        <!-- SECTION 3: 產業輪動 -->
+        <div class="ba-sec-title">🔄 產業輪動矩陣</div>
+        <div class="ba-sec-sub">不同市場周期，不同產業領漲。這是你的佈局路線圖</div>
+
+        <div class="ba-matrix">
+          <div class="ba-matrix-hd">
+            <div></div>
+            <div class="ba-ph">🔴 泡沫破裂期<br>（崩跌–谷底）</div>
+            <div class="ba-ph">🟡 復甦期<br>（谷底–反彈）</div>
+            <div class="ba-ph">🟢 擴張期<br>（反彈–新高）</div>
+          </div>
+          <div class="ba-pr">
+            <div class="ba-pl" style="background:rgba(248,81,73,.15);color:var(--ba-red);">防守類</div>
+            <div class="ba-pc"><strong>✅ 買入/持有</strong>公用事業、電信、民生消費</div>
+            <div class="ba-pc"><strong>持有</strong>繼續持有，但相對報酬落後</div>
+            <div class="ba-pc"><strong>減倉</strong>市場轉樂觀，資金流出防守股</div>
+          </div>
+          <div class="ba-pr">
+            <div class="ba-pl" style="background:rgba(210,153,34,.15);color:var(--ba-yellow);">金融類</div>
+            <div class="ba-pc"><strong>❌ 避開</strong>銀行壞帳風險、信貸緊縮</div>
+            <div class="ba-pc"><strong>🟡 關注</strong>Fed降息後銀行放貸意願恢復</div>
+            <div class="ba-pc"><strong>✅ 持有</strong>升息週期尾段銀行淨利差擴大</div>
+          </div>
+          <div class="ba-pr">
+            <div class="ba-pl" style="background:rgba(63,185,80,.15);color:var(--ba-green);">原物料/能源</div>
+            <div class="ba-pc"><strong>🟡 分批</strong>若跌深可分批</div>
+            <div class="ba-pc"><strong>✅ 加碼</strong>經濟復甦需求回升，原料先漲</div>
+            <div class="ba-pc"><strong>持有至高點</strong>通膨升溫後獲利了結</div>
+          </div>
+          <div class="ba-pr">
+            <div class="ba-pl" style="background:rgba(88,166,255,.15);color:var(--ba-blue);">科技/AI</div>
+            <div class="ba-pc"><strong>❌ 危險</strong>高本益比最先被殺</div>
+            <div class="ba-pc"><strong>🟡 精選</strong>有真實獲利的基礎設施（台積電、輝達保留）</div>
+            <div class="ba-pc"><strong>✅ 主角</strong>目前所在位置——享受但要設停損</div>
+          </div>
+          <div class="ba-pr">
+            <div class="ba-pl" style="background:rgba(188,140,255,.15);color:var(--ba-purple);">醫療/生技</div>
+            <div class="ba-pc"><strong>✅ 避風港</strong>需求不受景氣影響</div>
+            <div class="ba-pc"><strong>持有</strong>溫和上漲</div>
+            <div class="ba-pc"><strong>減碼</strong>資金追高科技，醫療相對落後</div>
+          </div>
+          <div class="ba-pr">
+            <div class="ba-pl" style="background:rgba(255,166,87,.15);color:var(--ba-orange);">現金/債券</div>
+            <div class="ba-pc"><strong>✅ 最強武器</strong>保留現金等待超跌機會</div>
+            <div class="ba-pc"><strong>減少現金</strong>逐步布局股票</div>
+            <div class="ba-pc"><strong>現金比例最低</strong>全力持股</div>
+          </div>
+        </div>
+
+        <div class="ba-insight">
+          <div class="ba-insight-title">🎯 你現在的位置（擴張期晚段）應該做什麼？</div>
+          <ul>
+            <li>持有台積電、輝達等有真實獲利的基礎設施類，但要設好停損點（建議：跌破月線10%考慮減倉）</li>
+            <li>避開純故事、沒有獲利的AI應用新創股（這些在泡沫破裂時跌幅最深）</li>
+            <li>開始建立「崩盤購物清單」：哪些好公司現在太貴，等它跌30–50%你要買的</li>
+            <li>現金部位維持15–25%，不是因為看空，是因為需要「彈藥」在機會出現時進場</li>
+            <li>每季檢視一次巴菲特指標 + 融資餘額，超過危險值就啟動防守計畫</li>
+          </ul>
+        </div>
+
+        <hr class="ba-div">
+
+        <!-- SECTION 4: 個人防守策略 -->
+        <div class="ba-sec-title">🛡️ 個人資產防守策略</div>
+        <div class="ba-sec-sub">不是逃避市場，是在正確的時間做正確的事</div>
+
+        <div class="ba-grid ba-g3">
+          <div class="ba-card">
+            <div class="ba-card-title">🚦 三級警戒系統</div>
+            <div class="ba-card-body">
+              <p><span class="ba-badge bb-green">綠燈</span> 巴菲特指標 &lt; 140%<br>→ 正常持股，積極佈局</p><br>
+              <p><span class="ba-badge bb-yellow">黃燈</span> 140–180% 或融資餘額創高<br>→ 不加倉，獲利了結部分，增現金至30%</p><br>
+              <p><span class="ba-badge bb-red">紅燈</span> &gt;180% 且多項指標同步亮警<br>→ 倉位降至40%，現金+債券佔60%</p>
+            </div>
+          </div>
+          <div class="ba-card">
+            <div class="ba-card-title">📦 核心衛星配置</div>
+            <div class="ba-card-body">
+              <p><strong>核心 60%</strong><br>台積電（ADR）+ 0050 + 標普500 ETF<br>這些永遠持有，下跌時加碼</p><br>
+              <p><strong>衛星 25%</strong><br>AI/記憶體主題 + 個股<br>有停損紀律，漲了定期獲利了結</p><br>
+              <p><strong>現金 15%</strong><br>隨時待命的「彈藥庫」</p>
+            </div>
+          </div>
+          <div class="ba-card">
+            <div class="ba-card-title">📅 定期再平衡規則</div>
+            <div class="ba-card-body">
+              <strong>每季做一次：</strong>
+              <ul style="list-style:none;padding:0;margin-top:8px;">
+                <li style="padding:4px 0;">□ 查巴菲特指標</li>
+                <li style="padding:4px 0;">□ 查台股融資餘額趨勢</li>
+                <li style="padding:4px 0;">□ 查月KD值位置</li>
+                <li style="padding:4px 0;">□ 確認持股本益比</li>
+                <li style="padding:4px 0;">□ 如果超過目標配置 → 減倉</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="ba-grid ba-g2" style="margin-top:14px;">
+          <div class="ba-card">
+            <div class="ba-card-title">📉 崩盤時的購物清單思維</div>
+            <div class="ba-card-body">
+              歷史上最好的買點都在別人最恐慌的時候。你現在該做的事是：<br><br>
+              <strong>建立你的「Dream List」：</strong>把你想長期持有但覺得現在太貴的公司列出來，設定「如果跌到X元我就買」的觸發價格。崩盤時不用思考，直接執行。<br><br>
+              <em style="color:var(--ba-text2)">例：台積電現在900元太貴，跌到600元（-33%）我買10張。</em>
+            </div>
+          </div>
+          <div class="ba-card">
+            <div class="ba-card-title">⚡ 停損停利規則</div>
+            <div class="ba-card-body">
+              <strong>停損規則（不虧大錢）：</strong><br>
+              個股跌破買入價15% → 無條件停損，不找理由<br><br>
+              <strong>停利規則（不讓利潤蒸發）：</strong><br>
+              個股漲超過50% → 賣出1/3<br>
+              個股漲超過100% → 再賣1/3（讓剩下的繼續跑）<br><br>
+              <strong>關鍵心態：</strong>最難的不是找到好股票，是在該賣的時候賣。設規則，閉眼執行。
+            </div>
+          </div>
+        </div>
+
+        <hr class="ba-div">
+
+        <!-- SECTION 5: 商業機會 -->
+        <div class="ba-sec-title">💰 賣夢給追夢者：商業機會分析</div>
+        <div class="ba-sec-sub">每次股市瘋狂都有人靠「賣鏟子」賺錢——這是你的商業佈局</div>
+
+        <div class="ba-grid ba-g2">
+          <div class="ba-pb">
+            <div class="ba-pn">01</div>
+            <div class="ba-pt">目標客群：三種追夢者</div>
+            <div class="ba-pb-body">
+              <span class="ba-badge bb-red">高槓桿夢想家</span> 想快速翻倍、問「什麼股票能漲10倍」的人<br>特徵：25–45歲、有工作收入但不滿足、看網紅學投資<br><br>
+              <span class="ba-badge bb-yellow">理財焦慮者</span> 怕通膨吃掉存款、想「至少跑贏定存」的人<br>特徵：穩定收入但不懂投資、害怕錯過<br><br>
+              <span class="ba-badge bb-blue">知識升級者</span> 想系統學習投資、願意付費買課程/工具的人<br>特徵：理性、有耐心、長期潛力最高
+            </div>
+            <div class="ba-pex">你的優勢：你有歷史視角 + 系統思維，正是這些人最缺的東西</div>
+          </div>
+          <div class="ba-pb">
+            <div class="ba-pn">02</div>
+            <div class="ba-pt">可以賣的「鏟子」清單</div>
+            <div class="ba-pb-body">
+              <strong>內容類（低成本啟動）：</strong><br>
+              → 股市泡沫指標週報（訂閱制，每週1次）<br>
+              → 「歷史規律 vs 今日市場」短影音系列<br>
+              → 崩盤後必買清單 PDF（電子書/Gumroad）<br><br>
+              <strong>工具類（技術門檻，高護城河）：</strong><br>
+              → 預警儀表板 SaaS（月訂閱）<br>
+              → 個股估值快算工具<br>
+              → 資產配置計算器
+            </div>
+            <div class="ba-pex">最快啟動路徑：先做免費內容建立信任，再推付費工具</div>
+          </div>
+          <div class="ba-pb">
+            <div class="ba-pn">03</div>
+            <div class="ba-pt">找到有錢有夢的人的方法</div>
+            <div class="ba-pb-body">
+              <strong>他們在哪裡：</strong><br>
+              → PTT Stock板 / Mobile01 股票版<br>
+              → Dcard 投資版（25–35歲為主）<br>
+              → Facebook 台股投資社團（50萬+會員）<br>
+              → YouTube 股票頻道留言區<br>
+              → Line 股票討論群（私域流量池）<br><br>
+              <strong>切入方式：</strong>不要「賣東西」，要「給價值」。分享一個別人不知道的歷史規律，自然吸引對的人。
+            </div>
+            <div class="ba-pex">「台股上次突破新高的3個月前，這個指標都會先亮燈⋯⋯」這種標題有點擊率</div>
+          </div>
+          <div class="ba-pb">
+            <div class="ba-pn">04</div>
+            <div class="ba-pt">變現路徑藍圖</div>
+            <div class="ba-pb-body">
+              <strong>Phase 1（0–3月）：建立內容資產</strong><br>
+              → 每週發1篇「歷史規律對照今日」文章<br>
+              → 建立Email清單（用這份報告作為免費誘餌）<br><br>
+              <strong>Phase 2（3–6月）：推出第一個付費產品</strong><br>
+              → 預警儀表板（月訂閱99–299元）<br>
+              → 或是1對1投資諮詢（高單價）<br><br>
+              <strong>Phase 3（6月+）：社群 + 課程</strong><br>
+              → 付費Discord/Line群<br>
+              → 系統性投資課程
+            </div>
+            <div class="ba-pex">先選一個，做好做深。不要同時做三個，每個都做不深。</div>
+          </div>
+        </div>
+
+      </div><!-- /.ba-wrap -->
+    </div>
+
+    <!-- ═══ PANEL: 每周選股標的 ═══ -->
+    <div id="panel-weekly" class="panel">
+      <div class="sec-hd">
+        <div class="sec-title">🎯 每周精選標的</div>
+        <div class="sec-sub" id="weekly-updated">—</div>
+        <button class="sec-btn" onclick="editWeeklyPicks()">✏️ 更新本周清單</button>
+      </div>
+
+      <!-- 本周主題 -->
+      <div class="week-header">
+        <div class="week-theme-tag">本周主題</div>
+        <div class="week-theme-text" id="weekly-theme-text">載入中…</div>
+        <div class="week-updated" id="weekly-week-label">—</div>
+      </div>
+
+      <!-- 提示 -->
+      <div class="week-edit-note">
+        💡 <strong>如何更新？</strong>每周在 Cowork 告訴 Claude：「更新本周選股清單，主題：XXX，台股：[股票清單]，美股：[清單]」，Claude 會自動填入最新評分與理由。
+      </div>
+
+      <!-- 篩選 -->
+      <div class="week-filter-bar">
+        <button class="week-filter active" id="wf-all" onclick="filterWeekly('all',this)">全部</button>
+        <button class="week-filter" id="wf-tw" onclick="filterWeekly('tw',this)">🇹🇼 台股</button>
+        <button class="week-filter" id="wf-us" onclick="filterWeekly('us',this)">🇺🇸 美股</button>
+        <button class="week-filter" id="wf-buy" onclick="filterWeekly('buy',this)">⭐ 買進觀察</button>
+      </div>
+
+      <!-- 台股 -->
+      <div class="week-section-title" id="weekly-tw-title">🇹🇼 台股精選</div>
+      <div class="grid g2" id="weekly-tw-grid"></div>
+
+      <!-- 美股 -->
+      <div class="week-section-title" id="weekly-us-title" style="margin-top:8px;">🇺🇸 美股精選</div>
+      <div class="grid g2" id="weekly-us-grid"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     MODAL: 新增持股
+═══════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="add-stock-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">📊 新增持股</div>
+      <button class="modal-close" onclick="closeAddStock()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-form-row">
+        <label class="form-label">股票代碼 *</label>
+        <input class="form-input" id="add-code" placeholder="e.g. 2330（台股）或 AAPL（美股）">
+      </div>
+      <div class="modal-form-row">
+        <label class="form-label">股票名稱 *</label>
+        <input class="form-input" id="add-name" placeholder="e.g. 台積電">
+      </div>
+      <div class="modal-form-row">
+        <label class="form-label">成本價（買入均價，0 = 觀察中）</label>
+        <input class="form-input" id="add-cost" type="number" step="0.01" placeholder="0">
+      </div>
+      <div class="modal-form-row">
+        <label class="form-label">持股數量（股，0 = 觀察中）</label>
+        <input class="form-input" id="add-shares" type="number" placeholder="0">
+      </div>
+      <div class="modal-form-row">
+        <label class="form-label">狀態</label>
+        <select class="form-select" id="add-status">
+          <option value="hold">持有中</option>
+          <option value="watch">觀察中</option>
+          <option value="buy">考慮買入</option>
+        </select>
+      </div>
+      <div class="modal-hint">
+        💡 新增後，系統會從 <code>prices.js</code> 自動比對即時價格。若顯示「未追蹤」，
+        請在 Cowork 說：「把 [代碼] 加到 fetch_prices.py 的 STOCKS 字典」，Claude 會幫你更新腳本。
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeAddStock()">取消</button>
+        <button class="btn-save" onclick="saveStock()">確認新增</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════ -->
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const LP = window.LIVE_PRICES || { indices:{}, stocks:{}, updated:'未更新', ok:false };
+const NU = window.NEWS_UPDATE || null;
+
+// ── 數據格式正規化 ──────────────────────────────────────
+// fetch_prices.py 舊版：chg = 百分比，無 chg_pct
+// fetch_prices.py 新版：chg = 絕對變動，chg_pct = 百分比
+// 這裡統一成：chg = 絕對，chg_pct = 百分比（確保儀表板皆可讀）
+(function normalizeLP(lp) {
+  function fix(d) {
+    if (!d) return;
+    if (d.chg_pct == null && d.chg != null) {
+      // 舊格式：chg 其實是百分比
+      d.chg_pct = d.chg;
+      d.chg = null;
+    }
+  }
+  Object.values(lp.indices || {}).forEach(fix);
+  Object.values(lp.stocks  || {}).forEach(fix);
+})(LP);
+
+const MARKETS = [
+  { code:'TWII',  flag:'🇹🇼', name:'台股加權'  },
+  { code:'SPX',   flag:'🇺🇸', name:'S&P 500'   },
+  { code:'IXIC',  flag:'🇺🇸', name:'NASDAQ'    },
+  { code:'KOSPI', flag:'🇰🇷', name:'KOSPI'     },
+  { code:'N225',  flag:'🇯🇵', name:'日經 225'  },
+  { code:'DAX',   flag:'🇩🇪', name:'德國 DAX'  },
+  { code:'SSEC',  flag:'🇨🇳', name:'上證綜指'  },
+  { code:'HSI',   flag:'🇭🇰', name:'恆生指數'  },
+];
+
+const DEFAULT_STOCKS = [
+  { code:'5289', name:'宜鼎', cost:1020, shares:50, status:'hold'  },
+  { code:'8064', name:'東捷', cost:0,    shares:0,  status:'watch' },
+  { code:'8027', name:'鈦昇', cost:0,    shares:0,  status:'watch' },
+];
+
+const INDICATORS = [
+  { id:'buffett', name:'巴菲特指標',       val:'~170%（偏高）',  level:'yellow', url:'https://longtermtrends.net/market-cap-gdp/' },
+  { id:'cape',    name:'Shiller CAPE',     val:'~36x（偏高）',   level:'red',    url:'https://www.multpl.com/shiller-pe' },
+  { id:'vix',     name:'VIX 恐慌指數',     val:'~18（正常偏低）', level:'yellow', url:'https://finance.yahoo.com/quote/%5EVIX' },
+  { id:'margin',  name:'台股融資餘額',     val:'觀察中',          level:'gray',   url:'https://www.twse.com.tw/zh/trading/marginTrading/MI_MARGN.html' },
+  { id:'curve',   name:'殖利率曲線 10y-2y', val:'輕微倒掛',       level:'yellow', url:'https://fred.stlouisfed.org/series/T10Y2Y' },
+  { id:'m1b',     name:'M1B/M2 黃金交叉',  val:'黃金交叉中',     level:'green',  url:'https://www.cbc.gov.tw/tw/cp-520.html' },
+  { id:'dxy',     name:'美元指數 DXY',      val:'~100（中性）',   level:'green',  url:'https://www.tradingview.com/symbols/TVC-DXY/' },
+  { id:'fear',    name:'CNN 貪婪恐懼',      val:'觀察中',          level:'gray',   url:'https://money.cnn.com/data/fear-and-greed/' },
+];
+
+const CHECKLIST_DATA = {
+  weekly: [
+    { id:'w1', text:'巴菲特指標 — 市值/GDP',           warn:'>180% = 危險',           url:'https://longtermtrends.net/market-cap-gdp/' },
+    { id:'w2', text:'Shiller CAPE P/E',               warn:'>35x 偏高，>40x 危險',    url:'https://www.multpl.com/shiller-pe' },
+    { id:'w3', text:'VIX 恐慌指數',                   warn:'<12 過樂觀，>30 恐慌',    url:'https://finance.yahoo.com/quote/%5EVIX' },
+    { id:'w4', text:'NVDA / TSMC 近期新聞',            warn:'AI 資本支出削減訊號',     url:'https://finance.yahoo.com/quote/NVDA' },
+    { id:'w5', text:'PTT Stock 板情緒掃描',            warn:'全員看多 = 頂部警示',     url:'https://www.ptt.cc/bbs/Stock/index.html' },
+    { id:'w6', text:'Put/Call Ratio',                  warn:'<0.7 = 市場過度樂觀',    url:'https://www.cboe.com/' },
+  ],
+  monthly: [
+    { id:'m1', text:'台股融資餘額',                   warn:'創歷史新高 = 警戒',        url:'https://www.twse.com.tw/zh/trading/marginTrading/MI_MARGN.html' },
+    { id:'m2', text:'M1B vs M2 黃金交叉',             warn:'黃金交叉=多頭，死亡=空頭', url:'https://www.cbc.gov.tw/tw/cp-520.html' },
+    { id:'m3', text:'美國 10y-2y 殖利率曲線',         warn:'倒掛>6個月 = 衰退前兆',   url:'https://fred.stlouisfed.org/series/T10Y2Y' },
+    { id:'m4', text:'美元指數 DXY',                   warn:'強美元 = 新興市場資金外流',url:'https://www.tradingview.com/symbols/TVC-DXY/' },
+    { id:'m5', text:'Fed 利率期望（CME FedWatch）',   warn:'降息時機判斷',              url:'https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html' },
+    { id:'m6', text:'宜鼎(5289) 月營收 YoY',          warn:'每月10日前公告，注意趨勢', url:'https://goodinfo.tw/tw/StockMonthlyRevenue.asp?STOCK_ID=5289' },
+  ],
+  quarterly: [
+    { id:'q1', text:'全球 IPO 數量趨勢',               warn:'暴增 = 頂部訊號',         url:'https://www.ey.com/en_gl/ipo/trends' },
+    { id:'q2', text:'AAII 散戶情緒調查',               warn:'牛>60% = 反向指標',       url:'https://www.aaii.com/sentimentsurvey' },
+    { id:'q3', text:'Google Trends「買股票」台灣',     warn:'暴增 = 散戶湧入 = 頂部',  url:'https://trends.google.com/trends/explore?geo=TW&q=%E8%B2%B7%E8%82%A1%E7%A5%A8' },
+    { id:'q4', text:'台積電法說 — CoWoS 產能利用率',  warn:'利用率下滑 = AI訂單疑慮', url:'https://investor.tsmc.com/chinese' },
+    { id:'q5', text:'Mag7 財報 — AI 資本支出',         warn:'任一家削減 = 市場衝擊',   url:'https://finance.yahoo.com/' },
+    { id:'q6', text:'宜鼎(5289) 季報 EPS 趨勢',        warn:'連兩季下滑考慮減持',      url:'https://goodinfo.tw/tw/ShowK_Chart.asp?STOCK_ID=5289&CHT_CAT=QUAR' },
+  ],
+};
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+function loadStocks() {
+  try { const s=localStorage.getItem('dash_stocks_v4'); return s?JSON.parse(s):JSON.parse(JSON.stringify(DEFAULT_STOCKS)); }
+  catch(e) { return JSON.parse(JSON.stringify(DEFAULT_STOCKS)); }
+}
+function saveStocks(a) { try { localStorage.setItem('dash_stocks_v4',JSON.stringify(a)); } catch(e){} }
+function loadGauge()   { return parseInt(localStorage.getItem('dash_gauge_v4')||'65'); }
+function loadCL()      { try { return JSON.parse(localStorage.getItem('dash_cl_v4')||'{}'); } catch(e){return {};} }
+function saveCL(o)     { try { localStorage.setItem('dash_cl_v4',JSON.stringify(o)); } catch(e){} }
+
+let STOCKS = loadStocks();
+let clState = loadCL();
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+const PANELS = ['overview','markets','stocks','analysis','history','research','checklist','weekly','bubble'];
+function showPanel(id) {
+  PANELS.forEach(p => {
+    document.getElementById('panel-'+p).classList.toggle('active', p===id);
+    const b = document.getElementById('nav-'+p);
+    if(b) b.classList.toggle('active', p===id);
+  });
+}
+
+// ══════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════
+function fmt(n, d=2) {
+  if(n==null||isNaN(n)) return '—';
+  return Number(n).toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d});
+}
+function cc(v) { return v>0?'up':v<0?'down':'flat'; }
+function cs(v) { return v>0?'+':''; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2300);
+}
+
+// ══════════════════════════════════════════
+// GAUGE
+// ══════════════════════════════════════════
+function gaugeInfo(s) {
+  if(s<25) return {color:'#2d8a52',label:'安全區',      desc:'估值合理，可積極布局',           bc:'#2d8a52'};
+  if(s<45) return {color:'#a07020',label:'輕度警戒',    desc:'市場偏低風險，維持正常倉位',      bc:'#a07020'};
+  if(s<65) return {color:'#d9654a',label:'中度警戒',    desc:'估值偏高，分批操作，設好停損',    bc:'#d9654a'};
+  if(s<80) return {color:'#c0392b',label:'偏高警戒',    desc:'市場過熱，減少槓桿，保留現金',    bc:'#c0392b'};
+  return          {color:'#8b0000',label:'極度危險',    desc:'泡沫特徵明顯，大幅減持保留現金',  bc:'#8b0000'};
+}
+
+function updateGauge(v) {
+  v = parseInt(v);
+  localStorage.setItem('dash_gauge_v4', v);
+  const info = gaugeInfo(v);
+  document.getElementById('gauge-score').textContent = v;
+  document.getElementById('gauge-score').style.color = info.color;
+  document.getElementById('gauge-desc').textContent  = info.label;
+  document.getElementById('gauge-desc').style.color  = info.color;
+  document.getElementById('gauge-hint').textContent  = info.desc;
+  document.getElementById('gauge-slider').value = v;
+  // SVG arc: total arc length ≈ 251.3
+  const offset = 251.3 - (v / 100) * 251.3;
+  const fill = document.getElementById('gauge-fill');
+  fill.setAttribute('stroke-dashoffset', offset.toFixed(1));
+  fill.setAttribute('stroke', info.bc);
+  renderHeader();
+}
+
+// ══════════════════════════════════════════
+// HEADER
+// ══════════════════════════════════════════
+function renderHeader() {
+  document.getElementById('hdr-updated').textContent = LP.ok
+    ? '更新：' + LP.updated
+    : '⚠️ 未載入價格（請確認 prices.js）';
+  const score = loadGauge();
+  const info  = gaugeInfo(score);
+  const b = document.getElementById('hdr-risk-badge');
+  b.textContent = '市場風險：' + info.label + '（' + score + '）';
+  b.style.cssText = `background:${info.color}1a;color:${info.color};border:1px solid ${info.color}44;`;
+}
+
+// ══════════════════════════════════════════
+// OVERVIEW
+// ══════════════════════════════════════════
+function renderOverview() {
+  document.getElementById('overview-time').textContent = LP.updated || '—';
+  const tw = LP.indices['TWII']||{};
+  const sp = LP.indices['SPX'] ||{};
+
+  // Summary cards
+  const cards = [
+    { label:'台股加權 🇹🇼',
+      val: tw.price ? fmt(tw.price,0) : '—',
+      sub: tw.chg_pct!=null ? `<span class="${cc(tw.chg_pct)}">${cs(tw.chg_pct)}${tw.chg_pct}%</span>` : '—' },
+    { label:'S&P 500 🇺🇸',
+      val: sp.price ? fmt(sp.price,2) : '—',
+      sub: sp.chg_pct!=null ? `<span class="${cc(sp.chg_pct)}">${cs(sp.chg_pct)}${sp.chg_pct}%</span>` : '—' },
+    { label:'台股 vs 4萬點',
+      val: tw.price ? (tw.price>=40000 ? '⚠️ 突破' : '▼ 未突破') : '—',
+      sub: tw.price ? `差 ${cs(tw.price-40000)}${fmt(tw.price-40000,0)} 點` : '—' },
+    { label:'今日市況',
+      val: tw.chg_pct!=null ? (Math.abs(tw.chg_pct)>=2?(tw.chg_pct>0?'🔥大漲':'💥大跌'):(tw.chg_pct>0?'📈上漲':'📉下跌')) : '—',
+      sub: LP.updated ? LP.updated.slice(5) : '更新時間' },
+  ];
+  document.getElementById('overview-summary').innerHTML = cards.map(c=>
+    `<div class="card"><div class="sum-label">${c.label}</div><div class="sum-val">${c.val}</div><div class="sum-sub">${c.sub}</div></div>`
+  ).join('');
+
+  // Gauge
+  updateGauge(loadGauge());
+
+  // Indicators
+  document.getElementById('indicators-grid').innerHTML = INDICATORS.map(ind=>
+    `<div class="ind-card" onclick="window.open('${ind.url}','_blank')">
+      <div class="ind-dot dot-${ind.level}"></div>
+      <div><div class="ind-name">${ind.name}</div><div class="ind-val">${ind.val}</div></div>
+    </div>`
+  ).join('');
+
+  // Sync risk
+  const downMkts = MARKETS.filter(m=>{ const d=LP.indices[m.code]; return d&&d.ok&&(d.chg_pct!=null?d.chg_pct:d.chg)<-1.5; });
+  const upMkts   = MARKETS.filter(m=>{ const d=LP.indices[m.code]; return d&&d.ok&&(d.chg_pct!=null?d.chg_pct:d.chg)>1.5; });
+  let syncTxt = '';
+  if(downMkts.length>=3)
+    syncTxt=`⚠️ <strong>全球共振下跌警報</strong>：${downMkts.length} 個市場同步下跌超過 1.5%（${downMkts.map(m=>m.flag+m.name).join('、')}）。歷史上多市場同步重跌往往是大調整前兆，建議暫停加倉。`;
+  else if(upMkts.length>=4)
+    syncTxt=`🔥 <strong>全球齊漲警示</strong>：${upMkts.length} 個市場同步大漲，短線過熱，注意追高風險。`;
+  else
+    syncTxt=`目前全球市場無明顯共振異常。持續追蹤 VIX 指數與台股融資餘額作為預警指標。若多個市場同時出現 ±2% 異動，請特別留意。`;
+  document.getElementById('sync-risk-text').innerHTML = syncTxt;
+}
+
+// ══════════════════════════════════════════
+// MARKETS
+// ══════════════════════════════════════════
+function renderMarkets() {
+  document.getElementById('markets-time').textContent = LP.updated || '—';
+  document.getElementById('markets-grid').innerHTML = MARKETS.map(m => {
+    const d = LP.indices[m.code];
+    if(!d||!d.ok) return `<div class="card">
+      <div class="mkt-flag">${m.flag}</div>
+      <div class="mkt-name">${m.name}</div>
+      <div class="mkt-na">尚未更新<br><span style="font-size:11px;">等待下次排程抓取</span></div>
+    </div>`;
+    const pct = d.chg_pct!=null ? d.chg_pct : (d.chg||0);
+    const abs = (d.chg_pct!=null && d.chg!=null) ? d.chg : null;
+    const ytd = d.ytd!=null ? `<div class="mkt-ytd ${cc(d.ytd)}">年初至今 ${cs(d.ytd)}${d.ytd}%</div>` : '';
+    return `<div class="card">
+      <div class="mkt-flag">${m.flag}</div>
+      <div class="mkt-name">${esc(d.name||m.name)}</div>
+      <div class="mkt-price">${fmt(d.price, d.price>1000?0:2)}</div>
+      <div class="mkt-chg ${cc(pct)}">${cs(pct)}${pct}%${abs!=null?' ('+cs(abs)+fmt(abs,2)+')':''}</div>
+      ${ytd}
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// STOCKS
+// ══════════════════════════════════════════
+function renderStocks() {
+  document.getElementById('stocks-time').textContent = LP.updated || '—';
+  if(!STOCKS.length) {
+    document.getElementById('stocks-grid').innerHTML =
+      '<div style="color:var(--text-muted);font-size:13px;grid-column:1/-1;">尚無持股資料，點擊「新增股票」開始追蹤</div>';
+    return;
+  }
+  document.getElementById('stocks-grid').innerHTML = STOCKS.map((s,idx) => {
+    const lp      = LP.stocks[s.code];
+    const price   = lp ? lp.price : null;
+    const pct     = lp ? (lp.chg_pct!=null?lp.chg_pct:lp.chg) : null;
+    const abs     = lp && lp.chg_pct!=null ? lp.chg : null;
+    const hasPos  = s.cost>0 && s.shares>0;
+    const pnl     = hasPos&&price ? (price-s.cost)*s.shares : null;
+    const pnlPct  = hasPos&&price ? (price/s.cost-1)*100 : null;
+    const tracked = lp && lp.ok;
+    const bMap    = {hold:'badge-hold',watch:'badge-watch',buy:'badge-buy',sell:'badge-sell'};
+    const bTxt    = {hold:'持有中',watch:'觀察中',buy:'考慮買',sell:'考慮賣'};
+    return `<div class="stock-card">
+      <button class="stock-del" onclick="deleteStock(${idx})" title="移除">✕</button>
+      <div class="stock-top">
+        <div class="stock-icon">${esc(s.code.slice(-2))}</div>
+        <div>
+          <div class="stock-name">${esc(s.name)}</div>
+          <div class="stock-code">${esc(s.code)}</div>
+          <span class="badge ${bMap[s.status]||'badge-watch'}">${bTxt[s.status]||'觀察'}</span>
+        </div>
+      </div>
+      ${tracked
+        ? `<div class="stock-price">${fmt(price, price>=100?2:3)}</div>
+           <div class="stock-chg ${cc(pct)}">${cs(pct)}${pct}%${abs!=null?' ('+cs(abs)+fmt(abs,2)+')':''}</div>`
+        : `<div class="stock-untracked">⚠️ 未追蹤（需加入 fetch_prices.py）</div>`
+      }
+      ${hasPos&&price ? `
+        <div class="stock-pnl">
+          <div class="pnl-item">
+            <div class="pnl-label">成本</div>
+            <div class="pnl-val">$${fmt(s.cost,2)} × ${s.shares}股</div>
+          </div>
+          <div class="pnl-item" style="text-align:right;">
+            <div class="pnl-label">損益</div>
+            <div class="pnl-val ${cc(pnl)}">${cs(pnl)}$${fmt(pnl,0)} (${cs(pnlPct)}${fmt(pnlPct,1)}%)</div>
+          </div>
+        </div>` : hasPos ? `<div style="font-size:12px;color:var(--text-muted);margin-top:8px;">成本 $${s.cost} × ${s.shares}股</div>` : ''
+      }
+    </div>`;
+  }).join('');
+}
+
+function deleteStock(idx) {
+  if(!confirm(`確認移除「${STOCKS[idx].name}（${STOCKS[idx].code}）」？`)) return;
+  STOCKS.splice(idx,1);
+  saveStocks(STOCKS);
+  renderStocks();
+  toast('✓ 已移除');
+}
+
+function openAddStock() {
+  ['add-code','add-name','add-cost','add-shares'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('add-status').value='hold';
+  document.getElementById('add-stock-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('add-code').focus(),200);
+}
+function closeAddStock() {
+  document.getElementById('add-stock-modal').classList.remove('open');
+}
+function saveStock() {
+  const code   = document.getElementById('add-code').value.trim().toUpperCase();
+  const name   = document.getElementById('add-name').value.trim();
+  const cost   = parseFloat(document.getElementById('add-cost').value)||0;
+  const shares = parseInt(document.getElementById('add-shares').value)||0;
+  const status = document.getElementById('add-status').value;
+  if(!code||!name) { toast('⚠️ 請填入代碼與名稱'); return; }
+  if(STOCKS.find(s=>s.code===code)) { toast('⚠️ 已存在相同代碼'); return; }
+  STOCKS.push({code,name,cost,shares,status});
+  saveStocks(STOCKS);
+  closeAddStock();
+  renderStocks();
+  toast('✓ 已新增 ' + name);
+}
+
+// ══════════════════════════════════════════
+// ANALYSIS (Step 3)
+// ══════════════════════════════════════════
+const SECTOR_PE = {
+  ai:       {safe:25, caution:45, label:'AI / 科技'},
+  semi:     {safe:20, caution:35, label:'半導體'},
+  memory:   {safe:15, caution:25, label:'記憶體'},
+  trad:     {safe:12, caution:20, label:'傳產 / 製造'},
+  finance:  {safe:10, caution:18, label:'金融'},
+  consumer: {safe:15, caution:25, label:'消費 / 零售'},
+};
+const PHASE_SCORE = {bubble:38,hot:26,normal:10,cool:5,crash:0};
+const TREND_SCORE = {surge:20,rise:15,flat:8,fall:3};
+
+function autofillStock() {
+  const code = document.getElementById('a-code').value.trim().toUpperCase();
+  const lp = LP.stocks[code];
+  if(lp) {
+    document.getElementById('a-name').value = lp.name||'';
+    document.getElementById('a-live-price').textContent = lp.price?`即時價格：${fmt(lp.price,2)}`:'';
+  } else {
+    document.getElementById('a-live-price').textContent='';
+  }
+}
+
+function runAnalysis() {
+  const code   = document.getElementById('a-code').value.trim();
+  const name   = document.getElementById('a-name').value.trim() || code || '該股';
+  const sector = document.getElementById('a-sector').value;
+  const pe     = parseFloat(document.getElementById('a-pe').value);
+  const phase  = document.getElementById('a-phase').value;
+  const trend  = document.getElementById('a-trend').value;
+  if(!pe||isNaN(pe)) { toast('⚠️ 請填入本益比'); return; }
+
+  const sp = SECTOR_PE[sector];
+  const ps = PHASE_SCORE[phase]||10;
+  const ts = TREND_SCORE[trend]||8;
+
+  let pes;
+  if(pe<=sp.safe)         pes = Math.round(pe/sp.safe*10);
+  else if(pe<=sp.caution) pes = 10+Math.round((pe-sp.safe)/(sp.caution-sp.safe)*22);
+  else                    pes = 32+Math.min(10,Math.round((pe-sp.caution)/sp.caution*10));
+
+  const total = Math.min(100, ps+pes+ts);
+
+  let rec, rc, advice;
+  if(total<22)      { rec='💎 強力買入'; rc='var(--green)'; advice=`${name} 估值合理，市場低風險。建議全倉或加碼，設好停損後放心持有。`; }
+  else if(total<38) { rec='✅ 建議買入'; rc='#2a8a52';      advice=`${name} 整體偏低風險，可分批買入（2–3次，間隔 1–2 週）。持倉建議不超過總資金 20%。`; }
+  else if(total<55) { rec='👀 中性觀察'; rc='var(--yellow)'; advice=`${name} 估值偏高但尚未危險。建議持股不動，不追高，等回調 10–15% 再加倉。`; }
+  else if(total<70) { rec='⚡ 考慮減持'; rc='var(--accent)'; advice=`${name} 高風險區。建議分批出清 30–50% 倉位，鎖定獲利，保留現金等待回調。`; }
+  else if(total<85) { rec='🔴 建議賣出'; rc='var(--red)';    advice=`${name} 估值過高，市場過熱。建議出清大部分倉位（>70%），轉入防禦型資產。`; }
+  else              { rec='🚨 強力賣出'; rc='#8b0000';        advice=`${name} 極度危險，與歷史泡沫高度吻合。建議完全出清，轉黃金、公用事業或現金。`; }
+
+  const bc = total<22?'#2d8a52':total<38?'#2a8a52':total<55?'var(--yellow)':total<70?'var(--accent)':'var(--red)';
+  const phaseTxt = {bubble:'頂部/泡沫',hot:'過熱',normal:'正常',cool:'降溫',crash:'底部'}[phase];
+  const peLbl    = pe<=sp.safe?'安全':pe<=sp.caution?'偏高':'危險';
+
+  document.getElementById('result-rec').textContent        = rec;
+  document.getElementById('result-rec').style.color        = rc;
+  document.getElementById('result-score-pct').textContent  = total+' / 100';
+  document.getElementById('result-bar-fill').style.width   = total+'%';
+  document.getElementById('result-bar-fill').style.background = bc;
+
+  document.getElementById('result-factors').innerHTML = [
+    {label:`市場溫度（${phaseTxt}）`,    score:ps,  max:38, dot:ps<15?'#2d8a52':ps<28?'#a07020':'#c0392b'},
+    {label:`本益比 ${pe}x（${peLbl}）`, score:pes, max:42, dot:pes<15?'#2d8a52':pes<28?'#a07020':'#c0392b'},
+    {label:'估值趨勢',                   score:ts,  max:20, dot:ts<8?'#2d8a52':ts<14?'#a07020':'#c0392b'},
+  ].map(f=>`<div class="factor-row">
+    <div class="factor-dot" style="background:${f.dot}"></div>
+    <span style="flex:1;">${f.label}</span>
+    <span style="color:var(--text-muted);">${f.score} / ${f.max}</span>
+  </div>`).join('');
+
+  document.getElementById('result-advice').textContent = advice;
+  document.getElementById('analysis-result').style.display = 'block';
+  document.getElementById('analysis-result').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ══════════════════════════════════════════
+// RESEARCH
+// ══════════════════════════════════════════
+function renderResearch() {
+  const el = document.getElementById('news-section');
+  if(NU&&NU.items&&NU.items.length>0) {
+    document.getElementById('research-updated').textContent = '最後更新：'+(NU.updated||'—');
+    el.innerHTML = `<div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:10px;">🔔 今日重點情報</div>` +
+      NU.items.map(item=>`<div class="news-item">
+        <div class="news-tag" style="color:var(--accent);">${esc(item.tag||'情報')}</div>
+        <div class="news-title">${esc(item.title)}</div>
+        <div class="news-body">${esc(item.body||'')}</div>
+        ${item.url?`<a class="res-link" href="${esc(item.url)}" target="_blank" style="margin-top:8px;">🔗 閱讀更多</a>`:''}
+        <div class="news-date">${esc(item.date||'')}</div>
+      </div>`).join('');
+  } else {
+    el.innerHTML = `<div class="card" style="margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text-muted);">📭 等待今日情報</div>
+      <div style="font-size:12.5px;color:var(--text-muted);line-height:1.7;">
+        每日 <strong>20:00</strong> 自動排程：Claude 搜尋 AI 資本支出、台股摘要、半導體新聞，
+        寫入 <code style="background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:11px;">news_update.js</code>。
+        重新整理此頁面即可看到最新情報。
+      </div>
+    </div>`;
+  }
+}
+
+function openQuickLinks() {
+  const code = document.getElementById('quick-code').value.trim().toUpperCase();
+  if(!code) return;
+  const isTW = /^\d{4}$/.test(code);
+  const links = isTW ? [
+    {label:'📊 Goodinfo',      url:`https://goodinfo.tw/tw/StockInfo.asp?STOCK_ID=${code}`},
+    {label:'💹 Yahoo 股市',   url:`https://tw.stock.yahoo.com/quote/${code}`},
+    {label:'📰 鉅亨',         url:`https://www.cnyes.com/twstock/${code}`},
+    {label:'🔍 CMoney',       url:`https://www.cmoney.tw/finance/${code}`},
+  ] : [
+    {label:'📊 Yahoo Finance', url:`https://finance.yahoo.com/quote/${code}`},
+    {label:'📈 TradingView',   url:`https://www.tradingview.com/symbols/${code}`},
+  ];
+  const el = document.getElementById('quick-links');
+  el.style.display='flex';
+  el.innerHTML = links.map(l=>`<a class="res-link" href="${l.url}" target="_blank">${l.label}</a>`).join('');
+}
+
+// ══════════════════════════════════════════
+// CHECKLIST
+// ══════════════════════════════════════════
+function renderChecklist() {
+  const cats = [
+    {key:'weekly',    label:'🥇 每週必看',   desc:'每週花 30 分鐘掃一遍'},
+    {key:'monthly',   label:'🥈 每月看一次', desc:'月初更新，掌握大趨勢'},
+    {key:'quarterly', label:'🥉 每季看一次', desc:'財報季重點追蹤'},
+  ];
+  document.getElementById('checklist-container').innerHTML = cats.map(cat=>`
+    <div class="check-group">
+      <div class="check-group-label">
+        ${cat.label}
+        <span style="font-weight:400;text-transform:none;letter-spacing:0;">${cat.desc}</span>
+      </div>
+      ${CHECKLIST_DATA[cat.key].map(item=>{
+        const done = !!clState[item.id];
+        return `<div class="check-item ${done?'done':''}" onclick="toggleCheck('${item.id}')">
+          <div class="check-box">${done?'✓':''}</div>
+          <div class="check-text">
+            <div class="check-main">${esc(item.text)}</div>
+            ${item.warn?`<div class="check-thresh">⚠️ ${esc(item.warn)}</div>`:''}
+            ${item.url?`<a class="check-link" href="${esc(item.url)}" target="_blank" onclick="event.stopPropagation()">🔗 開啟查詢頁面</a>`:''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+}
+
+function toggleCheck(id) {
+  clState[id] = !clState[id];
+  saveCL(clState);
+  renderChecklist();
+}
+function resetChecklist() {
+  if(!confirm('確認重置所有清單勾選？')) return;
+  clState={};
+  saveCL(clState);
+  renderChecklist();
+  toast('✓ 清單已重置');
+}
+
+// ══════════════════════════════════════════
+// WEEKLY PICKS DATA
+// ══════════════════════════════════════════
+const WEEKLY_PICKS = {
+  week: '2026-W20',
+  theme: 'AI 伺服器基礎建設持續擴張 + 台積電 CoWoS 滿載，記憶體族群回穩',
+  updated: '2026-05-17',
+  tw: [
+    {
+      code:'2330', name:'台積電', sector:'半導體 / AI晶圓', score:88,
+      pe:'~28x', peNote:'合理', trend:'⬆ 強勢', ma:'站上 MA50 / MA200',
+      rec:'買進觀察', recLevel:'buy',
+      reason:'CoWoS 先進封裝持續滿載，2nm 量產在即；外資連續買超，長線核心持有首選。'
+    },
+    {
+      code:'2454', name:'聯發科', sector:'AI SoC / 邊緣AI', score:82,
+      pe:'~22x', peNote:'偏低', trend:'⬆ 強勢', ma:'站上 MA50',
+      rec:'買進觀察', recLevel:'buy',
+      reason:'天璣 AI 晶片出貨量提升，邊緣 AI 應用快速滲透；估值相對台積電更具吸引力。'
+    },
+    {
+      code:'2382', name:'廣達', sector:'AI 伺服器組裝', score:79,
+      pe:'~18x', peNote:'合理', trend:'⬆ 中強', ma:'MA50 附近',
+      rec:'留意', recLevel:'watch',
+      reason:'GB200 機櫃出貨持續增加，但股價已大漲；建議等拉回整理後再介入。'
+    },
+    {
+      code:'3711', name:'日月光投控', sector:'先進封裝 / CoWoS', score:74,
+      pe:'~20x', peNote:'合理', trend:'⬆ 中', ma:'整理中',
+      rec:'留意', recLevel:'watch',
+      reason:'CoWoS 封裝受惠明確，但整理期較長；等均線收斂突破再買。'
+    },
+    {
+      code:'2317', name:'鴻海', sector:'AI 供應鏈', score:71,
+      pe:'~12x', peNote:'低估', trend:'→ 盤整', ma:'MA50 附近震盪',
+      rec:'等待訊號', recLevel:'wait',
+      reason:'GB200 出貨題材明確，但股價持續整理；等放量突破再跟進，不急於追高。'
+    },
+  ],
+  us: [
+    {
+      code:'NVDA', name:'NVIDIA', sector:'AI GPU / 計算', score:91,
+      pe:'~45x', peNote:'高但成長支撐', trend:'⬆ 創新高', ma:'歷史高點區',
+      rec:'核心持有', recLevel:'hold',
+      reason:'Blackwell GPU 需求爆發，AI 資本支出最大受益龍頭；已持有者繼續持有，新買需注意估值風險。'
+    },
+    {
+      code:'AVGO', name:'Broadcom', sector:'自定義 AI 晶片', score:85,
+      pe:'~35x', peNote:'合理', trend:'⬆ 強勢', ma:'站上 MA50',
+      rec:'買進觀察', recLevel:'buy',
+      reason:'為 Google / Meta 設計 XPU 自定義 AI 晶片，訂單能見度高；是 NVDA 以外的 AI 硬體首選。'
+    },
+    {
+      code:'MSFT', name:'Microsoft', sector:'AI 平台 / 雲端', score:78,
+      pe:'~33x', peNote:'合理', trend:'⬆ 中強', ma:'站上 MA50',
+      rec:'留意', recLevel:'watch',
+      reason:'Copilot 企業滲透率提升，Azure AI 需求持續；估值合理，但短線漲多，等拉回再加碼。'
+    },
+    {
+      code:'AMD', name:'AMD', sector:'AI GPU / 競爭者', score:70,
+      pe:'~38x', peNote:'略高', trend:'→ 整理', ma:'MA50 以下',
+      rec:'等待突破', recLevel:'wait',
+      reason:'MI300X 訂單成長中，但市場估值承壓、技術面整理；等站回 MA50 再考慮進場。'
+    },
+  ],
+};
+
+function scoreColor(s) {
+  if (s >= 85) return 'var(--green)';
+  if (s >= 70) return 'var(--yellow)';
+  return 'var(--red)';
+}
+function rankClass(i) {
+  return ['rank-gold','rank-silver','rank-bronze','rank-other','rank-other','rank-other'][i] || 'rank-other';
+}
+function recClass(lvl) {
+  return { buy:'rec-buy', hold:'rec-hold', watch:'rec-watch', wait:'rec-wait' }[lvl] || 'rec-wait';
+}
+function recLabel(lvl) {
+  return { buy:'⭐ 買進觀察', hold:'💼 核心持有', watch:'👀 留意', wait:'⏳ 等待訊號' }[lvl] || lvl;
+}
+
+let weeklyFilter = 'all';
+
+function pickCardHTML(p, idx) {
+  const liveData = LP.stocks && LP.stocks[p.code];
+  const priceStr = liveData
+    ? `<strong>${fmt(liveData.price)}</strong> <span class="${cc(liveData.chg_pct)}">${cs(liveData.chg_pct)}${fmt(liveData.chg_pct)}%</span>`
+    : '—';
+  return `
+  <div class="pick-card" data-market="${p.market||''}" data-rec="${p.recLevel}">
+    <div class="pick-top">
+      <div class="pick-rank ${rankClass(idx)}">${idx+1}</div>
+      <div class="pick-info">
+        <div class="pick-name">${esc(p.name)}</div>
+        <div class="pick-code">${esc(p.code)} &nbsp;·&nbsp; ${priceStr}</div>
+        <span class="pick-sector">${esc(p.sector)}</span>
+      </div>
+      <div class="pick-rec ${recClass(p.recLevel)}">${recLabel(p.recLevel)}</div>
+    </div>
+    <div class="pick-score-row">
+      <div class="pick-score-label">綜合評分</div>
+      <div class="pick-score-bar-bg">
+        <div class="pick-score-bar-fill" style="width:${p.score}%;background:${scoreColor(p.score)};"></div>
+      </div>
+      <div class="pick-score-val" style="color:${scoreColor(p.score)};">${p.score}</div>
+    </div>
+    <div class="pick-meta">
+      <div class="pick-meta-item">📊 PE <strong>${esc(p.pe)}</strong> ${esc(p.peNote)}</div>
+      <div class="pick-meta-item">📈 趨勢 <strong>${esc(p.trend)}</strong></div>
+      <div class="pick-meta-item">〽️ 均線 <strong>${esc(p.ma)}</strong></div>
+    </div>
+    <div class="pick-reason">💬 ${esc(p.reason)}</div>
+  </div>`;
+}
+
+function renderWeekly() {
+  document.getElementById('weekly-theme-text').textContent = WEEKLY_PICKS.theme;
+  document.getElementById('weekly-week-label').textContent = '更新：' + WEEKLY_PICKS.updated;
+  document.getElementById('weekly-updated').textContent = WEEKLY_PICKS.week;
+
+  const twStocks = WEEKLY_PICKS.tw.map(p => ({...p, market:'tw'}));
+  const usStocks = WEEKLY_PICKS.us.map(p => ({...p, market:'us'}));
+
+  const f = weeklyFilter;
+  const showTW = f==='all' || f==='tw' || (f==='buy' && twStocks.some(p=>p.recLevel==='buy'));
+  const showUS = f==='all' || f==='us' || (f==='buy' && usStocks.some(p=>p.recLevel==='buy'));
+
+  const filterFn = p => {
+    if (f==='tw')  return p.market==='tw';
+    if (f==='us')  return p.market==='us';
+    if (f==='buy') return p.recLevel==='buy' || p.recLevel==='hold';
+    return true;
+  };
+
+  const twFiltered = twStocks.filter(filterFn);
+  const usFiltered = usStocks.filter(filterFn);
+
+  document.getElementById('weekly-tw-title').style.display = twFiltered.length ? '' : 'none';
+  document.getElementById('weekly-us-title').style.display = usFiltered.length ? '' : 'none';
+  document.getElementById('weekly-tw-grid').innerHTML = twFiltered.map((p,i) => pickCardHTML(p,i)).join('');
+  document.getElementById('weekly-us-grid').innerHTML = usFiltered.map((p,i) => pickCardHTML(p,i)).join('');
+}
+
+function filterWeekly(type, btn) {
+  weeklyFilter = type;
+  document.querySelectorAll('.week-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderWeekly();
+}
+
+function baSwitchTab(id, btn) {
+  document.querySelectorAll('.ba-tc').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.ba-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function editWeeklyPicks() {
+  toast('💬 在 Cowork 輸入：「更新本周選股清單，主題：XXX，台股：[清單]，美股：[清單]」');
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key==='Escape') closeAddStock();
+});
+document.getElementById('add-stock-modal').addEventListener('click', e => {
+  if(e.target===document.getElementById('add-stock-modal')) closeAddStock();
+});
+
+renderHeader();
+renderOverview();
+renderMarkets();
+renderStocks();
+renderResearch();
+renderChecklist();
+renderWeekly();
+</script>
+</body>
+</html>
