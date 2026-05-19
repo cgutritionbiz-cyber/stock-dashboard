@@ -1,0 +1,38 @@
+name: Update Stock Prices & News
+
+on:
+  schedule:
+    # 所有時間為 UTC，台灣時間 = UTC+8
+    - cron: '0 20 * * 0-4'   # 04:00 TW（週一到週五，UTC 前一天 20:00）
+    - cron: '30 0 * * 1-5'   # 08:30 TW（週一到週五）
+    - cron: '30 5 * * 1-5'   # 13:30 TW（週一到週五）
+    - cron: '0 13 * * 1-5'   # 21:00 TW（週一到週五）
+  workflow_dispatch:           # 可手動在 GitHub Actions 頁面觸發
+
+jobs:
+  update-prices:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write          # 允許 push 回 repo
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install yfinance
+
+      - name: Fetch prices
+        run: python fetch_prices.py
+
+      - name: Commit and push prices.js
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add prices.js
+          git diff --cached --quiet && echo "No changes" || git commit -m "auto: update prices $(date -u '+%Y-%m-%d %H:%M UTC')" && git push
