@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-05-19 08:17
+// updated: 2026-05-19 19:29
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7403.05,
-      "prev": 7408.5,
-      "chg": -5.45,
-      "chg_pct": -0.07,
+      "price": 7364.33,
+      "prev": 7403.1,
+      "chg": -38.77,
+      "chg_pct": -0.52,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 26090.73,
-      "prev": 26225.15,
-      "chg": -134.42,
-      "chg_pct": -0.51,
+      "price": 25914.6,
+      "prev": 26090.73,
+      "chg": -176.13,
+      "chg_pct": -0.68,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 24636.78,
-      "prev": 24246.89,
-      "chg": 389.89,
-      "chg_pct": 1.61,
+      "price": 24400.65,
+      "prev": 24307.92,
+      "chg": 92.73,
+      "chg_pct": 0.38,
       "ok": true,
       "ytd": null
     },
@@ -91,9 +91,9 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 25797.67,
+      "price": 25797.85,
       "prev": 25675.18,
-      "chg": 122.49,
+      "chg": 122.67,
       "chg_pct": 0.48,
       "ok": true,
       "ytd": null
@@ -103,9 +103,9 @@ window.LIVE_PRICES = {
     "5289": {
       "name": "宜鼎",
       "code": "5289",
-      "cost": 1020,
-      "shares": 50,
-      "status": "hold",
+      "cost": 0,
+      "shares": 0,
+      "status": "watch",
       "symbol": "5289.TW",
       "price": null,
       "prev": null,
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'PriceHistory' object has no attribute '_dividends'"
     }
   },
-  "updated": "2026-05-19 08:17",
+  "updated": "2026-05-19 19:29",
   "ok": true
 };
