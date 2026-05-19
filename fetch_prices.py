@@ -42,7 +42,7 @@ INDICES = {
 }
 
 STOCKS = {
-    "5289.TW": {"name": "宜鼎",  "code": "5289", "cost": 1020, "shares": 50,  "status": "hold"},
+    "5289.TW": {"name": "宜鼎",  "code": "5289", "cost": 0,    "shares": 0,   "status": "watch"},
     "8064.TW": {"name": "東捷",  "code": "8064", "cost": 0,    "shares": 0,   "status": "watch"},
     "8027.TW": {"name": "鈦昇",  "code": "8027", "cost": 0,    "shares": 0,   "status": "watch"},
 }
