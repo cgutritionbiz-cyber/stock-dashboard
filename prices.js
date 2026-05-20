@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-05-20 11:33
+// updated: 2026-05-20 16:39
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7353.61,
-      "prev": 7403.05,
-      "chg": -49.44,
-      "chg_pct": -0.67,
+      "price": 7407.42,
+      "prev": 7354.96,
+      "chg": 52.46,
+      "chg_pct": 0.71,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 25870.71,
-      "prev": 26090.73,
-      "chg": -220.02,
-      "chg_pct": -0.84,
+      "price": 26147.37,
+      "prev": 25870.71,
+      "chg": 276.66,
+      "chg_pct": 1.07,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 24520.88,
-      "prev": 24434.73,
-      "chg": 86.15,
-      "chg_pct": 0.35,
+      "price": 24737.24,
+      "prev": 24400.65,
+      "chg": 336.59,
+      "chg_pct": 1.38,
       "ok": true,
       "ytd": null
     },
@@ -79,9 +79,9 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 4162.18,
+      "price": 4162.19,
       "prev": 4170.27,
-      "chg": -8.09,
+      "chg": -8.08,
       "chg_pct": -0.19,
       "ok": true,
       "ytd": null
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'PriceHistory' object has no attribute '_dividends'"
     }
   },
-  "updated": "2026-05-20 11:33",
+  "updated": "2026-05-20 16:39",
   "ok": true
 };
