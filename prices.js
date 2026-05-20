@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-05-20 20:37
+// updated: 2026-05-20 23:58
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'PriceHistory' object has no attribute '_dividends'"
     }
   },
-  "updated": "2026-05-20 20:37",
+  "updated": "2026-05-20 23:58",
   "ok": true
 };
