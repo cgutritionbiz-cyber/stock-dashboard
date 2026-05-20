@@ -757,6 +757,16 @@
         </div>
       </div>
 
+      <!-- Auto Score Card -->
+      <div class="card" style="margin-bottom:14px;" id="auto-score-card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:700;">⚡ 動態評分（根據即時數據自動計算）</div>
+          <div id="auto-score-badge" style="margin-left:auto;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;background:#f0f0f0;">計算中…</div>
+        </div>
+        <div id="auto-score-factors" style="font-size:11.5px;color:var(--text-muted);line-height:1.7;"></div>
+        <button onclick="applyAutoScore()" style="margin-top:10px;font-size:12px;padding:5px 14px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-weight:600;">套用動態分數到儀表板</button>
+      </div>
+
       <!-- Traffic light indicators -->
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);">
         <div style="font-size:13px;font-weight:700;">📋 市場溫度計</div>
@@ -1109,6 +1119,9 @@
 
     <!-- ═══ PANEL: 泡沫分析 ═══ -->
     <div id="panel-bubble" class="panel">
+      <!-- 今日市況快訊（動態） -->
+      <div id="bubble-today-alert" style="display:none;margin-bottom:18px;border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.7;"></div>
+
       <div class="sec-hd">
         <div class="sec-title">📚 歷史泡沫規律分析</div>
         <div class="sec-sub">認知武器庫 v1.0</div>
@@ -1770,6 +1783,81 @@ function loadStocks() {
 }
 function saveStocks(a) { try { localStorage.setItem('dash_stocks_v4',JSON.stringify(a)); } catch(e){} }
 function loadGauge()   { return parseInt(localStorage.getItem('dash_gauge_v4')||'65'); }
+
+// ══════════════════════════════════════════
+// AUTO SCORE — 根據 prices.js 動態計算泡沫風險
+// ══════════════════════════════════════════
+function calcAutoScore() {
+  if (!LP || !LP.ok) return null;
+  const tw   = LP.indices['TWII'] || {};
+  const sp   = LP.indices['SPX']  || {};
+  const vix  = LP.indices['VIX']  || {};
+  const ixic = LP.indices['IXIC'] || {};
+  let score = 55;
+  const factors = [];
+  if (vix.price) {
+    if      (vix.price > 40) { score -= 25; factors.push({t:'VIX >40 極度恐慌', d:-25, c:'#2d8a52'}); }
+    else if (vix.price > 30) { score -= 15; factors.push({t:'VIX >30 高度恐慌', d:-15, c:'#2d8a52'}); }
+    else if (vix.price > 22) { score -= 5;  factors.push({t:'VIX 偏高', d:-5, c:'#a07020'}); }
+    else if (vix.price < 14) { score += 15; factors.push({t:'VIX <14 過度樂觀', d:+15, c:'#c0392b'}); }
+    else if (vix.price < 18) { score += 8;  factors.push({t:'VIX 偏低（平靜）', d:+8, c:'#d9654a'}); }
+    else                     {              factors.push({t:'VIX 正常', d:0, c:'#888'}); }
+  }
+  if (tw.price) {
+    if      (tw.price > 44000) { score += 20; factors.push({t:'台股 >44,000 極高位', d:+20, c:'#8b0000'}); }
+    else if (tw.price > 42000) { score += 12; factors.push({t:'台股 >42,000 高位', d:+12, c:'#c0392b'}); }
+    else if (tw.price > 40000) { score += 6;  factors.push({t:'台股 >40,000 偏高', d:+6, c:'#d9654a'}); }
+    else if (tw.price > 37000) { score += 0;  factors.push({t:'台股正常區間', d:0, c:'#888'}); }
+    else if (tw.price < 34000) { score -= 10; factors.push({t:'台股 <34,000 低位', d:-10, c:'#2d8a52'}); }
+    else                       { score -= 4;  factors.push({t:'台股偏低', d:-4, c:'#2d8a52'}); }
+  }
+  if (tw.chg_pct != null) {
+    const p = parseFloat(tw.chg_pct);
+    if      (p < -3)   { score -= 12; factors.push({t:'台股急跌（恐慌）', d:-12, c:'#2d8a52'}); }
+    else if (p < -1.5) { score -= 6;  factors.push({t:'台股下跌', d:-6, c:'#a07020'}); }
+    else if (p > 3)    { score += 8;  factors.push({t:'台股急漲（過熱）', d:+8, c:'#c0392b'}); }
+    else if (p > 1.5)  { score += 3;  factors.push({t:'台股上漲', d:+3, c:'#d9654a'}); }
+  }
+  if (ixic.chg_pct != null) {
+    const p = parseFloat(ixic.chg_pct);
+    if      (p < -2)  { score -= 8; factors.push({t:'那斯達克跌（科技降溫）', d:-8, c:'#2d8a52'}); }
+    else if (p < -1)  { score -= 3; factors.push({t:'那斯達克微跌', d:-3, c:'#a07020'}); }
+    else if (p > 2)   { score += 5; factors.push({t:'那斯達克強勁', d:+5, c:'#c0392b'}); }
+  }
+  score = Math.max(0, Math.min(100, Math.round(score)));
+  return {score, factors};
+}
+
+function renderAutoScore() {
+  const result = calcAutoScore();
+  const badge = document.getElementById('auto-score-badge');
+  const factorsEl = document.getElementById('auto-score-factors');
+  const alertEl = document.getElementById('bubble-today-alert');
+  if (!result || !badge) return;
+  const {score, factors} = result;
+  const info = gaugeInfo(score);
+  badge.textContent = 'AI評分：' + score + ' / 100 — ' + info.label;
+  badge.style.cssText = 'margin-left:auto;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;background:' + info.color + '1a;color:' + info.color + ';border:1px solid ' + info.color + '44;';
+  factorsEl.innerHTML = factors.map(function(f){ return '<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;border-radius:8px;background:' + f.c + '18;color:' + f.c + ';border:1px solid ' + f.c + '33;font-size:11px;">' + (f.d > 0 ? '+' : '') + (f.d !== 0 ? f.d + ' ' : '') + f.t + '</span>'; }).join('') + '<div style="margin-top:8px;font-size:11px;color:var(--text-muted);">數據來源：prices.js（' + (LP.updated || '—') + '）</div>';
+  if (alertEl) {
+    const tw = LP.indices['TWII'] || {};
+    const vix = LP.indices['VIX'] || {};
+    const ixic2 = LP.indices['IXIC'] || {};
+    const twChg = tw.chg_pct != null ? parseFloat(tw.chg_pct) : null;
+    const isBigDrop = twChg != null && twChg < -1;
+    alertEl.style.display = 'block';
+    alertEl.style.background = isBigDrop ? '#fff3f0' : '#f0f9ff';
+    alertEl.style.borderLeft = '4px solid ' + (isBigDrop ? '#e74c3c' : '#3498db');
+    alertEl.innerHTML = '<strong>' + (isBigDrop ? '🔴' : '🟢') + ' 今日市況（' + (LP.updated || '—') + '）</strong><br>台股：<strong>' + (tw.price ? Math.round(tw.price).toLocaleString() : '—') + '</strong> ' + (tw.chg_pct != null ? '<span style="color:' + (twChg<0?'#e74c3c':'#2d8a52') + '">' + (twChg>0?'+':'') + twChg + '%</span>' : '') + '　VIX：<strong>' + (vix.price != null ? vix.price.toFixed(2) : '—') + '</strong>　那斯達克：' + (ixic2.chg_pct != null ? '<span style="color:' + (parseFloat(ixic2.chg_pct)<0?'#e74c3c':'#2d8a52') + '">' + (parseFloat(ixic2.chg_pct)>0?'+':'') + ixic2.chg_pct + '%</span>' : '—') + '<br><span style="font-size:12px;color:#666;margin-top:4px;display:block;">' + (isBigDrop ? '⚠️ 台股出現較大跌幅。急跌後恐慌期往往是分批建倉的觀察窗口，但需確認 VIX 同步飆升才能確認底部訊號。' : '市場走勢平穩，繼續觀察 VIX 與量能變化。') + '</span>';
+  }
+}
+
+function applyAutoScore() {
+  const result = calcAutoScore();
+  if (!result) { toast('尚無即時數據，無法套用'); return; }
+  updateGauge(result.score);
+  toast('已套用動態評分：' + result.score);
+}
 function loadCL()      { try { return JSON.parse(localStorage.getItem('dash_cl_v4')||'{}'); } catch(e){return {};} }
 function saveCL(o)     { try { localStorage.setItem('dash_cl_v4',JSON.stringify(o)); } catch(e){} }
 
@@ -1876,6 +1964,7 @@ function renderOverview() {
 
   // Gauge
   updateGauge(loadGauge());
+  renderAutoScore();
 
   // Indicators
   document.getElementById('indicators-grid').innerHTML = INDICATORS.map(ind=>
