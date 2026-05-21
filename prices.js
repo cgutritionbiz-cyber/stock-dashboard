@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-05-21 19:29
+// updated: 2026-05-21 23:38
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7444.3,
+      "price": 7445.72,
       "prev": 7432.97,
-      "chg": 11.33,
-      "chg_pct": 0.15,
+      "chg": 12.75,
+      "chg_pct": 0.17,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 26291.56,
+      "price": 26293.1,
       "prev": 26270.36,
-      "chg": 21.2,
-      "chg_pct": 0.08,
+      "chg": 22.74,
+      "chg_pct": 0.09,
       "ok": true,
       "ytd": null
     },
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'PriceHistory' object has no attribute '_dividends'"
     }
   },
-  "updated": "2026-05-21 19:29",
+  "updated": "2026-05-21 23:38",
   "ok": true
 };
