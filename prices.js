@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-05-20 23:58
+// updated: 2026-05-21 12:29
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -7,10 +7,10 @@ window.LIVE_PRICES = {
       "flag": "🇹🇼",
       "code": "TWII",
       "region": "tw",
-      "price": 40020.82,
-      "prev": 40219.86,
-      "chg": -199.04,
-      "chg_pct": -0.49,
+      "price": 41368.21,
+      "prev": 40067.75,
+      "chg": 1300.46,
+      "chg_pct": 3.25,
       "ok": true,
       "ytd": null
     },
@@ -43,10 +43,10 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 7208.95,
-      "prev": 7271.66,
-      "chg": -62.71,
-      "chg_pct": -0.86,
+      "price": 7815.59,
+      "prev": 7208.95,
+      "chg": 606.64,
+      "chg_pct": 8.42,
       "ok": true,
       "ytd": null
     },
@@ -55,10 +55,10 @@ window.LIVE_PRICES = {
       "flag": "🇯🇵",
       "code": "N225",
       "region": "jp",
-      "price": 59804.41,
-      "prev": 60513.07,
-      "chg": -708.66,
-      "chg_pct": -1.17,
+      "price": 61684.14,
+      "prev": 59874.8,
+      "chg": 1809.34,
+      "chg_pct": 3.02,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 24737.24,
-      "prev": 24400.65,
-      "chg": 336.59,
-      "chg_pct": 1.38,
+      "price": 24596.76,
+      "prev": 24727.34,
+      "chg": -130.58,
+      "chg_pct": -0.53,
       "ok": true,
       "ytd": null
     },
@@ -79,10 +79,10 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 4162.19,
-      "prev": 4170.27,
-      "chg": -8.08,
-      "chg_pct": -0.19,
+      "price": 4077.28,
+      "prev": 4165.18,
+      "chg": -87.9,
+      "chg_pct": -2.11,
       "ok": true,
       "ytd": null
     },
@@ -91,10 +91,10 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 25651.12,
-      "prev": 25797.85,
-      "chg": -146.73,
-      "chg_pct": -0.57,
+      "price": 25386.52,
+      "prev": 25651.12,
+      "chg": -264.6,
+      "chg_pct": -1.03,
       "ok": true,
       "ytd": null
     }
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'PriceHistory' object has no attribute '_dividends'"
     }
   },
-  "updated": "2026-05-20 23:58",
+  "updated": "2026-05-21 12:29",
   "ok": true
 };
