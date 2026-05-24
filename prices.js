@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-05-22 19:15
+// updated: 2026-05-24 23:40
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7480.29,
+      "price": 7473.47,
       "prev": 7445.72,
-      "chg": 34.57,
-      "chg_pct": 0.46,
+      "chg": 27.75,
+      "chg_pct": 0.37,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 26357.66,
+      "price": 26343.97,
       "prev": 26293.1,
-      "chg": 64.56,
-      "chg_pct": 0.25,
+      "chg": 50.87,
+      "chg_pct": 0.19,
       "ok": true,
       "ytd": null
     },
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": null,
       "chg_pct": null,
       "ok": false,
-      "err": "'PriceHistory' object has no attribute '_dividends'"
+      "err": "'exchangeTimezoneName'"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": null,
       "chg_pct": null,
       "ok": false,
-      "err": "'PriceHistory' object has no attribute '_dividends'"
+      "err": "'exchangeTimezoneName'"
     },
     "8027": {
       "name": "鈦昇",
@@ -140,9 +140,9 @@ window.LIVE_PRICES = {
       "chg": null,
       "chg_pct": null,
       "ok": false,
-      "err": "'PriceHistory' object has no attribute '_dividends'"
+      "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-05-22 19:15",
+  "updated": "2026-05-24 23:40",
   "ok": true
 };
