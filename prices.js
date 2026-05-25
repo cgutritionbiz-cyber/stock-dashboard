@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-05-25 16:05
+// updated: 2026-05-25 18:18
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -68,9 +68,9 @@ window.LIVE_PRICES = {
       "code": "DAX",
       "region": "eu",
       "price": 25389.1,
-      "prev": 24925.71,
-      "chg": 463.39,
-      "chg_pct": 1.86,
+      "prev": 24888.56,
+      "chg": 500.54,
+      "chg_pct": 2.01,
       "ok": true,
       "ytd": null
     },
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-05-25 16:05",
+  "updated": "2026-05-25 18:18",
   "ok": true
 };
