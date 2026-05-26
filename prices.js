@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-05-25 23:44
+// updated: 2026-05-26 17:46
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -7,10 +7,10 @@ window.LIVE_PRICES = {
       "flag": "🇹🇼",
       "code": "TWII",
       "region": "tw",
-      "price": 43644.4,
-      "prev": 42309.37,
-      "chg": 1335.03,
-      "chg_pct": 3.16,
+      "price": 43525.37,
+      "prev": 43630.61,
+      "chg": -105.24,
+      "chg_pct": -0.24,
       "ok": true,
       "ytd": null
     },
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7473.47,
-      "prev": 7445.72,
-      "chg": 27.75,
-      "chg_pct": 0.37,
+      "price": 7507.23,
+      "prev": 7474.07,
+      "chg": 33.16,
+      "chg_pct": 0.44,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 26343.97,
-      "prev": 26293.1,
-      "chg": 50.87,
-      "chg_pct": 0.19,
+      "price": 26571.15,
+      "prev": 26343.97,
+      "chg": 227.18,
+      "chg_pct": 0.86,
       "ok": true,
       "ytd": null
     },
@@ -43,10 +43,10 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 7847.71,
-      "prev": 7815.59,
-      "chg": 32.12,
-      "chg_pct": 0.41,
+      "price": 8047.51,
+      "prev": 7847.71,
+      "chg": 199.8,
+      "chg_pct": 2.55,
       "ok": true,
       "ytd": null
     },
@@ -55,10 +55,10 @@ window.LIVE_PRICES = {
       "flag": "🇯🇵",
       "code": "N225",
       "region": "jp",
-      "price": 65158.19,
-      "prev": 63324.21,
-      "chg": 1833.98,
-      "chg_pct": 2.9,
+      "price": 64996.09,
+      "prev": 65184.23,
+      "chg": -188.14,
+      "chg_pct": -0.29,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 25389.1,
-      "prev": 24888.56,
-      "chg": 500.54,
-      "chg_pct": 2.01,
+      "price": 25184.89,
+      "prev": 25389.1,
+      "chg": -204.21,
+      "chg_pct": -0.8,
       "ok": true,
       "ytd": null
     },
@@ -79,10 +79,10 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 4152.57,
-      "prev": 4114.26,
-      "chg": 38.31,
-      "chg_pct": 0.93,
+      "price": 4145.37,
+      "prev": 4153.88,
+      "chg": -8.51,
+      "chg_pct": -0.2,
       "ok": true,
       "ytd": null
     },
@@ -91,10 +91,10 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 25606.03,
-      "prev": 25386.52,
-      "chg": 219.51,
-      "chg_pct": 0.86,
+      "price": 25599.45,
+      "prev": 25606.03,
+      "chg": -6.58,
+      "chg_pct": -0.03,
       "ok": true,
       "ytd": null
     }
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-05-25 23:44",
+  "updated": "2026-05-26 17:46",
   "ok": true
 };
