@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-05-26 20:31
+// updated: 2026-05-26 23:49
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-05-26 20:31",
+  "updated": "2026-05-26 23:49",
   "ok": true
 };
