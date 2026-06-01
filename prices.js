@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-06-01 18:33
+// updated: 2026-06-01 22:27
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7612.52,
+      "price": 7599.96,
       "prev": 7580.06,
-      "chg": 32.46,
-      "chg_pct": 0.43,
+      "chg": 19.9,
+      "chg_pct": 0.26,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 27157.61,
+      "price": 27086.81,
       "prev": 26972.62,
-      "chg": 184.99,
-      "chg_pct": 0.69,
+      "chg": 114.19,
+      "chg_pct": 0.42,
       "ok": true,
       "ytd": null
     },
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-06-01 18:33",
+  "updated": "2026-06-01 22:27",
   "ok": true
 };
