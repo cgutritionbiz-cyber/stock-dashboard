@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-05-31 20:45
+// updated: 2026-06-01 05:25
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -7,10 +7,10 @@ window.LIVE_PRICES = {
       "flag": "🇹🇼",
       "code": "TWII",
       "region": "tw",
-      "price": 44732.94,
-      "prev": 43416.38,
-      "chg": 1316.56,
-      "chg_pct": 3.03,
+      "price": 45465.41,
+      "prev": 44916.71,
+      "chg": 548.7,
+      "chg_pct": 1.22,
       "ok": true,
       "ytd": null
     },
@@ -43,10 +43,10 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 8476.15,
-      "prev": 8185.29,
-      "chg": 290.86,
-      "chg_pct": 3.55,
+      "price": 8854.7,
+      "prev": 8434.6,
+      "chg": 420.1,
+      "chg_pct": 4.98,
       "ok": true,
       "ytd": null
     },
@@ -55,10 +55,10 @@ window.LIVE_PRICES = {
       "flag": "🇯🇵",
       "code": "N225",
       "region": "jp",
-      "price": 66329.5,
-      "prev": 64711.12,
-      "chg": 1618.38,
-      "chg_pct": 2.5,
+      "price": 66930.98,
+      "prev": 66362.67,
+      "chg": 568.31,
+      "chg_pct": 0.86,
       "ok": true,
       "ytd": null
     },
@@ -79,10 +79,10 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 4068.57,
-      "prev": 4097.64,
-      "chg": -29.07,
-      "chg_pct": -0.71,
+      "price": 4072.31,
+      "prev": 4072.29,
+      "chg": 0.02,
+      "chg_pct": 0.0,
       "ok": true,
       "ytd": null
     },
@@ -91,10 +91,10 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 25182.39,
-      "prev": 25006.16,
-      "chg": 176.23,
-      "chg_pct": 0.7,
+      "price": 25410.31,
+      "prev": 25182.39,
+      "chg": 227.92,
+      "chg_pct": 0.91,
       "ok": true,
       "ytd": null
     }
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-05-31 20:45",
+  "updated": "2026-06-01 05:25",
   "ok": true
 };
