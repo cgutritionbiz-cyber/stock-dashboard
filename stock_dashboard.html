@@ -1984,6 +1984,9 @@ function renderOverview() {
     syncTxt=`🔥 <strong>全球齊漲警示</strong>：${upMkts.length} 個市場同步大漲，短線過熱，注意追高風險。`;
   else
     syncTxt=`目前全球市場無明顯共振異常。持續追蹤 VIX 指數與台股融資餘額作為預警指標。若多個市場同時出現 ±2% 異動，請特別留意。`;
+
+  // 美銀預警層（結構性警示，不受當日漲跌影響）
+  syncTxt += `<br><br>🏦 <strong>美銀結構性預警（2026.06）</strong>：牛熊指標升至 9.6，為 20 年最強賣出信號。① 科技股集中度 44% 超越 2000 年峰值，② 資金流出美股流入歐日（比例 4:1），③ 89% MSCI 指數同步超買。<span style="color:var(--warn);"> AI 敘事真實，但估值已包含完美劇本。策略：不追高、縮止損、保留現金等待修正機會。</span>`;
   document.getElementById('sync-risk-text').innerHTML = syncTxt;
 }
 
