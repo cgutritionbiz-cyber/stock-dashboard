@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-06-03 05:27
+// updated: 2026-06-03 10:20
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -7,10 +7,10 @@ window.LIVE_PRICES = {
       "flag": "🇹🇼",
       "code": "TWII",
       "region": "tw",
-      "price": 46412.45,
+      "price": 46459.16,
       "prev": 45535.36,
-      "chg": 877.09,
-      "chg_pct": 1.93,
+      "chg": 923.8,
+      "chg_pct": 2.03,
       "ok": true,
       "ytd": null
     },
@@ -55,10 +55,10 @@ window.LIVE_PRICES = {
       "flag": "🇯🇵",
       "code": "N225",
       "region": "jp",
-      "price": 68704.46,
+      "price": 68402.13,
       "prev": 66672.65,
-      "chg": 2031.81,
-      "chg_pct": 3.05,
+      "chg": 1729.48,
+      "chg_pct": 2.59,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 25124.17,
-      "prev": 25003.04,
-      "chg": 121.13,
-      "chg_pct": 0.48,
+      "price": 24846.77,
+      "prev": 25117.09,
+      "chg": -270.32,
+      "chg_pct": -1.08,
       "ok": true,
       "ytd": null
     },
@@ -79,10 +79,10 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 4097.3,
+      "price": 4083.97,
       "prev": 4076.43,
-      "chg": 20.87,
-      "chg_pct": 0.51,
+      "chg": 7.54,
+      "chg_pct": 0.18,
       "ok": true,
       "ytd": null
     },
@@ -91,10 +91,10 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 25651.7,
+      "price": 25633.21,
       "prev": 26038.32,
-      "chg": -386.62,
-      "chg_pct": -1.48,
+      "chg": -405.11,
+      "chg_pct": -1.56,
       "ok": true,
       "ytd": null
     }
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-06-03 05:27",
+  "updated": "2026-06-03 10:20",
   "ok": true
 };
