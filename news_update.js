@@ -1,43 +1,64 @@
 // 自動生成 — 請勿手動編輯
-// 更新時間: 2026-06-02 23:00
+// 更新時間: 2026-06-06 手動更新
 window.NEWS_UPDATE = {
-  "updated": "2026-06-02 23:00",
+  "updated": "2026-06-06 週末更新",
   "ok": true,
   "items": [
     {
       "tag": "⚠️ 風險預警",
-      "title": "美銀牛熊指標衝9.6，20年最強賣出信號啟動",
-      "body": "美銀首席策略師 Hartnett 的牛熊指標升至9.6（歷史最高），觸發20年來最強反向賣出信號。關鍵數據：① 科技股佔標普500已達44%，超越2000年網路泡沫峰值 ② 今年資金流入歐日是美國的4倍（1040億 vs 250億美元）③ 89%的MSCI指數同步超買。BofA結論：上漲空間有限、下跌空間不對稱放大。→ Luke 判斷：AI敘事是真實的，但估值已包含完美劇本。現在不是逃跑，是「不追高、縮止損、留現金等機會」的時機。台股4萬點已進入高風險區間。",
-      "url": "https://news.cnyes.com/news/id/6336446",
-      "date": "2026-06-02"
+      "title": "KOSPI暴跌6.7%觸發熔斷，三星-7%、SK海力士-9%（2026-06-05）",
+      "body": "韓股KOSPI 6月5日急殺6.73%至8,057點，KOSDAQ跌破1000大關，觸發熔斷機制暫停交易。外資單日賣出2兆韓元。三星電子-7%、SK海力士-9%。根本原因：博通AI晶片財測不如預期，引發全球記憶體/半導體族群恐慌性賣出。→ Luke 預警規則觸發：KOSPI單日跌幅>3%，台股風險升至HIGH。宜鼎(5289)止損918元需密切監控。",
+      "url": "https://udn.com/news/story/6811/9547224",
+      "date": "2026-06-05"
+    },
+    {
+      "tag": "⚠️ 風險預警",
+      "title": "博通AI晶片指引不如預期，費半-5.2%，台股一度急殺1468點（2026-06-05）",
+      "body": "博通(AVGO) Q2財報後揭示Q3 AI晶片銷售指引160億美元，低於市場預期172億（差距7%），且未上調全年展望，股價暴跌12.6%。費城半導體指數-5.2%，NASDAQ -2.4%。台股盤中急殺1,468點至最低44,209點，終場收45,070（-1.33%）。→ Luke判斷：AI需求仍在，但增速高峰可能已過。7月財報季（台積電/NVIDIA/三星）是下一關鍵驗證點，建議先蹲後跳等確認再進場。",
+      "url": "https://www.ctee.com.tw/news/20260605701107-430201",
+      "date": "2026-06-05"
     },
     {
       "tag": "AI資本支出",
-      "title": "四大科技巨頭AI資本支出上修至7250億美元",
-      "body": "Microsoft、Alphabet、Meta、Amazon 最新財報後上調2026年資本支出合計至7250億美元，微軟漲幅最大達24%至1900億。分析師預測2027年將突破1兆美元，Jensen Huang更喊出年支出4兆美元目標。短期壓縮利潤但長期帶動AI基礎建設需求。→ Luke 注意：台積電、HBM記憶體供應鏈直接受益，宜鼎邊緣AI需求同步看漲。",
-      "url": "https://www.cnbc.com/2026/04/30/ai-boom-big-tech-capital-expenditures-now-seen-topping-1-trillion-in-2027-.html",
-      "date": "2026-06-02"
+      "title": "Alphabet發行800億美元股票擴建AI基礎設施",
+      "body": "Alphabet宣布透過股票銷售籌集800億美元（含波克夏100億投資），全數用於AI算力基礎設施建設。2026年四大科技巨頭AI資本支出預計達7250億美元，微軟年增24%至1900億，Meta年增8%至1350億。Jensen Huang預測未來AI年資本支出可達4兆美元。→ Luke 注意：AI基礎設施需求持續擴張，對台積電先進製程訂單及AI記憶體供應商長期利多。",
+      "url": "https://www.cnbc.com/2026/06/01/alphabet-to-raise-80-billion-from-stock-sales-to-fund-ai-buildout.html",
+      "date": "2026-06-03"
     },
     {
       "tag": "台股動態",
-      "title": "台積電創52週新高，台股市值超越印度居全球第五",
-      "body": "台積電ADR今日大漲4.8%至438美元，盤中觸及443美元新高，Jensen Huang在Computex台北宣布大幅擴大在台投資。台灣股市總市值達4.95兆美元，超越印度躍居全球第五大。台積電3nm製程下半年漲價15%獲利能見度高。→ Luke 注意：台積電強勢直接帶動台股指數，半導體設備族群亦將跟漲。",
-      "url": "https://www.upi.com/Top_News/World-News/2026/05/27/taiwan-stock-market-tsmc-ai/7201779932816/",
-      "date": "2026-06-02"
+      "title": "台股首度突破46,000點創歷史新高",
+      "body": "台灣加權指數6月3日上漲863點（+1.9%）至46,421點，連四日收漲，為史上首次突破46,000大關。電子、金融、半導體全面推升，台積電單日漲1.7%，市值維持1.94兆美元。AI投資樂觀情緒從華爾街延伸至台股，外資買盤持續流入。→ Luke 注意：台股強勁，持有電子及AI供應鏈個股可繼續持有，注意高檔追價風險。",
+      "url": "https://tradingeconomics.com/taiwan/stock-market",
+      "date": "2026-06-03"
     },
     {
       "tag": "半導體",
-      "title": "NVIDIA推RTX Spark超晶片進軍PC市場",
-      "body": "NVIDIA發布RTX Spark超晶片，正式搶攻Intel主導的Windows PC市場，Dell與Lenovo秋季首發。同步宣布Vera CPU專為AI Agent設計，TSMC亦導入NVIDIA加速運算提升晶圓廠效率與良率。NVDA股價受正面消息支撐，Intel/AMD短線承壓。→ Luke 注意：NVIDIA產品線擴張加速，IC設計及封測供應鏈受惠明顯。",
-      "url": "https://www.bloomberg.com/news/articles/2026-06-01/nvidia-enters-windows-laptop-market-taking-on-intel-and-amd",
-      "date": "2026-06-02"
+      "title": "NVIDIA攜手台積電將AI導入晶圓廠製造流程",
+      "body": "NVIDIA宣布與台積電合作，將加速運算與AI技術應用於半導體設計及製造全流程，目標提升週轉時間、能源效率、良率及生產力。同步推出RTX Spark超晶片採台積電3奈米製程，秋季上市搭載微軟、戴爾、HP等品牌PC。→ Luke 注意：台積電3nm需求再確認，訂單能見度提升，對台積電持股正面。",
+      "url": "https://nvidianews.nvidia.com/news/nvidia-and-tsmc-bring-ai-into-fabs-to-advance-semiconductor-design-and-manufacturing",
+      "date": "2026-06-03"
+    },
+    {
+      "tag": "半導體",
+      "title": "黃仁勳力捧Marvell，單日暴漲32%",
+      "body": "NVIDIA CEO黃仁勳公開推薦Marvell Technology，稱其為下一個兆美元企業，NVIDIA並投資20億美元入股。消息帶動Marvell股價單日暴漲32.5%。顯示AI客製化晶片（ASIC）需求爆發，NVIDIA生態系持續擴張至定制晶片領域。→ Luke 注意：AI ASIC供應鏈受惠，台灣封測廠及CoWoS相關廠商間接受惠，注意相關族群。",
+      "url": "https://www.cnbc.com/2026/06/02/jensen-huang-nvidia-marvell-technology-trillion-dollar-ai.html",
+      "date": "2026-06-03"
     },
     {
       "tag": "總經",
-      "title": "Fed維持利率3.5-3.75%，年內降息預期轉保守",
-      "body": "聯準會4月會議4票異議維持利率不動，創1992年以來最大分歧。新主席Kevin Warsh提名案推進中，市場預期年內僅2次降息，JP Morgan認為2027年Q3才會有所動作。高利率環境持續壓縮成長股估值空間。→ Luke 注意：資金仍集中於AI強勢族群，留意美元走勢對台股的匯率影響。",
+      "title": "Fed升息風險浮現，降息時程再度延後",
+      "body": "Fed 4月會議以8:4投票維持利率3.5%-3.75%，為1992年來最大分歧，多名委員希望移除寬鬆偏向措辭。Fed主席Powell任期屆滿，Kevin Warsh提名案推進中。市場預期最快Q3-Q4降息，但若通膨持續，升息不排除。→ Luke 注意：降息時程不確定性增加，高估值科技股面臨壓力，建議維持現金部位因應波動。",
       "url": "https://www.cnbc.com/2026/04/29/fed-interest-rate-decision-april-2026.html",
-      "date": "2026-06-02"
+      "date": "2026-06-03"
+    },
+    {
+      "tag": "AI資本支出",
+      "title": "2027年AI資本支出估破1兆美元大關",
+      "body": "高盛等機構預測2027年四大科技巨頭AI資本支出將突破1兆美元，2026年已達8000-9000億美元區間。各大超大規模雲端業者持續上調全年資本支出指引，AI基礎設施建設尚無明確終點。→ Luke 注意：AI伺服器、電源、散熱、HBM記憶體需求長線確定，台廠如鴻海、廣達、台達電持續受惠。",
+      "url": "https://fortune.com/2026/04/30/big-tech-hyperscalers-will-spend-700-billion-on-ai-infrastructure-this-year-with-no-clear-end-in-sight-eye-on-ai/",
+      "date": "2026-06-03"
     }
   ]
 };
