@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-06-09 21:27
+// updated: 2026-06-10 04:58
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -7,10 +7,10 @@ window.LIVE_PRICES = {
       "flag": "🇹🇼",
       "code": "TWII",
       "region": "tw",
-      "price": 44704.44,
-      "prev": 43608.67,
-      "chg": 1095.77,
-      "chg_pct": 2.51,
+      "price": 43528.63,
+      "prev": 44818.73,
+      "chg": -1290.1,
+      "chg_pct": -2.88,
       "ok": true,
       "ytd": null
     },
@@ -43,10 +43,10 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 8096.93,
-      "prev": 7484.41,
-      "chg": 612.52,
-      "chg_pct": 8.18,
+      "price": 7603.75,
+      "prev": 8071.35,
+      "chg": -467.6,
+      "chg_pct": -5.79,
       "ok": true,
       "ytd": null
     },
@@ -55,10 +55,10 @@ window.LIVE_PRICES = {
       "flag": "🇯🇵",
       "code": "N225",
       "region": "jp",
-      "price": 65416.63,
-      "prev": 63825.54,
-      "chg": 1591.09,
-      "chg_pct": 2.49,
+      "price": 63895.7,
+      "prev": 65387.14,
+      "chg": -1491.44,
+      "chg_pct": -2.28,
       "ok": true,
       "ytd": null
     },
@@ -79,10 +79,10 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 4010.03,
-      "prev": 3958.98,
-      "chg": 51.05,
-      "chg_pct": 1.29,
+      "price": 3986.66,
+      "prev": 4010.39,
+      "chg": -23.73,
+      "chg_pct": -0.59,
       "ok": true,
       "ytd": null
     },
@@ -91,10 +91,10 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 24565.9,
-      "prev": 24657.06,
-      "chg": -91.16,
-      "chg_pct": -0.37,
+      "price": 24292.95,
+      "prev": 24565.9,
+      "chg": -272.95,
+      "chg_pct": -1.11,
       "ok": true,
       "ytd": null
     }
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-06-09 21:27",
+  "updated": "2026-06-10 04:58",
   "ok": true
 };
