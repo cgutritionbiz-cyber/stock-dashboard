@@ -3032,8 +3032,11 @@ function _renderWeeklyGrid(mkt) {
 }
 
 function filterWeekly(type, btn) {
-  _weeklyFilter = type;
-  document.querySelectorAll('.week-filter').forEach(b => b.classList.remove('active'));
+  _weeklyFilter = type; }
+</script>
+</body>
+</html>
+'.week-filter').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   _renderWeeklyGrid('tw');
   _renderWeeklyGrid('us');
