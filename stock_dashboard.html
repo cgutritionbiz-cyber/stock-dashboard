@@ -2,8 +2,13 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Luke 股市智慧儀表板 v4</title>
+  <!-- PWA / iOS 主畫面優化 -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="股市智慧" />
+  <meta name="theme-color" content="#f5f4f1" />
 
   <!-- Live prices — auto-updated by fetch_prices.py (04:00 / 08:30 / 13:30 / 21:00) -->
   <script src="prices.js"></script>
@@ -13,6 +18,13 @@
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* iOS PWA Safe Area */
+    :root {
+      --sat: env(safe-area-inset-top, 0px);
+      --sar: env(safe-area-inset-right, 0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+      --sal: env(safe-area-inset-left, 0px);
+    }
     :root {
       --bg:        #f5f4f1;
       --surface:   #ffffff;
@@ -47,6 +59,9 @@
     /* ── Header ── */
     header {
       padding: 11px 22px; border-bottom: 1px solid var(--border);
+      padding-top: calc(11px + var(--sat));  /* iOS notch */
+      padding-left:  calc(22px + var(--sal));
+      padding-right: calc(22px + var(--sar));
       display: flex; align-items: center; gap: 12px;
       position: sticky; top: 0;
       background: rgba(245,244,241,.94); backdrop-filter: blur(8px);
@@ -96,7 +111,10 @@
     .nav-icon { font-size: 14px; width: 18px; text-align: center; }
 
     /* ── Main ── */
-    main { flex: 1; padding: 22px 26px; overflow-y: auto; }
+    main {
+      flex: 1; padding: 22px 26px; overflow-y: auto;
+      padding-bottom: calc(22px + var(--sab)); /* iPhone home bar */
+    }
     .panel { display: none; }
     .panel.active { display: block; }
 
@@ -174,6 +192,34 @@
     .mkt-chg { font-size: 12.5px; font-weight: 600; margin-top: 3px; }
     .mkt-ytd  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
     .mkt-na   { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+
+    /* ── Heatmap tiles ── */
+    .hm-wrap { display:flex; flex-wrap:wrap; gap:5px; width:100%; margin-bottom:22px; }
+    .hm-tile {
+      border-radius:10px; padding:10px 10px 8px; cursor:default;
+      display:flex; flex-direction:column; justify-content:flex-end;
+      min-height:90px; min-width:80px; flex-grow:1;
+      transition:transform .15s, filter .15s; position:relative; overflow:hidden;
+    }
+    .hm-tile:hover { transform:scale(1.03); filter:brightness(1.12); z-index:2; }
+    .hm-flag  { font-size:16px; position:absolute; top:7px; left:9px; line-height:1; }
+    .hm-name  { font-size:10px; color:rgba(255,255,255,.8); font-weight:600; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .hm-price { font-size:13px; font-weight:800; color:#fff; line-height:1.2; }
+    .hm-chg   { font-size:17px; font-weight:800; color:#fff; margin-top:1px; }
+    .hm-ytd   { font-size:10px; color:rgba(255,255,255,.65); margin-top:1px; }
+    .hm-vdred { background:linear-gradient(145deg,#5c0000,#8b0000); }
+    .hm-dred  { background:linear-gradient(145deg,#8b0000,#c0392b); }
+    .hm-red   { background:linear-gradient(145deg,#c0392b,#e74c3c); }
+    .hm-lred  { background:linear-gradient(145deg,#c44,#e57373); }
+    .hm-neut  { background:linear-gradient(145deg,#4a4a4a,#666); }
+    .hm-lgrn  { background:linear-gradient(145deg,#3a9a5c,#4caf50); }
+    .hm-grn   { background:linear-gradient(145deg,#2e7d32,#43a047); }
+    .hm-dgrn  { background:linear-gradient(145deg,#1b5e20,#2e7d32); }
+    .hm-vdgrn { background:linear-gradient(145deg,#0a3d12,#1b5e20); }
+    /* Stocks heatmap toggle */
+    .view-toggle { display:flex; gap:4px; margin-left:8px; }
+    .view-btn { font-size:11px; padding:3px 9px; border-radius:5px; border:1px solid var(--border); background:var(--surface2); color:var(--text-muted); cursor:pointer; }
+    .view-btn.active { background:var(--text); color:var(--surface); border-color:var(--text); }
 
     /* ── Stock cards ── */
     .stock-card {
@@ -484,6 +530,132 @@
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
     /* ══════════════════════════════════════════
+       資金流向面板
+    ══════════════════════════════════════════ */
+    .cf-fp-box {
+      background: var(--yellow-bg); border: 1px solid #e6d09a;
+      border-left: 4px solid var(--yellow); border-radius: var(--radius);
+      padding: 14px 18px; margin-bottom: 18px;
+    }
+    .cf-fp-label { font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--yellow); margin-bottom: 6px; }
+    .cf-fp-text { font-size: 13px; line-height: 1.7; color: var(--text); }
+    .cf-fp-text strong { color: var(--accent); }
+
+    .cf-phase-banner {
+      background: var(--blue-bg); border: 1px solid #bfd6ef;
+      border-radius: var(--radius); padding: 14px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; margin-bottom: 16px;
+    }
+    .cf-phase-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+    .cf-phase-value { font-size: 18px; font-weight: 800; color: var(--accent); margin-top: 2px; }
+    .cf-phase-desc  { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+    .cf-timeline { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .cf-tl-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .cf-tl-dot { width: 12px; height: 12px; border-radius: 50%;
+      border: 2px solid var(--border2); background: transparent; }
+    .cf-tl-dot.done   { background: var(--green); border-color: var(--green); }
+    .cf-tl-dot.active { background: var(--accent); border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(217,101,74,.2); }
+    .cf-tl-label { font-size: 10px; color: var(--text-muted); }
+    .cf-tl-label.active { color: var(--accent); font-weight: 700; }
+    .cf-tl-line { width: 22px; height: 2px; background: var(--border); margin-bottom: 12px; }
+    .cf-tl-line.done { background: var(--green); }
+
+    .cf-score-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
+      gap: 10px; margin-bottom: 16px; }
+    .cf-score-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px 14px;
+      box-shadow: var(--shadow); text-align: center;
+    }
+    .cf-score-icon { font-size: 18px; margin-bottom: 4px; }
+    .cf-score-name { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .8px; }
+    .cf-score-val  { font-size: 20px; font-weight: 800; margin: 4px 0 2px; }
+    .cf-score-sub  { font-size: 10px; color: var(--text-muted); }
+    .cf-score-card.danger .cf-score-val { color: var(--red); }
+    .cf-score-card.warn   .cf-score-val { color: var(--yellow); }
+    .cf-score-card.safe   .cf-score-val { color: var(--green); }
+
+    .cf-gauge-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 18px;
+      box-shadow: var(--shadow); margin-bottom: 16px;
+    }
+    .cf-gauge-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: .8px; margin-bottom: 10px; }
+    .cf-gauge-track { height: 10px; background: linear-gradient(to right, #2d8a52, #a07020, #c0392b);
+      border-radius: 5px; position: relative; margin-bottom: 5px; }
+    .cf-gauge-needle { position: absolute; top: -5px; width: 20px; height: 20px;
+      background: white; border: 3px solid #888; border-radius: 50%;
+      transform: translateX(-50%); box-shadow: 0 1px 4px rgba(0,0,0,.2);
+      transition: left .8s cubic-bezier(.4,2,.6,1); }
+    .cf-gauge-ticks { display: flex; justify-content: space-between;
+      font-size: 10px; color: var(--text-muted); }
+    .cf-gauge-reading { text-align: center; font-size: 13px; font-weight: 700;
+      margin-top: 8px; color: var(--red); }
+
+    .cf-rotation-wrap { display: grid; grid-template-columns: 1fr 36px 1fr;
+      gap: 0; margin-bottom: 16px; align-items: stretch; }
+    .cf-rot-col { background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
+    .cf-rot-col.out  { border-color: var(--red-border); }
+    .cf-rot-col.into { border-color: #b6e2c8; }
+    .cf-rot-title { font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .8px; margin-bottom: 10px; }
+    .cf-rot-col.out  .cf-rot-title { color: var(--red); }
+    .cf-rot-col.into .cf-rot-title { color: var(--green); }
+    .cf-rot-arrow { display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: var(--yellow); }
+    .cf-rot-item { display: flex; align-items: center; gap: 7px; padding: 6px 0;
+      border-bottom: 1px solid var(--border); font-size: 12px; }
+    .cf-rot-item:last-child { border-bottom: none; }
+    .cf-rot-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .cf-rot-col.out  .cf-rot-dot { background: var(--red); }
+    .cf-rot-col.into .cf-rot-dot { background: var(--green); }
+    .cf-rot-name { flex: 1; }
+    .cf-rot-badge { font-size: 10px; padding: 2px 7px; border-radius: 8px; font-weight: 600; }
+    .cf-rot-col.out  .cf-rot-badge { background: var(--red-bg); color: var(--red); }
+    .cf-rot-col.into .cf-rot-badge { background: var(--green-bg); color: var(--green); }
+
+    .cf-dest-card { background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 18px;
+      box-shadow: var(--shadow); margin-bottom: 16px; }
+    .cf-dest-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: .8px; margin-bottom: 12px; }
+    .cf-dest-item { padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .cf-dest-item:last-child { border-bottom: none; }
+    .cf-dest-row { display: flex; justify-content: space-between;
+      font-size: 12px; margin-bottom: 4px; }
+    .cf-dest-pct { font-weight: 700; }
+    .cf-dest-bg { height: 6px; border-radius: 3px; background: var(--surface2); overflow: hidden; }
+    .cf-dest-fill { height: 6px; border-radius: 3px; }
+    .cf-dest-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+    .cf-signal-card { background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 18px;
+      box-shadow: var(--shadow); margin-bottom: 16px; }
+    .cf-signal-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: .8px; margin-bottom: 12px; }
+    .cf-signal-item { display: flex; align-items: center; gap: 10px;
+      font-size: 12.5px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+    .cf-signal-item:last-child { border-bottom: none; }
+    .cf-signal-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 900; color: white; }
+    .cf-signal-dot.triggered { background: var(--red); }
+    .cf-signal-dot.watch     { background: var(--yellow); color: #333; }
+    .cf-signal-dot.clear     { background: var(--border2); }
+    .cf-signal-text { flex: 1; }
+    .cf-signal-val  { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+    .cf-signal-summary {
+      margin-top: 12px; padding: 10px 14px;
+      background: var(--red-bg); border: 1px solid var(--red-border);
+      border-radius: 8px; font-size: 12.5px; color: var(--red); text-align: center;
+    }
+
+    /* ══════════════════════════════════════════
        泡沫分析面板 (scoped under .ba-wrap)
     ══════════════════════════════════════════ */
     .ba-wrap {
@@ -653,6 +825,135 @@
       font-family: monospace; font-size: .82rem; background: var(--ba-bg3);
       padding: 12px; border-radius: 6px; color: var(--ba-text2); line-height: 1.6;
     }
+
+    /* ════════════════════════════════
+       RWD — 手機優化 (≤ 768px)
+       ════════════════════════════════ */
+    @media (max-width: 768px) {
+
+      /* ── Header 壓縮 ── */
+      header { padding: 8px 12px !important; gap: 8px !important; }
+      .logo  { font-size: 13px !important; }
+      .logo span        { display: none !important; }
+      .header-updated   { display: none !important; }
+      .hbtn             { display: none !important; }
+
+      /* ── Layout：強制垂直堆疊 ── */
+      .layout { flex-direction: column !important; }
+
+      /* ── Sidebar → 水平捲動條 ── */
+      aside {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: unset !important;
+        position: static !important;
+        top: unset !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--border);
+        padding: 6px 8px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 4px !important;
+        flex-wrap: nowrap !important;
+        background: var(--bg);
+        /* 隱藏捲軸 */
+        scrollbar-width: none;
+      }
+      aside::-webkit-scrollbar { display: none; }
+
+      /* 分區標題隱藏 */
+      .nav-label  { display: none !important; }
+
+      /* 分區容器：改成 inline flex（取代 display:contents 以相容 Safari） */
+      .nav-section {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 4px !important;
+        flex-shrink: 0 !important;
+        margin-bottom: 0 !important;
+      }
+
+      /* 導覽按鈕：藥丸形 */
+      .nav-btn {
+        white-space: nowrap !important;
+        padding: 5px 12px !important;
+        font-size: 12px !important;
+        border-radius: 20px !important;
+        flex-shrink: 0 !important;
+        border: 1px solid var(--border) !important;
+        background: var(--surface) !important;
+      }
+      .nav-btn.active {
+        background: var(--accent) !important;
+        color: #fff !important;
+        border-color: var(--accent) !important;
+      }
+      .nav-icon { display: none !important; }
+
+      /* ── Main：全寬 ── */
+      main { padding: 12px !important; overflow-x: hidden !important; }
+
+      /* 卡片網格 */
+      .g3 { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important; }
+      .g4 { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important; }
+      .g2 { grid-template-columns: 1fr !important; }
+      .ind-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; }
+
+      /* 摘要卡片 */
+      .sum-card { padding: 12px !important; }
+      .sum-val  { font-size: 20px !important; }
+
+      /* 儀表 */
+      .gauge-row  { flex-direction: column !important; align-items: center !important; gap: 10px !important; }
+      .gauge-hint { max-width: 100% !important; text-align: center !important; }
+
+      /* 熱力圖磁磚 */
+      .hm-tile  { min-height: 72px !important; min-width: 60px !important; }
+      .hm-price { font-size: 11px !important; }
+      .hm-chg   { font-size: 14px !important; }
+      .hm-name  { font-size: 9px !important; }
+
+      /* Section 標題列 */
+      .sec-title { font-size: 14px !important; }
+      .sec-hd    { flex-wrap: wrap !important; gap: 6px !important; }
+      .sec-sub   { margin-left: 0 !important; }
+      .view-toggle { margin-left: 0 !important; }
+
+      /* 持股卡 */
+      .stock-card  { padding: 12px !important; }
+      .stock-price { font-size: 18px !important; }
+
+      /* 分析表單 */
+      .form-grid     { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important; }
+      .analysis-form { padding: 14px !important; }
+
+      /* 板塊輪動 */
+      .rot-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+      /* 個股分析結果 */
+      .result-box { padding: 14px !important; }
+
+      /* 泡沫分析 dark panel */
+      .ba-wrap     { border-radius: 10px !important; }
+      .ba-wrap .ba-g3 { grid-template-columns: 1fr !important; }
+      .ba-wrap .ba-g4 { grid-template-columns: repeat(2, 1fr) !important; }
+      .ba-hero h1  { font-size: 1.4rem !important; }
+    }
+
+    @media (max-width: 420px) {
+      .g3, .g4    { grid-template-columns: 1fr 1fr !important; gap: 7px !important; }
+      main        { padding: 10px !important; }
+      .card       { padding: 12px !important; }
+      .hm-tile    { min-height: 60px !important; min-width: 50px !important; }
+      .hm-chg     { font-size: 12px !important; }
+      .mkt-price  { font-size: 16px !important; }
+      .nav-btn    { padding: 4px 9px !important; font-size: 11px !important; }
+    }
   </style>
 </head>
 <body>
@@ -715,6 +1016,9 @@
       <div class="nav-label">知識庫</div>
       <button class="nav-btn" id="nav-bubble" onclick="showPanel('bubble')">
         <span class="nav-icon">📚</span> 泡沫分析
+      </button>
+      <button class="nav-btn" id="nav-capitalflow" onclick="showPanel('capitalflow')">
+        <span class="nav-icon">🌊</span> 資金流向
       </button>
     </div>
   </aside>
@@ -787,7 +1091,7 @@
         <div class="sec-title">🌍 全球大盤</div>
         <div class="sec-sub" id="markets-time">—</div>
       </div>
-      <div class="grid g4" id="markets-grid"></div>
+      <div id="markets-grid"></div>
       <div class="card" style="margin-top:4px;">
         <div style="font-size:12px;color:var(--text-muted);line-height:1.65;">
           💡 <strong>數據來源：</strong>Yahoo Finance（yfinance）自動更新。若顯示「未更新」，
@@ -802,9 +1106,13 @@
       <div class="sec-hd">
         <div class="sec-title">📊 我的持股</div>
         <div class="sec-sub" id="stocks-time">—</div>
+        <div class="view-toggle">
+          <button class="view-btn active" id="stocks-btn-card" onclick="setStocksView('card')">📋 卡片</button>
+          <button class="view-btn" id="stocks-btn-heat" onclick="setStocksView('heat')">🔥 熱力</button>
+        </div>
         <button class="sec-btn primary" onclick="openAddStock()">＋ 新增股票</button>
       </div>
-      <div class="grid g3" id="stocks-grid"></div>
+      <div id="stocks-grid"></div>
       <div class="card" style="margin-top:4px;">
         <div style="font-size:12px;font-weight:600;margin-bottom:6px;">📌 如何讓新增的股票自動抓取即時價格？</div>
         <div style="font-size:12px;color:var(--text-muted);line-height:1.7;">
@@ -1641,6 +1949,233 @@
       <div class="grid g2" id="weekly-us-grid"></div>
     </div>
 
+    <!-- ═══ PANEL: 資金流向 ═══ -->
+    <div id="panel-capitalflow" class="panel">
+      <div class="sec-hd">
+        <div class="sec-title">🌊 資金流向雷達</div>
+        <div class="sec-sub" id="cf-updated">—</div>
+        <button class="sec-btn" onclick="refreshCFTime()">🔄 更新時間</button>
+      </div>
+
+      <!-- 第一性原理 -->
+      <div class="cf-fp-box">
+        <div class="cf-fp-label">⚗ 第一性原理</div>
+        <div class="cf-fp-text">
+          交易是零和的——外資賣超 4,144 億，對面有等量散戶 / ETF 接刀。<br>
+          法人拿回的現金正<strong>停泊在美國 T-Bill（殖利率 4.5%）</strong>，等台股估值跌到滿意再回頭。<br>
+          你現在是他們的<strong>流動性提供者</strong>。
+        </div>
+      </div>
+
+      <!-- 資金週期 Phase -->
+      <div class="cf-phase-banner">
+        <div>
+          <div class="cf-phase-label">當前資金週期</div>
+          <div class="cf-phase-value" id="cf-phase-name">Phase 1：賣出停泊</div>
+          <div class="cf-phase-desc" id="cf-phase-desc">機構持現金，等待更低估值</div>
+        </div>
+        <div class="cf-timeline">
+          <div class="cf-tl-item">
+            <div class="cf-tl-dot done"></div>
+            <div class="cf-tl-label">5月高點</div>
+          </div>
+          <div class="cf-tl-line done"></div>
+          <div class="cf-tl-item">
+            <div class="cf-tl-dot active"></div>
+            <div class="cf-tl-label active">6月↓賣出</div>
+          </div>
+          <div class="cf-tl-line"></div>
+          <div class="cf-tl-item">
+            <div class="cf-tl-dot"></div>
+            <div class="cf-tl-label">7月觀望</div>
+          </div>
+          <div class="cf-tl-line"></div>
+          <div class="cf-tl-item">
+            <div class="cf-tl-dot"></div>
+            <div class="cf-tl-label">Q4回補</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 三大指標卡 -->
+      <div class="cf-score-row">
+        <div class="cf-score-card danger">
+          <div class="cf-score-icon">📉</div>
+          <div class="cf-score-name">VIX 恐慌</div>
+          <div class="cf-score-val" id="cf-vix">28.4</div>
+          <div class="cf-score-sub">警戒區 &gt;25</div>
+        </div>
+        <div class="cf-score-card warn">
+          <div class="cf-score-icon">💵</div>
+          <div class="cf-score-name">美元指數</div>
+          <div class="cf-score-val" id="cf-dxy">104.2</div>
+          <div class="cf-score-sub">強勢吸金中</div>
+        </div>
+        <div class="cf-score-card warn">
+          <div class="cf-score-icon">🥇</div>
+          <div class="cf-score-name">黃金現價</div>
+          <div class="cf-score-val" id="cf-gold">$4,336</div>
+          <div class="cf-score-sub">高位震盪</div>
+        </div>
+        <div class="cf-score-card danger">
+          <div class="cf-score-icon">🏦</div>
+          <div class="cf-score-name">外資累計賣超</div>
+          <div class="cf-score-val" id="cf-foreign">-3,439億</div>
+          <div class="cf-score-sub">連 4 日賣超</div>
+        </div>
+      </div>
+
+      <!-- 市場壓力儀表 -->
+      <div class="cf-gauge-card">
+        <div class="cf-gauge-label">市場壓力指數（VIX × 外資賣超 × 費半跌幅）</div>
+        <div class="cf-gauge-track">
+          <div class="cf-gauge-needle" id="cf-needle" style="left:72%"></div>
+        </div>
+        <div class="cf-gauge-ticks">
+          <span>🟢 平靜</span><span>🟡 警戒</span><span>🔴 極度恐慌</span>
+        </div>
+        <div class="cf-gauge-reading" id="cf-gauge-text">當前：72 / 100 — 高度恐慌區間</div>
+      </div>
+
+      <!-- 類股輪動地圖 -->
+      <div class="sec-hd" style="margin-top:8px;">
+        <div class="sec-title" style="font-size:13px;">↔ 類股輪動地圖</div>
+      </div>
+      <div class="cf-rotation-wrap">
+        <div class="cf-rot-col out">
+          <div class="cf-rot-title">▼ 資金流出</div>
+          <div class="cf-rot-item">
+            <div class="cf-rot-dot"></div>
+            <div class="cf-rot-name">半導體 / AI</div>
+            <div class="cf-rot-badge">費半 -10%</div>
+          </div>
+          <div class="cf-rot-item">
+            <div class="cf-rot-dot"></div>
+            <div class="cf-rot-name">高本益比科技</div>
+            <div class="cf-rot-badge">-6%</div>
+          </div>
+          <div class="cf-rot-item">
+            <div class="cf-rot-dot"></div>
+            <div class="cf-rot-name">台積電 / NVDA</div>
+            <div class="cf-rot-badge">-8%</div>
+          </div>
+          <div class="cf-rot-item">
+            <div class="cf-rot-dot"></div>
+            <div class="cf-rot-name">AI 伺服器鏈</div>
+            <div class="cf-rot-badge">-12%</div>
+          </div>
+        </div>
+        <div class="cf-rot-arrow">➜</div>
+        <div class="cf-rot-col into">
+          <div class="cf-rot-title">▲ 資金流入</div>
+          <div class="cf-rot-item">
+            <div class="cf-rot-dot"></div>
+            <div class="cf-rot-name">醫療 Healthcare</div>
+            <div class="cf-rot-badge">防禦</div>
+          </div>
+          <div class="cf-rot-item">
+            <div class="cf-rot-dot"></div>
+            <div class="cf-rot-name">公用事業</div>
+            <div class="cf-rot-badge">防禦</div>
+          </div>
+          <div class="cf-rot-item">
+            <div class="cf-rot-dot"></div>
+            <div class="cf-rot-name">高股息 / 民生</div>
+            <div class="cf-rot-badge">穩收益</div>
+          </div>
+          <div class="cf-rot-item">
+            <div class="cf-rot-dot"></div>
+            <div class="cf-rot-name">美國短債 T-Bill</div>
+            <div class="cf-rot-badge">4.5%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 資金去向估算 -->
+      <div class="cf-dest-card">
+        <div class="cf-dest-title">外資 4,144 億去向估算</div>
+        <div class="cf-dest-item">
+          <div class="cf-dest-row">
+            <span>💵 美元 T-Bill / 現金停泊</span>
+            <span class="cf-dest-pct" style="color:var(--blue)">45%</span>
+          </div>
+          <div class="cf-dest-bg"><div class="cf-dest-fill" style="width:45%;background:var(--blue)"></div></div>
+          <div class="cf-dest-sub">等待明確訊號再重新部署</div>
+        </div>
+        <div class="cf-dest-item">
+          <div class="cf-dest-row">
+            <span>🌏 轉進其他股市（印度 / 日本）</span>
+            <span class="cf-dest-pct" style="color:var(--green)">25%</span>
+          </div>
+          <div class="cf-dest-bg"><div class="cf-dest-fill" style="width:25%;background:var(--green)"></div></div>
+          <div class="cf-dest-sub">資金沒離開股市，只是換市場</div>
+        </div>
+        <div class="cf-dest-item">
+          <div class="cf-dest-row">
+            <span>🥇 黃金 / 商品</span>
+            <span class="cf-dest-pct" style="color:var(--yellow)">15%</span>
+          </div>
+          <div class="cf-dest-bg"><div class="cf-dest-fill" style="width:15%;background:var(--yellow)"></div></div>
+          <div class="cf-dest-sub">地緣風險避險（美伊衝突）</div>
+        </div>
+        <div class="cf-dest-item">
+          <div class="cf-dest-row">
+            <span>📉 放空部位 Hedge</span>
+            <span class="cf-dest-pct" style="color:var(--red)">10%</span>
+          </div>
+          <div class="cf-dest-bg"><div class="cf-dest-fill" style="width:10%;background:var(--red)"></div></div>
+          <div class="cf-dest-sub">期貨淨空單放大槓桿</div>
+        </div>
+        <div class="cf-dest-item">
+          <div class="cf-dest-row">
+            <span>🏥 防禦型類股輪動</span>
+            <span class="cf-dest-pct" style="color:var(--purple)">5%</span>
+          </div>
+          <div class="cf-dest-bg"><div class="cf-dest-fill" style="width:5%;background:var(--purple)"></div></div>
+          <div class="cf-dest-sub">醫療 / 公用事業</div>
+        </div>
+      </div>
+
+      <!-- 外資回補訊號清單 -->
+      <div class="cf-signal-card">
+        <div class="cf-signal-title">🔔 外資回補訊號清單（達 4 項 = 可考慮進場）</div>
+        <div class="cf-signal-item">
+          <div class="cf-signal-dot triggered">✕</div>
+          <div class="cf-signal-text">費半指數單週跌幅 &gt;10%（已觸發）</div>
+          <div class="cf-signal-val" style="color:var(--red)">⚠ 觸發</div>
+        </div>
+        <div class="cf-signal-item">
+          <div class="cf-signal-dot triggered">✕</div>
+          <div class="cf-signal-text">升息預期重燃（就業 172K 大超預期）</div>
+          <div class="cf-signal-val" style="color:var(--red)">⚠ 觸發</div>
+        </div>
+        <div class="cf-signal-item">
+          <div class="cf-signal-dot watch">？</div>
+          <div class="cf-signal-text">外資淨空單開始回補</div>
+          <div class="cf-signal-val">觀察中</div>
+        </div>
+        <div class="cf-signal-item">
+          <div class="cf-signal-dot clear"></div>
+          <div class="cf-signal-text">融資連續減幅 ≥100 億（籌碼洗清）</div>
+          <div class="cf-signal-val">未達標</div>
+        </div>
+        <div class="cf-signal-item">
+          <div class="cf-signal-dot clear"></div>
+          <div class="cf-signal-text">外資轉買超（連 2 日）</div>
+          <div class="cf-signal-val">未達標</div>
+        </div>
+        <div class="cf-signal-item">
+          <div class="cf-signal-dot clear"></div>
+          <div class="cf-signal-text">VIX 回落至 20 以下</div>
+          <div class="cf-signal-val">現在 28.4</div>
+        </div>
+        <div class="cf-signal-summary">
+          目前已觸發 <strong>2 / 6</strong> 項 — 尚未到安全進場區
+        </div>
+      </div>
+
+    </div><!-- end panel-capitalflow -->
+
   </main>
 </div>
 
@@ -1723,6 +2258,8 @@ const MARKETS = [
   { code:'TWII',  flag:'🇹🇼', name:'台股加權'  },
   { code:'SPX',   flag:'🇺🇸', name:'S&P 500'   },
   { code:'IXIC',  flag:'🇺🇸', name:'NASDAQ'    },
+  { code:'DJI',   flag:'🇺🇸', name:'道瓊工業'  },
+  { code:'VIX',   flag:'😱',  name:'VIX 恐慌'  },
   { code:'KOSPI', flag:'🇰🇷', name:'KOSPI'     },
   { code:'N225',  flag:'🇯🇵', name:'日經 225'  },
   { code:'DAX',   flag:'🇩🇪', name:'德國 DAX'  },
@@ -1734,13 +2271,25 @@ const DEFAULT_STOCKS = [
   { code:'5289', name:'宜鼎', cost:1020, shares:50, status:'hold'  },
   { code:'8064', name:'東捷', cost:0,    shares:0,  status:'watch' },
   { code:'8027', name:'鈦昇', cost:0,    shares:0,  status:'watch' },
+  { code:'6182', name:'合晶', cost:0,    shares:0,  status:'watch' },
+  { code:'6207', name:'雷科', cost:0,    shares:0,  status:'watch' },
 ];
+
+// VIX 即時數值（從 prices.js 取得）
+const _vix = LP.indices['VIX']||{};
+const _vixVal = _vix.price ? `${_vix.price}（${_vix.price<15?'✅過低警戒':_vix.price<20?'正常偏低':_vix.price<30?'⚠️偏高':'🔴恐慌'}）` : '~18（正常偏低）';
+const _vixLvl = _vix.price ? (_vix.price<15?'red':_vix.price<20?'yellow':_vix.price<30?'yellow':'red') : 'yellow';
+
+// 融資餘額即時數值
+const _margin = LP.margin||{};
+const _marginVal = _margin.ok ? `${_margin.amount} 億（${_margin.date}）` : '觀察中';
+const _marginLvl = _margin.ok ? (_margin.amount>3000?'red':_margin.amount>2500?'yellow':'green') : 'gray';
 
 const INDICATORS = [
   { id:'buffett', name:'巴菲特指標',       val:'~170%（偏高）',  level:'yellow', url:'https://longtermtrends.net/market-cap-gdp/' },
   { id:'cape',    name:'Shiller CAPE',     val:'~36x（偏高）',   level:'red',    url:'https://www.multpl.com/shiller-pe' },
-  { id:'vix',     name:'VIX 恐慌指數',     val:'~18（正常偏低）', level:'yellow', url:'https://finance.yahoo.com/quote/%5EVIX' },
-  { id:'margin',  name:'台股融資餘額',     val:'觀察中',          level:'gray',   url:'https://www.twse.com.tw/zh/trading/marginTrading/MI_MARGN.html' },
+  { id:'vix',     name:'VIX 恐慌指數',     val:_vixVal,           level:_vixLvl,  url:'https://finance.yahoo.com/quote/%5EVIX' },
+  { id:'margin',  name:'台股融資餘額',     val:_marginVal,        level:_marginLvl, url:'https://www.twse.com.tw/zh/trading/marginTrading/MI_MARGN.html' },
   { id:'curve',   name:'殖利率曲線 10y-2y', val:'輕微倒掛',       level:'yellow', url:'https://fred.stlouisfed.org/series/T10Y2Y' },
   { id:'m1b',     name:'M1B/M2 黃金交叉',  val:'黃金交叉中',     level:'green',  url:'https://www.cbc.gov.tw/tw/cp-520.html' },
   { id:'dxy',     name:'美元指數 DXY',      val:'~100（中性）',   level:'green',  url:'https://www.tradingview.com/symbols/TVC-DXY/' },
@@ -1762,7 +2311,7 @@ const CHECKLIST_DATA = {
     { id:'m3', text:'美國 10y-2y 殖利率曲線',         warn:'倒掛>6個月 = 衰退前兆',   url:'https://fred.stlouisfed.org/series/T10Y2Y' },
     { id:'m4', text:'美元指數 DXY',                   warn:'強美元 = 新興市場資金外流',url:'https://www.tradingview.com/symbols/TVC-DXY/' },
     { id:'m5', text:'Fed 利率期望（CME FedWatch）',   warn:'降息時機判斷',              url:'https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html' },
-    { id:'m6', text:'宜鼎(5289) 月營收 YoY',          warn:'每月10日前公告，注意趨勢', url:'https://goodinfo.tw/tw/StockMonthlyRevenue.asp?STOCK_ID=5289' },
+    { id:'m6', text:'宜鼎(5289) 月營收 YoY',          warn:'每月10日前公告，注意趨勢', url:'https://tw.stock.yahoo.com/quote/5289/revenue' },
   ],
   quarterly: [
     { id:'q1', text:'全球 IPO 數量趨勢',               warn:'暴增 = 頂部訊號',         url:'https://www.ey.com/en_gl/ipo/trends' },
@@ -1770,7 +2319,7 @@ const CHECKLIST_DATA = {
     { id:'q3', text:'Google Trends「買股票」台灣',     warn:'暴增 = 散戶湧入 = 頂部',  url:'https://trends.google.com/trends/explore?geo=TW&q=%E8%B2%B7%E8%82%A1%E7%A5%A8' },
     { id:'q4', text:'台積電法說 — CoWoS 產能利用率',  warn:'利用率下滑 = AI訂單疑慮', url:'https://investor.tsmc.com/chinese' },
     { id:'q5', text:'Mag7 財報 — AI 資本支出',         warn:'任一家削減 = 市場衝擊',   url:'https://finance.yahoo.com/' },
-    { id:'q6', text:'宜鼎(5289) 季報 EPS 趨勢',        warn:'連兩季下滑考慮減持',      url:'https://goodinfo.tw/tw/ShowK_Chart.asp?STOCK_ID=5289&CHT_CAT=QUAR' },
+    { id:'q6', text:'宜鼎(5289) 季報 EPS 趨勢',        warn:'連兩季下滑考慮減持',      url:'https://tw.stock.yahoo.com/quote/5289/eps' },
   ],
 };
 
@@ -1793,62 +2342,95 @@ function calcAutoScore() {
   const sp   = LP.indices['SPX']  || {};
   const vix  = LP.indices['VIX']  || {};
   const ixic = LP.indices['IXIC'] || {};
-  let score = 55;
+
+  let score = 55; // 基準：略偏高
   const factors = [];
+
+  // 1. VIX 恐慌指數（反向：VIX 高 = 恐慌 = 泡沫收縮 = 降分）
   if (vix.price) {
     if      (vix.price > 40) { score -= 25; factors.push({t:'VIX >40 極度恐慌', d:-25, c:'#2d8a52'}); }
     else if (vix.price > 30) { score -= 15; factors.push({t:'VIX >30 高度恐慌', d:-15, c:'#2d8a52'}); }
     else if (vix.price > 22) { score -= 5;  factors.push({t:'VIX 偏高', d:-5, c:'#a07020'}); }
     else if (vix.price < 14) { score += 15; factors.push({t:'VIX <14 過度樂觀', d:+15, c:'#c0392b'}); }
     else if (vix.price < 18) { score += 8;  factors.push({t:'VIX 偏低（平靜）', d:+8, c:'#d9654a'}); }
-    else                     {              factors.push({t:'VIX 正常', d:0, c:'#888'}); }
+    else                     {              factors.push({t:`VIX ${vix.price?.toFixed(1)} 正常`, d:0, c:'#888'}); }
   }
+
+  // 2. 台股高度
   if (tw.price) {
     if      (tw.price > 44000) { score += 20; factors.push({t:'台股 >44,000 極高位', d:+20, c:'#8b0000'}); }
     else if (tw.price > 42000) { score += 12; factors.push({t:'台股 >42,000 高位', d:+12, c:'#c0392b'}); }
-    else if (tw.price > 40000) { score += 6;  factors.push({t:'台股 >40,000 偏高', d:+6, c:'#d9654a'}); }
-    else if (tw.price > 37000) { score += 0;  factors.push({t:'台股正常區間', d:0, c:'#888'}); }
+    else if (tw.price > 40000) { score += 6;  factors.push({t:`台股 ${Math.round(tw.price).toLocaleString()} 偏高`, d:+6, c:'#d9654a'}); }
+    else if (tw.price > 37000) { score += 0;  factors.push({t:`台股 ${Math.round(tw.price).toLocaleString()} 正常區間`, d:0, c:'#888'}); }
     else if (tw.price < 34000) { score -= 10; factors.push({t:'台股 <34,000 低位', d:-10, c:'#2d8a52'}); }
-    else                       { score -= 4;  factors.push({t:'台股偏低', d:-4, c:'#2d8a52'}); }
+    else                       { score -= 4;  factors.push({t:`台股 ${Math.round(tw.price).toLocaleString()} 偏低`, d:-4, c:'#2d8a52'}); }
   }
+
+  // 3. 台股當日漲跌
   if (tw.chg_pct != null) {
     const p = parseFloat(tw.chg_pct);
-    if      (p < -3)   { score -= 12; factors.push({t:'台股急跌（恐慌）', d:-12, c:'#2d8a52'}); }
-    else if (p < -1.5) { score -= 6;  factors.push({t:'台股下跌', d:-6, c:'#a07020'}); }
-    else if (p > 3)    { score += 8;  factors.push({t:'台股急漲（過熱）', d:+8, c:'#c0392b'}); }
-    else if (p > 1.5)  { score += 3;  factors.push({t:'台股上漲', d:+3, c:'#d9654a'}); }
+    if      (p < -3)   { score -= 12; factors.push({t:`台股急跌 ${p}%（恐慌）`, d:-12, c:'#2d8a52'}); }
+    else if (p < -1.5) { score -= 6;  factors.push({t:`台股下跌 ${p}%`, d:-6, c:'#a07020'}); }
+    else if (p > 3)    { score += 8;  factors.push({t:`台股急漲 ${p}%（過熱）`, d:+8, c:'#c0392b'}); }
+    else if (p > 1.5)  { score += 3;  factors.push({t:`台股上漲 ${p}%`, d:+3, c:'#d9654a'}); }
   }
+
+  // 4. 那斯達克方向（科技類股溫度計）
   if (ixic.chg_pct != null) {
     const p = parseFloat(ixic.chg_pct);
-    if      (p < -2)  { score -= 8; factors.push({t:'那斯達克跌（科技降溫）', d:-8, c:'#2d8a52'}); }
-    else if (p < -1)  { score -= 3; factors.push({t:'那斯達克微跌', d:-3, c:'#a07020'}); }
-    else if (p > 2)   { score += 5; factors.push({t:'那斯達克強勁', d:+5, c:'#c0392b'}); }
+    if      (p < -2)  { score -= 8; factors.push({t:`那斯達克跌 ${p}%（科技降溫）`, d:-8, c:'#2d8a52'}); }
+    else if (p < -1)  { score -= 3; factors.push({t:`那斯達克微跌 ${p}%`, d:-3, c:'#a07020'}); }
+    else if (p > 2)   { score += 5; factors.push({t:`那斯達克漲 ${p}%`, d:+5, c:'#c0392b'}); }
   }
+
   score = Math.max(0, Math.min(100, Math.round(score)));
   return {score, factors};
 }
 
 function renderAutoScore() {
   const result = calcAutoScore();
-  const badge = document.getElementById('auto-score-badge');
+  const badge  = document.getElementById('auto-score-badge');
   const factorsEl = document.getElementById('auto-score-factors');
-  const alertEl = document.getElementById('bubble-today-alert');
+  const alertEl   = document.getElementById('bubble-today-alert');
   if (!result || !badge) return;
+
   const {score, factors} = result;
   const info = gaugeInfo(score);
-  badge.textContent = 'AI評分：' + score + ' / 100 — ' + info.label;
-  badge.style.cssText = 'margin-left:auto;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;background:' + info.color + '1a;color:' + info.color + ';border:1px solid ' + info.color + '44;';
-  factorsEl.innerHTML = factors.map(function(f){ return '<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;border-radius:8px;background:' + f.c + '18;color:' + f.c + ';border:1px solid ' + f.c + '33;font-size:11px;">' + (f.d > 0 ? '+' : '') + (f.d !== 0 ? f.d + ' ' : '') + f.t + '</span>'; }).join('') + '<div style="margin-top:8px;font-size:11px;color:var(--text-muted);">數據來源：prices.js（' + (LP.updated || '—') + '）</div>';
+
+  badge.textContent = `動態評分：${score} / 100 — ${info.label}`;
+  badge.style.cssText = `margin-left:auto;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;background:${info.color}1a;color:${info.color};border:1px solid ${info.color}44;`;
+
+  factorsEl.innerHTML = factors.map(f =>
+    `<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;border-radius:8px;background:${f.c}18;color:${f.c};border:1px solid ${f.c}33;font-size:11px;">` +
+    `${f.d > 0 ? '+' : ''}${f.d !== 0 ? f.d + ' ' : ''}${f.t}</span>`
+  ).join('') + `<div style="margin-top:8px;font-size:11px;color:var(--text-muted);">數據來源：prices.js（${LP.updated || '—'}）</div>`;
+
+  // 今日快訊（泡沫面板）
   if (alertEl) {
-    const tw = LP.indices['TWII'] || {};
-    const vix = LP.indices['VIX'] || {};
-    const ixic2 = LP.indices['IXIC'] || {};
+    const tw  = LP.indices['TWII'] || {};
+    const vix = LP.indices['VIX']  || {};
+    const ixic= LP.indices['IXIC'] || {};
     const twChg = tw.chg_pct != null ? parseFloat(tw.chg_pct) : null;
     const isBigDrop = twChg != null && twChg < -1;
+    const bgColor = isBigDrop ? '#fff3f0' : '#f0f9ff';
+    const borderColor = isBigDrop ? '#e74c3c' : '#3498db';
+    const emoji = isBigDrop ? '🔴' : '🟢';
+
     alertEl.style.display = 'block';
-    alertEl.style.background = isBigDrop ? '#fff3f0' : '#f0f9ff';
-    alertEl.style.borderLeft = '4px solid ' + (isBigDrop ? '#e74c3c' : '#3498db');
-    alertEl.innerHTML = '<strong>' + (isBigDrop ? '🔴' : '🟢') + ' 今日市況（' + (LP.updated || '—') + '）</strong><br>台股：<strong>' + (tw.price ? Math.round(tw.price).toLocaleString() : '—') + '</strong> ' + (tw.chg_pct != null ? '<span style="color:' + (twChg<0?'#e74c3c':'#2d8a52') + '">' + (twChg>0?'+':'') + twChg + '%</span>' : '') + '　VIX：<strong>' + (vix.price != null ? vix.price.toFixed(2) : '—') + '</strong>　那斯達克：' + (ixic2.chg_pct != null ? '<span style="color:' + (parseFloat(ixic2.chg_pct)<0?'#e74c3c':'#2d8a52') + '">' + (parseFloat(ixic2.chg_pct)>0?'+':'') + ixic2.chg_pct + '%</span>' : '—') + '<br><span style="font-size:12px;color:#666;margin-top:4px;display:block;">' + (isBigDrop ? '⚠️ 台股出現較大跌幅。急跌後恐慌期往往是分批建倉的觀察窗口，但需確認 VIX 同步飆升才能確認底部訊號。' : '市場走勢平穩，繼續觀察 VIX 與量能變化。') + '</span>';
+    alertEl.style.background = bgColor;
+    alertEl.style.borderLeft = `4px solid ${borderColor}`;
+    alertEl.innerHTML = `
+      <strong>${emoji} 今日市況（${LP.updated || '—'}）</strong><br>
+      台股：<strong>${tw.price ? Math.round(tw.price).toLocaleString() : '—'}</strong>
+      ${tw.chg_pct != null ? `<span style="color:${twChg<0?'#e74c3c':'#2d8a52'}">${twChg>0?'+':''}${twChg}%</span>` : ''}
+      　VIX：<strong>${vix.price?.toFixed(2) || '—'}</strong>
+      　那斯達克：${ixic.chg_pct != null ? `<span style="color:${parseFloat(ixic.chg_pct)<0?'#e74c3c':'#2d8a52'}">${parseFloat(ixic.chg_pct)>0?'+':''}${ixic.chg_pct}%</span>` : '—'}
+      <br><span style="font-size:12px;color:#666;margin-top:4px;display:block;">
+      ${isBigDrop
+        ? `⚠️ 今日台股出現較大跌幅。根據歷史規律，急跌後恐慌期往往是分批建倉的機會，但需確認 VIX 是否同步飆升（極端恐慌）才能確認底部訊號。`
+        : `市場今日走勢平穩，繼續觀察 VIX 與台股量能變化。`
+      }
+      </span>`;
   }
 }
 
@@ -1856,7 +2438,7 @@ function applyAutoScore() {
   const result = calcAutoScore();
   if (!result) { toast('尚無即時數據，無法套用'); return; }
   updateGauge(result.score);
-  toast('已套用動態評分：' + result.score);
+  toast(`已套用動態評分：${result.score}`);
 }
 function loadCL()      { try { return JSON.parse(localStorage.getItem('dash_cl_v4')||'{}'); } catch(e){return {};} }
 function saveCL(o)     { try { localStorage.setItem('dash_cl_v4',JSON.stringify(o)); } catch(e){} }
@@ -1867,13 +2449,49 @@ let clState = loadCL();
 // ══════════════════════════════════════════
 // NAVIGATION
 // ══════════════════════════════════════════
-const PANELS = ['overview','markets','stocks','analysis','history','research','checklist','weekly','bubble'];
+const PANELS = ['overview','markets','stocks','analysis','history','research','checklist','weekly','bubble','capitalflow'];
 function showPanel(id) {
   PANELS.forEach(p => {
     document.getElementById('panel-'+p).classList.toggle('active', p===id);
     const b = document.getElementById('nav-'+p);
     if(b) b.classList.toggle('active', p===id);
   });
+  if(id === 'capitalflow') initCapitalFlow();
+}
+
+// ── 資金流向面板 ──────────────────────────────
+function initCapitalFlow() {
+  refreshCFTime();
+  // 動態讀取 VIX（若 prices.js 有提供）
+  const vix = LP.indices && LP.indices['VIX'];
+  if(vix && vix.price) {
+    const v = parseFloat(vix.price);
+    const el = document.getElementById('cf-vix');
+    if(el) {
+      el.textContent = v.toFixed(1);
+      const card = el.closest('.cf-score-card');
+      if(card) {
+        card.className = 'cf-score-card ' + (v>30?'danger':v>20?'warn':'safe');
+      }
+    }
+    // 更新 gauge（VIX 為主要權重）
+    const stress = Math.min(100, Math.round(v * 2.5));
+    const needle = document.getElementById('cf-needle');
+    if(needle) needle.style.left = stress + '%';
+    const gt = document.getElementById('cf-gauge-text');
+    if(gt) {
+      const level = stress>70?'高度恐慌':stress>45?'警戒中':stress>25?'偏高':'正常';
+      gt.textContent = `當前：${stress} / 100 — ${level}`;
+      gt.style.color = stress>70?'var(--red)':stress>45?'var(--yellow)':'var(--green)';
+    }
+  }
+}
+
+function refreshCFTime() {
+  const el = document.getElementById('cf-updated');
+  if(el) el.textContent = new Date().toLocaleString('zh-TW',{
+    year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'
+  }) + ' 更新';
 }
 
 // ══════════════════════════════════════════
@@ -1988,46 +2606,104 @@ function renderOverview() {
   // 美銀預警層（結構性警示，不受當日漲跌影響）
   syncTxt += `<br><br>🏦 <strong>美銀結構性預警（2026.06）</strong>：牛熊指標升至 9.6，為 20 年最強賣出信號。① 科技股集中度 44% 超越 2000 年峰值，② 資金流出美股流入歐日（比例 4:1），③ 89% MSCI 指數同步超買。<span style="color:var(--warn);"> AI 敘事真實，但估值已包含完美劇本。策略：不追高、縮止損、保留現金等待修正機會。</span>`;
   // 博通財測引爆（2026-06-05 實際事件）
-  syncTxt += `<br><br>🔥 <strong>博通引爆AI股崩售（2026-06-05）</strong>：博通 Q3 AI晶片指引 160B ＜預期 172B（-7% miss），AVGO 暴跌 12.6%，費半 -5.2%，KOSPI 觸發熔斷 -6.7%（三星-7%、SK海力士-9%），台股盤中急殺 1,468 點守住 45K。<span style="color:var(--warn);">增速放緩信號初現。7 月財報季（TSMC、NVDA、Samsung HBM）是下一關鍵驗證點。科技倉位 &gt;30% 建議先減至安全水位再等機會。</span>`;
+  syncTxt += `<br><br>🔥 <strong>博通引爆AI股崩售（2026-06-05）</strong>：博通 Q3 AI晶片指引 160B ＜預期 172B（-7% miss），AVGO 暴跌 12.6%，費半 -5.2%，KOSPI 觸發熔斷 -6.7%（三星-7%、SK海力士-9%），台股盤中急殺 1,468 點守住 45K。<span style="color:var(--warn);">增速放緩信號初現。7 月財報季（TSMC、NVDA、Samsung HBM）是下一關鍵驗證點。科技倉位 >30% 建議先減至安全水位再等機會。</span>`;
+
   document.getElementById('sync-risk-text').innerHTML = syncTxt;
 }
 
 // ══════════════════════════════════════════
 // MARKETS
 // ══════════════════════════════════════════
+// ── Heatmap colour helper ──
+function hmColor(pct) {
+  if(pct <= -3)   return 'hm-vdred';
+  if(pct <= -2)   return 'hm-dred';
+  if(pct <= -1)   return 'hm-red';
+  if(pct <   0)   return 'hm-lred';
+  if(pct === 0)   return 'hm-neut';
+  if(pct <   1)   return 'hm-lgrn';
+  if(pct <   2)   return 'hm-grn';
+  if(pct <   3)   return 'hm-dgrn';
+  return 'hm-vdgrn';
+}
+
+// Market cap weight → flex-grow (gives bigger tiles to larger markets)
+const MKT_WEIGHT = {SPX:55,IXIC:38,DJI:22,TWII:20,N225:20,KOSPI:14,HSI:13,DAX:13,SSEC:14,VIX:11};
+
 function renderMarkets() {
   document.getElementById('markets-time').textContent = LP.updated || '—';
-  document.getElementById('markets-grid').innerHTML = MARKETS.map(m => {
+  const tiles = MARKETS.map(m => {
     const d = LP.indices[m.code];
-    if(!d||!d.ok) return `<div class="card">
-      <div class="mkt-flag">${m.flag}</div>
-      <div class="mkt-name">${m.name}</div>
-      <div class="mkt-na">尚未更新<br><span style="font-size:11px;">等待下次排程抓取</span></div>
-    </div>`;
-    const pct = d.chg_pct!=null ? d.chg_pct : (d.chg||0);
-    const abs = (d.chg_pct!=null && d.chg!=null) ? d.chg : null;
-    const ytd = d.ytd!=null ? `<div class="mkt-ytd ${cc(d.ytd)}">年初至今 ${cs(d.ytd)}${d.ytd}%</div>` : '';
-    return `<div class="card">
-      <div class="mkt-flag">${m.flag}</div>
-      <div class="mkt-name">${esc(d.name||m.name)}</div>
-      <div class="mkt-price">${fmt(d.price, d.price>1000?0:2)}</div>
-      <div class="mkt-chg ${cc(pct)}">${cs(pct)}${pct}%${abs!=null?' ('+cs(abs)+fmt(abs,2)+')':''}</div>
-      ${ytd}
-    </div>`;
+    const w = MKT_WEIGHT[m.code] || 12;
+    if(!d||!d.ok) return `
+      <div class="hm-tile hm-neut" style="flex:${w};" title="${m.name}：尚未更新">
+        <div class="hm-flag">${m.flag}</div>
+        <div class="hm-name">${m.name}</div>
+        <div class="hm-price" style="color:rgba(255,255,255,.4)">—</div>
+        <div class="hm-chg" style="font-size:12px;color:rgba(255,255,255,.5)">未更新</div>
+      </div>`;
+    const pct  = d.chg_pct != null ? d.chg_pct : (d.chg||0);
+    const sign = pct >= 0 ? '+' : '';
+    const ytd  = d.ytd != null ? `<div class="hm-ytd">YTD ${d.ytd>=0?'+':''}${d.ytd}%</div>` : '';
+    const priceStr = fmt(d.price, d.price > 1000 ? 0 : 2);
+    return `
+      <div class="hm-tile ${hmColor(pct)}" style="flex:${w};" title="${esc(d.name||m.name)}  ${priceStr}  ${sign}${pct}%">
+        <div class="hm-flag">${m.flag}</div>
+        <div class="hm-name">${esc(d.name||m.name)}</div>
+        <div class="hm-price">${priceStr}</div>
+        <div class="hm-chg">${sign}${pct}%</div>
+        ${ytd}
+      </div>`;
   }).join('');
+  document.getElementById('markets-grid').innerHTML = `<div class="hm-wrap">${tiles}</div>`;
 }
 
 // ══════════════════════════════════════════
 // STOCKS
 // ══════════════════════════════════════════
+let stocksView = 'card'; // 'card' | 'heat'
+function setStocksView(v) {
+  stocksView = v;
+  document.getElementById('stocks-btn-card').classList.toggle('active', v==='card');
+  document.getElementById('stocks-btn-heat').classList.toggle('active', v==='heat');
+  renderStocks();
+}
+
 function renderStocks() {
   document.getElementById('stocks-time').textContent = LP.updated || '—';
   if(!STOCKS.length) {
     document.getElementById('stocks-grid').innerHTML =
-      '<div style="color:var(--text-muted);font-size:13px;grid-column:1/-1;">尚無持股資料，點擊「新增股票」開始追蹤</div>';
+      '<div style="color:var(--text-muted);font-size:13px;">尚無持股資料，點擊「新增股票」開始追蹤</div>';
     return;
   }
-  document.getElementById('stocks-grid').innerHTML = STOCKS.map((s,idx) => {
+
+  // ── Heatmap view ──
+  if(stocksView === 'heat') {
+    const tiles = STOCKS.map((s,idx) => {
+      const lp     = LP.stocks[s.code];
+      const price  = lp ? lp.price : null;
+      const pct    = lp ? (lp.chg_pct!=null?lp.chg_pct:lp.chg) : null;
+      const hasPos = s.cost>0 && s.shares>0;
+      const pnlPct = hasPos&&price ? ((price/s.cost-1)*100).toFixed(1) : null;
+      const tracked = lp && lp.ok;
+      const clr = tracked&&pct!=null ? hmColor(pct) : 'hm-neut';
+      const sign = pct!=null&&pct>=0?'+':'';
+      return `
+        <div class="hm-tile ${clr}" style="flex:20;min-height:110px;cursor:pointer;" onclick="showPanel('stocks');setStocksView('card')" title="${esc(s.name)} ${s.code}">
+          <div class="hm-flag" style="font-size:13px;top:6px;left:8px;">${s.code}</div>
+          <div class="hm-name" style="font-size:13px;font-weight:700;">${esc(s.name)}</div>
+          ${tracked ? `<div class="hm-price">${fmt(price, price>=100?2:3)}</div>
+            <div class="hm-chg" style="font-size:15px;">${sign}${pct}%</div>` : `<div class="hm-chg" style="font-size:12px;color:rgba(255,255,255,.5)">未追蹤</div>`}
+          ${pnlPct!=null ? `<div class="hm-ytd">持倉 ${pnlPct>=0?'+':''}${pnlPct}%</div>` : ''}
+        </div>`;
+    }).join('');
+    document.getElementById('stocks-grid').innerHTML = `<div class="hm-wrap" style="margin-bottom:22px;">${tiles}</div>`;
+    return;
+  }
+
+  // ── Card view (original) ──
+  document.getElementById('stocks-grid').innerHTML = '<div class="grid g3" id="stocks-grid-inner"></div>';
+  document.getElementById('stocks-grid-inner').innerHTML = STOCKS.map((s,idx) => {
     const lp      = LP.stocks[s.code];
     const price   = lp ? lp.price : null;
     const pct     = lp ? (lp.chg_pct!=null?lp.chg_pct:lp.chg) : null;
@@ -2211,7 +2887,7 @@ function openQuickLinks() {
   if(!code) return;
   const isTW = /^\d{4}$/.test(code);
   const links = isTW ? [
-    {label:'📊 Goodinfo',      url:`https://goodinfo.tw/tw/StockInfo.asp?STOCK_ID=${code}`},
+    {label:'📊 Yahoo股價',     url:`https://tw.stock.yahoo.com/quote/${code}`},
     {label:'💹 Yahoo 股市',   url:`https://tw.stock.yahoo.com/quote/${code}`},
     {label:'📰 鉅亨',         url:`https://www.cnyes.com/twstock/${code}`},
     {label:'🔍 CMoney',       url:`https://www.cmoney.tw/finance/${code}`},
@@ -2268,127 +2944,125 @@ function resetChecklist() {
 
 // ══════════════════════════════════════════
 // WEEKLY PICKS DATA
+// ══════�
 // ══════════════════════════════════════════
-const WEEKLY_PICKS = {
-  week: '2026-W20',
-  theme: 'AI 伺服器基礎建設持續擴張 + 台積電 CoWoS 滿載，記憶體族群回穩',
-  updated: '2026-05-17',
+
+let WEEKLY_PICKS = {
+  theme: "AI 修正後精選：尋找訂單支撐的底部佈局機會",
+  week:  "2026-W24（06/09 – 06/13）",
   tw: [
-    {
-      code:'2330', name:'台積電', sector:'半導體 / AI晶圓', score:88,
-      pe:'~28x', peNote:'合理', trend:'⬆ 強勢', ma:'站上 MA50 / MA200',
-      rec:'買進觀察', recLevel:'buy',
-      reason:'CoWoS 先進封裝持續滿載，2nm 量產在即；外資連續買超，長線核心持有首選。'
-    },
-    {
-      code:'2454', name:'聯發科', sector:'AI SoC / 邊緣AI', score:82,
-      pe:'~22x', peNote:'偏低', trend:'⬆ 強勢', ma:'站上 MA50',
-      rec:'買進觀察', recLevel:'buy',
-      reason:'天璣 AI 晶片出貨量提升，邊緣 AI 應用快速滲透；估值相對台積電更具吸引力。'
-    },
-    {
-      code:'2382', name:'廣達', sector:'AI 伺服器組裝', score:79,
-      pe:'~18x', peNote:'合理', trend:'⬆ 中強', ma:'MA50 附近',
-      rec:'留意', recLevel:'watch',
-      reason:'GB200 機櫃出貨持續增加，但股價已大漲；建議等拉回整理後再介入。'
-    },
-    {
-      code:'3711', name:'日月光投控', sector:'先進封裝 / CoWoS', score:74,
-      pe:'~20x', peNote:'合理', trend:'⬆ 中', ma:'整理中',
-      rec:'留意', recLevel:'watch',
-      reason:'CoWoS 封裝受惠明確，但整理期較長；等均線收斂突破再買。'
-    },
-    {
-      code:'2317', name:'鴻海', sector:'AI 供應鏈', score:71,
-      pe:'~12x', peNote:'低估', trend:'→ 盤整', ma:'MA50 附近震盪',
-      rec:'等待訊號', recLevel:'wait',
-      reason:'GB200 出貨題材明確，但股價持續整理；等放量突破再跟進，不急於追高。'
-    },
+    { code:'5289', name:'宜鼎', sector:'AI記憶體', market:'tw',
+      score:82, rec:'持有/加碼低點',
+      pe:'N/A', catalyst:'工業SSD+AI邊緣運算雙引擎', reason:'KOSPI熔斷後外資補買台灣AI記憶體，宜鼎訂單能見度至Q4，成本1020底部支撐明確。' },
+    { code:'2330', name:'台積電', sector:'晶圓代工', market:'tw',
+      score:88, rec:'分批買進',
+      pe:'26x', catalyst:'CoWoS擴產+NVIDIA 3nm', reason:'NVIDIA×TSMC合作強化3nm能見度，AI資本支出7250億美元持續驅動需求。' },
+    { code:'3711', name:'日月光投控', sector:'封測', market:'tw',
+      score:74, rec:'觀察',
+      pe:'18x', catalyst:'CoWoS封測受惠', reason:'AI晶片封裝需求增加，CoWoS產能滿載，惟本波跌幅較小，需等更好買點。' },
+    { code:'6182', name:'合晶', sector:'矽晶圓', market:'tw',
+      score:70, rec:'觀察低接',
+      pe:'22x', catalyst:'AI伺服器矽晶圓拉貨', reason:'AI伺服器建置推動矽晶圓需求回溫，估值修正至合理區間，可留意。' },
   ],
   us: [
-    {
-      code:'NVDA', name:'NVIDIA', sector:'AI GPU / 計算', score:91,
-      pe:'~45x', peNote:'高但成長支撐', trend:'⬆ 創新高', ma:'歷史高點區',
-      rec:'核心持有', recLevel:'hold',
-      reason:'Blackwell GPU 需求爆發，AI 資本支出最大受益龍頭；已持有者繼續持有，新買需注意估值風險。'
-    },
-    {
-      code:'AVGO', name:'Broadcom', sector:'自定義 AI 晶片', score:85,
-      pe:'~35x', peNote:'合理', trend:'⬆ 強勢', ma:'站上 MA50',
-      rec:'買進觀察', recLevel:'buy',
-      reason:'為 Google / Meta 設計 XPU 自定義 AI 晶片，訂單能見度高；是 NVDA 以外的 AI 硬體首選。'
-    },
-    {
-      code:'MSFT', name:'Microsoft', sector:'AI 平台 / 雲端', score:78,
-      pe:'~33x', peNote:'合理', trend:'⬆ 中強', ma:'站上 MA50',
-      rec:'留意', recLevel:'watch',
-      reason:'Copilot 企業滲透率提升，Azure AI 需求持續；估值合理，但短線漲多，等拉回再加碼。'
-    },
-    {
-      code:'AMD', name:'AMD', sector:'AI GPU / 競爭者', score:70,
-      pe:'~38x', peNote:'略高', trend:'→ 整理', ma:'MA50 以下',
-      rec:'等待突破', recLevel:'wait',
-      reason:'MI300X 訂單成長中，但市場估值承壓、技術面整理；等站回 MA50 再考慮進場。'
-    },
-  ],
+    { code:'NVDA', name:'NVIDIA', sector:'AI晶片', market:'us',
+      score:85, rec:'回調買進',
+      pe:'38x', catalyst:'Blackwell產能+Marvell生態系', reason:'黃仁勳推薦Marvell顯示NVIDIA生態系持續擴張，Blackwell出貨Q3加速，回調即機會。' },
+    { code:'MRVL', name:'Marvell', sector:'AI ASIC', market:'us',
+      score:80, rec:'高點注意/中線持有',
+      pe:'N/A', catalyst:'NVIDIA 20億投資背書', reason:'單日+32.5%後需消化，但NVIDIA背書長線確立AI ASIC地位，中線邏輯不變。' },
+    { code:'AVGO', name:'Broadcom', sector:'AI晶片', market:'us',
+      score:72, rec:'等財報驗證',
+      pe:'32x', catalyst:'Q3 AI指引160億美元', reason:'財測不如預期造成恐慌，但160億AI晶片指引仍創歷史高，過度反應後逢低關注。' },
+    { code:'TSM', name:'台積電ADR', sector:'晶圓代工', market:'us',
+      score:86, rec:'持有/低接',
+      pe:'26x', catalyst:'市值1.94兆維穩', reason:'同台股2330邏輯，ADR為美元計價版，外資下跌買盤支撐明顯。' },
+  ]
 };
 
-function scoreColor(s) {
-  if (s >= 85) return 'var(--green)';
-  if (s >= 70) return 'var(--yellow)';
-  return 'var(--red)';
-}
-function rankClass(i) {
-  return ['rank-gold','rank-silver','rank-bronze','rank-other','rank-other','rank-other'][i] || 'rank-other';
-}
-function recClass(lvl) {
-  return { buy:'rec-buy', hold:'rec-hold', watch:'rec-watch', wait:'rec-wait' }[lvl] || 'rec-wait';
-}
-function recLabel(lvl) {
-  return { buy:'⭐ 買進觀察', hold:'💼 核心持有', watch:'👀 留意', wait:'⏳ 等待訊號' }[lvl] || lvl;
-}
-
-let weeklyFilter = 'all';
-
-function pickCardHTML(p, idx) {
-  const liveData = LP.stocks && LP.stocks[p.code];
-  const priceStr = liveData
-    ? `<strong>${fmt(liveData.price)}</strong> <span class="${cc(liveData.chg_pct)}">${cs(liveData.chg_pct)}${fmt(liveData.chg_pct)}%</span>`
-    : '—';
-  return `
-  <div class="pick-card" data-market="${p.market||''}" data-rec="${p.recLevel}">
-    <div class="pick-top">
-      <div class="pick-rank ${rankClass(idx)}">${idx+1}</div>
-      <div class="pick-info">
-        <div class="pick-name">${esc(p.name)}</div>
-        <div class="pick-code">${esc(p.code)} &nbsp;·&nbsp; ${priceStr}</div>
-        <span class="pick-sector">${esc(p.sector)}</span>
-      </div>
-      <div class="pick-rec ${recClass(p.recLevel)}">${recLabel(p.recLevel)}</div>
-    </div>
-    <div class="pick-score-row">
-      <div class="pick-score-label">綜合評分</div>
-      <div class="pick-score-bar-bg">
-        <div class="pick-score-bar-fill" style="width:${p.score}%;background:${scoreColor(p.score)};"></div>
-      </div>
-      <div class="pick-score-val" style="color:${scoreColor(p.score)};">${p.score}</div>
-    </div>
-    <div class="pick-meta">
-      <div class="pick-meta-item">📊 PE <strong>${esc(p.pe)}</strong> ${esc(p.peNote)}</div>
-      <div class="pick-meta-item">📈 趨勢 <strong>${esc(p.trend)}</strong></div>
-      <div class="pick-meta-item">〽️ 均線 <strong>${esc(p.ma)}</strong></div>
-    </div>
-    <div class="pick-reason">💬 ${esc(p.reason)}</div>
-  </div>`;
-}
+let _weeklyFilter = 'all';
 
 function renderWeekly() {
-  document.getElementById('weekly-theme-text').textContent = WEEKLY_PICKS.theme;
-  document.getElementById('weekly-week-label').textContent = '更新：' + WEEKLY_PICKS.updated;
-  document.getElementById('weekly-updated').textContent = WEEKLY_PICKS.week;
+  if(!WEEKLY_PICKS) return;
+  document.getElementById('weekly-updated').textContent = WEEKLY_PICKS.week || '—';
+  document.getElementById('weekly-theme-text').textContent = WEEKLY_PICKS.theme || '—';
+  document.getElementById('weekly-week-label').textContent = WEEKLY_PICKS.week || '—';
+  _renderWeeklyGrid('tw');
+  _renderWeeklyGrid('us');
+}
 
-  const twStocks = WEEKLY_PICKS.tw.map(p => ({...p, market:'tw'}));
-  const usStocks = WEEKLY_PICKS.us.map(p => ({...p, market:'us'}));
+function _renderWeeklyGrid(mkt) {
+  const picks = (WEEKLY_PICKS[mkt]||[]).filter(p => {
+    if(_weeklyFilter === 'tw') return p.market==='tw';
+    if(_weeklyFilter === 'us') return p.market==='us';
+    if(_weeklyFilter === 'buy') return p.rec && (p.rec.includes('買')|| p.rec.includes('加碼'));
+    return true;
+  });
+  const gridEl   = document.getElementById('weekly-'+mkt+'-grid');
+  const titleEl  = document.getElementById('weekly-'+mkt+'-title');
+  if(!gridEl) return;
+  if(!picks.length) { gridEl.innerHTML=''; if(titleEl) titleEl.style.display='none'; return; }
+  if(titleEl) titleEl.style.display='';
+  const recColor = r => r.includes('買')||r.includes('加碼') ? 'background:var(--green-bg);color:var(--green);'
+    : r.includes('觀察') ? 'background:var(--yellow-bg);color:#a07a00;'
+    : 'background:var(--surface2);color:var(--text-muted);';
+  const barColor = s => s>=80?'var(--green)':s>=60?'var(--yellow)':'var(--red)';
+  gridEl.innerHTML = picks.map((p,i) => `
+    <div class="pick-card">
+      <div class="pick-top">
+        <div class="pick-rank" style="background:var(--accent-bg);color:var(--accent);">${i+1}</div>
+        <div class="pick-info">
+          <div class="pick-name">${esc(p.name)}</div>
+          <div class="pick-code">${esc(p.code)} ${p.market==='us'?'🇺🇸':'🇹🇼'}</div>
+          <span class="pick-sector">${esc(p.sector)}</span>
+        </div>
+        <div class="pick-rec" style="${recColor(p.rec)}">${esc(p.rec)}</div>
+      </div>
+      <div class="pick-score-row">
+        <div class="pick-score-label">信心分數</div>
+        <div class="pick-score-bar-bg"><div class="pick-score-bar-fill" style="width:${p.score}%;background:${barColor(p.score)};"></div></div>
+            <div class="pick-score-val" style="color:${barColor(p.score)};">${p.score}</div>
+      </div>
+      <div class="pick-meta">
+        ${p.pe ? `<div class="pick-meta-item">本益比 ${esc(p.pe)}</div>` : ''}
+        ${p.catalyst ? `<div class="pick-meta-item">🔑 ${esc(p.catalyst)}</div>` : ''}
+      </div>
+      <div class="pick-reason">${esc(p.reason)}</div>
+    </div>`).join('');
+}
+
+function filterWeekly(type, btn) {
+  _weeklyFilter = type;
+  document.querySelectorAll('.week-filter').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  _renderWeeklyGrid('tw');
+  _renderWeeklyGrid('us');
+}
+
+function editWeeklyPicks() {
+  toast('💡 請在 Cowork 告訴 Claude：「更新本周選股清單，主題：XXX，台股：[清單]，美股：[清單]」');
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+renderHeader();
+renderOverview();
+renderMarkets();
+renderStocks();
+renderResearch();
+renderChecklist();
+renderWeekly();
+
+  </script>
+</body>
+</html>
+y();
+
+  </script>
+</body>
+</html>
+s'}));
 
   const f = weeklyFilter;
   const showTW = f==='all' || f==='tw' || (f==='buy' && twStocks.some(p=>p.recLevel==='buy'));
@@ -2417,6 +3091,9 @@ function filterWeekly(type, btn) {
   renderWeekly();
 }
 
+// ══════════════════════════════════════════
+// 泡沫分析 Tab 切換
+// ══════════════════════════════════════════
 function baSwitchTab(id, btn) {
   document.querySelectorAll('.ba-tc').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.ba-tab').forEach(el => el.classList.remove('active'));
@@ -2428,6 +3105,9 @@ function editWeeklyPicks() {
   toast('💬 在 Cowork 輸入：「更新本周選股清單，主題：XXX，台股：[清單]，美股：[清單]」');
 }
 
+// ══════════════════════════════════════════
+// KEYBOARD & MODAL
+// ══════════════════════════════════════════
 document.addEventListener('keydown', e => {
   if(e.key==='Escape') closeAddStock();
 });
@@ -2435,6 +3115,9 @@ document.getElementById('add-stock-modal').addEventListener('click', e => {
   if(e.target===document.getElementById('add-stock-modal')) closeAddStock();
 });
 
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
 renderHeader();
 renderOverview();
 renderMarkets();
