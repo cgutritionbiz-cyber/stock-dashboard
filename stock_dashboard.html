@@ -3032,74 +3032,9 @@ function _renderWeeklyGrid(mkt) {
 }
 
 function filterWeekly(type, btn) {
-  _weeklyFilter = type; }
-
-// ══════════════════════════ // INIT // ══════════════════════════════════════════
-renderHeader();
-renderOverview();
-renderMarkets();
-renderStocks();
-renderResearch();
-renderChecklist();
-renderWeekly();
-</script>
-</body>
-</html>
-'.week-filter').forEach(b => b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  _renderWeeklyGrid('tw');
-  _renderWeeklyGrid('us');
-}
-
-function editWeeklyPicks() {
-  toast('💡 請在 Cowork 告訴 Claude：「更新本周選股清單，主題：XXX，台股：[清單]，美股：[清單]」');
-}
-
-// ══════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════
-renderHeader();
-renderOverview();
-renderMarkets();
-renderStocks();
-renderResearch();
-renderChecklist();
-renderWeekly();
-
-  </script>
-</body>
-</html>
-y();
-
-  </script>
-</body>
-</html>
-s'}));
-
-  const f = weeklyFilter;
-  const showTW = f==='all' || f==='tw' || (f==='buy' && twStocks.some(p=>p.recLevel==='buy'));
-  const showUS = f==='all' || f==='us' || (f==='buy' && usStocks.some(p=>p.recLevel==='buy'));
-
-  const filterFn = p => {
-    if (f==='tw')  return p.market==='tw';
-    if (f==='us')  return p.market==='us';
-    if (f==='buy') return p.recLevel==='buy' || p.recLevel==='hold';
-    return true;
-  };
-
-  const twFiltered = twStocks.filter(filterFn);
-  const usFiltered = usStocks.filter(filterFn);
-
-  document.getElementById('weekly-tw-title').style.display = twFiltered.length ? '' : 'none';
-  document.getElementById('weekly-us-title').style.display = usFiltered.length ? '' : 'none';
-  document.getElementById('weekly-tw-grid').innerHTML = twFiltered.map((p,i) => pickCardHTML(p,i)).join('');
-  document.getElementById('weekly-us-grid').innerHTML = usFiltered.map((p,i) => pickCardHTML(p,i)).join('');
-}
-
-function filterWeekly(type, btn) {
-  weeklyFilter = type;
+  _weeklyFilter = type;
   document.querySelectorAll('.week-filter').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  if(btn) btn.classList.add('active');
   renderWeekly();
 }
 
