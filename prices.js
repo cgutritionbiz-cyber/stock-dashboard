@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-06-18 09:54
+// updated: 2026-06-18 16:21
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7420.1,
-      "prev": 7511.35,
-      "chg": -91.25,
-      "chg_pct": -1.21,
+      "price": 7495.92,
+      "prev": 7421.76,
+      "chg": 74.16,
+      "chg_pct": 1.0,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 26021.66,
-      "prev": 26376.34,
-      "chg": -354.68,
-      "chg_pct": -1.34,
+      "price": 26389.21,
+      "prev": 26021.66,
+      "chg": 367.55,
+      "chg_pct": 1.41,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 24952.55,
-      "prev": 24931.68,
-      "chg": 20.87,
-      "chg_pct": 0.08,
+      "price": 25026.8,
+      "prev": 24934.67,
+      "chg": 92.13,
+      "chg_pct": 0.37,
       "ok": true,
       "ytd": null
     },
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-06-18 09:54",
+  "updated": "2026-06-18 16:21",
   "ok": true
 };
