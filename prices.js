@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-06-19 09:58
+// updated: 2026-06-19 15:55
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 25105.92,
+      "price": 24985.82,
       "prev": 25030.86,
-      "chg": 75.06,
-      "chg_pct": 0.3,
+      "chg": -45.04,
+      "chg_pct": -0.18,
       "ok": true,
       "ytd": null
     },
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-06-19 09:58",
+  "updated": "2026-06-19 15:55",
   "ok": true
 };
