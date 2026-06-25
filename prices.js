@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-06-24 21:14
+// updated: 2026-06-25 04:46
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -7,10 +7,10 @@ window.LIVE_PRICES = {
       "flag": "🇹🇼",
       "code": "TWII",
       "region": "tw",
-      "price": 46043.6,
-      "prev": 47275.06,
-      "chg": -1231.46,
-      "chg_pct": -2.6,
+      "price": 46373.6,
+      "prev": 46319.12,
+      "chg": 54.48,
+      "chg_pct": 0.12,
       "ok": true,
       "ytd": null
     },
@@ -31,9 +31,9 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 25476.63,
+      "price": 25476.64,
       "prev": 25587.04,
-      "chg": -110.41,
+      "chg": -110.4,
       "chg_pct": -0.43,
       "ok": true,
       "ytd": null
@@ -43,10 +43,10 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 8471.02,
-      "prev": 8203.84,
-      "chg": 267.18,
-      "chg_pct": 3.26,
+      "price": 8949.32,
+      "prev": 8449.55,
+      "chg": 499.77,
+      "chg_pct": 5.91,
       "ok": true,
       "ytd": null
     },
@@ -55,10 +55,10 @@ window.LIVE_PRICES = {
       "flag": "🇯🇵",
       "code": "N225",
       "region": "jp",
-      "price": 69174.97,
-      "prev": 69935.53,
-      "chg": -760.56,
-      "chg_pct": -1.09,
+      "price": 71876.32,
+      "prev": 69274.62,
+      "chg": 2601.7,
+      "chg_pct": 3.76,
       "ok": true,
       "ytd": null
     },
@@ -79,10 +79,10 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 4110.81,
-      "prev": 4106.25,
-      "chg": 4.56,
-      "chg_pct": 0.11,
+      "price": 4125.76,
+      "prev": 4112.83,
+      "chg": 12.93,
+      "chg_pct": 0.31,
       "ok": true,
       "ytd": null
     },
@@ -91,10 +91,10 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 23412.18,
-      "prev": 23336.28,
-      "chg": 75.9,
-      "chg_pct": 0.33,
+      "price": 23090.27,
+      "prev": 23412.18,
+      "chg": -321.91,
+      "chg_pct": -1.37,
       "ok": true,
       "ytd": null
     }
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-06-24 21:14",
+  "updated": "2026-06-25 04:46",
   "ok": true
 };
