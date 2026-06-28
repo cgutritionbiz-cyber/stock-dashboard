@@ -1,4 +1,5 @@
-// 自動生成 2026-06-26 11:29／2026-06-26 18:00 已用即時搜尋人工查證校正
+// auto-generated -- do not edit manually
+// updated: 2026-06-28 20:48
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -7,129 +8,35 @@ window.LIVE_PRICES = {
       "code": "TWII",
       "region": "tw",
       "price": 44571.76,
-      "prev": 46255.26,
-      "chg": -1683.50,
-      "chg_pct": -3.64,
+      "prev": 46511.15,
+      "chg": -1939.39,
+      "chg_pct": -4.17,
       "ok": true,
-      "ytd": 48.2,
-      "fetch_note": "已查證(即時搜尋)：6/26收盤，史上第三大單日跌點"
+      "ytd": null
     },
     "SPX": {
       "name": "S&P 500",
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7357.49,
-      "prev": 7358.23,
-      "chg": -0.74,
-      "chg_pct": -0.01,
+      "price": 7354.02,
+      "prev": 7357.49,
+      "chg": -3.47,
+      "chg_pct": -0.05,
       "ok": true,
-      "ytd": 7.0,
-      "fetch_note": "已查證(即時搜尋)：6/25收盤值，台北18:00時美股尚未開盤反映亞股重挫"
+      "ytd": null
     },
     "IXIC": {
       "name": "NASDAQ",
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 25358.60,
-      "prev": 25476.32,
-      "chg": -117.72,
-      "chg_pct": -0.46,
-      "ok": true,
-      "ytd": 9.6,
-      "fetch_note": "已查證(即時搜尋)：6/25收盤值"
-    },
-    "DJI": {
-      "name": "道瓊工業",
-      "flag": "🇺🇸",
-      "code": "DJI",
-      "region": "us",
-      "price": 50671.77,
-      "prev": 50791.84,
-      "chg": -120.07,
+      "price": 25297.62,
+      "prev": 25358.6,
+      "chg": -60.98,
       "chg_pct": -0.24,
       "ok": true,
-      "ytd": null,
-      "fetch_note": "快取(6/25值，未重新查證)"
-    },
-    "VIX": {
-      "name": "VIX恐慌",
-      "flag": "😱",
-      "code": "VIX",
-      "region": "us",
-      "price": 18.89,
-      "prev": 18.63,
-      "chg": 0.26,
-      "chg_pct": 1.4,
-      "ok": true,
-      "ytd": null,
-      "fetch_note": "已查證(即時搜尋)：6/25收盤，仍在正常區(<20)，尚未反映6/26亞股重挫，留意當晚美股開盤是否跳升"
-    },
-    "TNX": {
-      "name": "美債10Y",
-      "flag": "🏦",
-      "code": "TNX",
-      "region": "us",
-      "price": 4.40,
-      "prev": 4.53,
-      "chg": -0.13,
-      "chg_pct": -2.87,
-      "ok": true,
-      "ytd": null,
-      "fetch_note": "已查證(即時搜尋)：六週新低，脫離升息壓力區(<4.5%)"
-    },
-    "DXY": {
-      "name": "美元指數",
-      "flag": "💵",
-      "code": "DXY",
-      "region": "us",
-      "price": 101.8,
-      "prev": 101.5,
-      "chg": 0.3,
-      "chg_pct": 0.3,
-      "ok": true,
-      "ytd": null,
-      "fetch_note": "已查證(即時搜尋)：6/25值，三連漲(漲跌幅估算)"
-    },
-    "GOLD": {
-      "name": "黃金期貨",
-      "flag": "🥇",
-      "code": "GOLD",
-      "region": "us",
-      "price": 3991.0,
-      "prev": 4109.0,
-      "chg": -118.0,
-      "chg_pct": -2.9,
-      "ok": true,
-      "ytd": null,
-      "fetch_note": "已查證(即時搜尋)：6/25收盤，跌破4,000心理關卡，近8個月低點"
-    },
-    "OIL": {
-      "name": "原油WTI",
-      "flag": "🛢️",
-      "code": "OIL",
-      "region": "us",
-      "price": 70.5,
-      "prev": 71.9,
-      "chg": -1.4,
-      "chg_pct": -2.0,
-      "ok": true,
-      "ytd": null,
-      "fetch_note": "已查證(即時搜尋)：6/26台北中午值，荷姆茲海峽供應擔憂緩解後回跌"
-    },
-    "N225": {
-      "name": "日經225",
-      "flag": "🇯🇵",
-      "code": "N225",
-      "region": "jp",
-      "price": 69848.86,
-      "prev": 72360.0,
-      "chg": -2511.14,
-      "chg_pct": -3.48,
-      "ok": true,
-      "ytd": null,
-      "fetch_note": "已查證(即時搜尋)：6/26值，與台股、韓股同步重挫"
+      "ytd": null
     },
     "KOSPI": {
       "name": "KOSPI",
@@ -137,25 +44,59 @@ window.LIVE_PRICES = {
       "code": "KOSPI",
       "region": "kr",
       "price": 8411.21,
-      "prev": 8930.30,
+      "prev": 8930.3,
       "chg": -519.09,
       "chg_pct": -5.81,
       "ok": true,
-      "ytd": null,
-      "fetch_note": "已查證(即時搜尋)：6/26觸發sidecar+熔斷暫停交易20分鐘，今年第5次"
+      "ytd": null
+    },
+    "N225": {
+      "name": "日經225",
+      "flag": "🇯🇵",
+      "code": "N225",
+      "region": "jp",
+      "price": 69360.88,
+      "prev": 72527.52,
+      "chg": -3166.64,
+      "chg_pct": -4.37,
+      "ok": true,
+      "ytd": null
+    },
+    "DAX": {
+      "name": "德國DAX",
+      "flag": "🇩🇪",
+      "code": "DAX",
+      "region": "eu",
+      "price": 24671.22,
+      "prev": 24994.83,
+      "chg": -323.61,
+      "chg_pct": -1.29,
+      "ok": true,
+      "ytd": null
+    },
+    "SSEC": {
+      "name": "上證綜指",
+      "flag": "🇨🇳",
+      "code": "SSEC",
+      "region": "cn",
+      "price": 4027.26,
+      "prev": 4123.26,
+      "chg": -96.0,
+      "chg_pct": -2.33,
+      "ok": true,
+      "ytd": null
     },
     "HSI": {
       "name": "恆生指數",
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 24565.9,
-      "prev": 24657.06,
-      "chg": -91.16,
-      "chg_pct": -0.37,
+      "price": 22671.86,
+      "prev": 23076.91,
+      "chg": -405.05,
+      "chg_pct": -1.76,
       "ok": true,
-      "ytd": null,
-      "fetch_note": "快取(6/26 11:29舊值，未重新查證)"
+      "ytd": null
     }
   },
   "stocks": {
@@ -171,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "已查證(即時搜尋)：6/26同步重挫，累積報酬仍+79.9%"
+      "fetch_note": "cache (2026-06-26 18:00 已查證)"
     },
     "8064": {
       "name": "東捷",
@@ -185,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "已查證(即時搜尋)：6/25收盤值，6/26當日價格尚未查證"
+      "fetch_note": "cache (2026-06-26 18:00 已查證)"
     },
     "8027": {
       "name": "鈦昇",
@@ -199,27 +140,9 @@ window.LIVE_PRICES = {
       "chg": null,
       "chg_pct": null,
       "ok": false,
-      "err": "Failed to perform, curl: (56) CONNECT tunnel failed, response 403. See https://c"
-    },
-    "6207": {
-      "name": "雷科",
-      "code": "6207",
-      "cost": 0,
-      "shares": 0,
-      "status": "watch",
-      "symbol": "6207.TWO",
-      "price": 122.5,
-      "prev": 130.5,
-      "chg": -8.0,
-      "chg_pct": -6.13,
-      "ok": true,
-      "fetch_note": "快取"
+      "err": "'exchangeTimezoneName'"
     }
   },
-  "margin": {
-    "ok": false,
-    "err": "all endpoints failed"
-  },
-  "updated": "2026-06-26 18:00 已查證",
+  "updated": "2026-06-28 20:48",
   "ok": true
 };
