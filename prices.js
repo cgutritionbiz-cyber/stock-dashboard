@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-07-01 15:34
+// updated: 2026-07-01 21:14
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7515.87,
+      "price": 7483.23,
       "prev": 7499.36,
-      "chg": 16.51,
-      "chg_pct": 0.22,
+      "chg": -16.13,
+      "chg_pct": -0.22,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 26210.21,
+      "price": 26040.03,
       "prev": 26213.72,
-      "chg": -3.51,
-      "chg_pct": -0.01,
+      "chg": -173.69,
+      "chg_pct": -0.66,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 25021.3,
-      "prev": 24980.05,
-      "chg": 41.25,
-      "chg_pct": 0.17,
+      "price": 25040.28,
+      "prev": 24995.81,
+      "chg": 44.47,
+      "chg_pct": 0.18,
       "ok": true,
       "ytd": null
     },
@@ -79,9 +79,9 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 4112.45,
+      "price": 4112.44,
       "prev": 4096.74,
-      "chg": 15.71,
+      "chg": 15.7,
       "chg_pct": 0.38,
       "ok": true,
       "ytd": null
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-07-01 08:58)"
+      "fetch_note": "cache (2026-07-01 15:34)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-07-01 08:58)"
+      "fetch_note": "cache (2026-07-01 15:34)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-07-01 15:34",
+  "updated": "2026-07-01 21:14",
   "ok": true
 };
