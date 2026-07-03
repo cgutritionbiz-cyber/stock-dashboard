@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-07-03 08:35
+// updated: 2026-07-03 15:01
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 25730.67,
+      "price": 25776.91,
       "prev": 25545.08,
-      "chg": 185.59,
-      "chg_pct": 0.73,
+      "chg": 231.83,
+      "chg_pct": 0.91,
       "ok": true,
       "ytd": null
     },
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-07-03 04:25)"
+      "fetch_note": "cache (2026-07-03 08:35)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-07-03 04:25)"
+      "fetch_note": "cache (2026-07-03 08:35)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-07-03 08:35",
+  "updated": "2026-07-03 15:01",
   "ok": true
 };
