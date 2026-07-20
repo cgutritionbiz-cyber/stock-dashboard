@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-07-19 20:35
+// updated: 2026-07-20 04:13
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -7,10 +7,10 @@ window.LIVE_PRICES = {
       "flag": "🇹🇼",
       "code": "TWII",
       "region": "tw",
-      "price": 42671.27,
-      "prev": 45578.51,
-      "chg": -2907.24,
-      "chg_pct": -6.38,
+      "price": 42821.26,
+      "prev": 42918.0,
+      "chg": -96.74,
+      "chg_pct": -0.23,
       "ok": true,
       "ytd": null
     },
@@ -43,10 +43,10 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 6820.6,
-      "prev": 7284.41,
-      "chg": -463.81,
-      "chg_pct": -6.37,
+      "price": 6586.02,
+      "prev": 6835.21,
+      "chg": -249.19,
+      "chg_pct": -3.65,
       "ok": true,
       "ytd": null
     },
@@ -79,10 +79,10 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 3764.16,
-      "prev": 3881.51,
-      "chg": -117.35,
-      "chg_pct": -3.02,
+      "price": 3808.39,
+      "prev": 3764.63,
+      "chg": 43.76,
+      "chg_pct": 1.16,
       "ok": true,
       "ytd": null
     },
@@ -91,10 +91,10 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 24562.24,
-      "prev": 25008.6,
-      "chg": -446.36,
-      "chg_pct": -1.78,
+      "price": 25060.73,
+      "prev": 24562.24,
+      "chg": 498.49,
+      "chg_pct": 2.03,
       "ok": true,
       "ytd": null
     }
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-07-17 14:24)"
+      "fetch_note": "cache (2026-07-19 20:35)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-07-17 14:24)"
+      "fetch_note": "cache (2026-07-19 20:35)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-07-19 20:35",
+  "updated": "2026-07-20 04:13",
   "ok": true
 };
