@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-07-28 15:11
+// updated: 2026-07-28 20:54
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7409.15,
-      "prev": 7413.43,
-      "chg": -4.28,
-      "chg_pct": -0.06,
+      "price": 7428.78,
+      "prev": 7413.18,
+      "chg": 15.6,
+      "chg_pct": 0.21,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 24756.92,
+      "price": 24876.91,
       "prev": 24932.08,
-      "chg": -175.16,
-      "chg_pct": -0.7,
+      "chg": -55.17,
+      "chg_pct": -0.22,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 25408.34,
-      "prev": 25426.61,
-      "chg": -18.27,
-      "chg_pct": -0.07,
+      "price": 25464.01,
+      "prev": 25361.03,
+      "chg": 102.98,
+      "chg_pct": 0.41,
       "ok": true,
       "ytd": null
     },
@@ -79,9 +79,9 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 3813.31,
+      "price": 3813.32,
       "prev": 3857.88,
-      "chg": -44.57,
+      "chg": -44.56,
       "chg_pct": -1.16,
       "ok": true,
       "ytd": null
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-07-28 07:59)"
+      "fetch_note": "cache (2026-07-28 15:11)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-07-28 07:59)"
+      "fetch_note": "cache (2026-07-28 15:11)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-07-28 15:11",
+  "updated": "2026-07-28 20:54",
   "ok": true
 };
