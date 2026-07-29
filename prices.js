@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-07-29 08:04
+// updated: 2026-07-29 15:04
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7428.78,
-      "prev": 7413.18,
-      "chg": 15.6,
-      "chg_pct": 0.21,
+      "price": 7374.29,
+      "prev": 7428.78,
+      "chg": -54.49,
+      "chg_pct": -0.73,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 24876.91,
-      "prev": 24932.08,
-      "chg": -55.17,
-      "chg_pct": -0.22,
+      "price": 24656.9,
+      "prev": 24876.91,
+      "chg": -220.01,
+      "chg_pct": -0.88,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 25526.97,
+      "price": 25450.52,
       "prev": 25489.74,
-      "chg": 37.23,
-      "chg_pct": 0.15,
+      "chg": -39.22,
+      "chg_pct": -0.15,
       "ok": true,
       "ytd": null
     },
@@ -91,10 +91,10 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 25788.15,
+      "price": 25807.92,
       "prev": 25310.85,
-      "chg": 477.3,
-      "chg_pct": 1.89,
+      "chg": 497.07,
+      "chg_pct": 1.96,
       "ok": true,
       "ytd": null
     }
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-07-29 03:50)"
+      "fetch_note": "cache (2026-07-29 08:04)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-07-29 03:50)"
+      "fetch_note": "cache (2026-07-29 08:04)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'exchangeTimezoneName'"
     }
   },
-  "updated": "2026-07-29 08:04",
+  "updated": "2026-07-29 15:04",
   "ok": true
 };
