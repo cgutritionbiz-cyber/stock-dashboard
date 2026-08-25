@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-08-25 13:40
+// updated: 2026-08-25 20:13
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7680.71,
-      "prev": 7652.82,
-      "chg": 27.89,
-      "chg_pct": 0.36,
+      "price": 7677.28,
+      "prev": 7652.86,
+      "chg": 24.42,
+      "chg_pct": 0.32,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 26154.89,
+      "price": 26151.3,
       "prev": 25980.19,
-      "chg": 174.7,
-      "chg_pct": 0.67,
+      "chg": 171.11,
+      "chg_pct": 0.66,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 26276.16,
-      "prev": 26118.51,
-      "chg": 157.65,
-      "chg_pct": 0.6,
+      "price": 26266.14,
+      "prev": 26106.6,
+      "chg": 159.54,
+      "chg_pct": 0.61,
       "ok": true,
       "ytd": null
     },
@@ -79,9 +79,9 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 3889.44,
+      "price": 3889.45,
       "prev": 3881.4,
-      "chg": 8.04,
+      "chg": 8.05,
       "chg_pct": 0.21,
       "ok": true,
       "ytd": null
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-08-25 05:57)"
+      "fetch_note": "cache (2026-08-25 13:40)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-08-25 05:57)"
+      "fetch_note": "cache (2026-08-25 13:40)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-08-25 13:40",
+  "updated": "2026-08-25 20:13",
   "ok": true
 };
