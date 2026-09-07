@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-09-07 17:59
+// updated: 2026-09-07 22:19
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-09-07 10:36)"
+      "fetch_note": "cache (2026-09-07 17:59)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-09-07 10:36)"
+      "fetch_note": "cache (2026-09-07 17:59)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-09-07 17:59",
+  "updated": "2026-09-07 22:19",
   "ok": true
 };
