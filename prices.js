@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-09-10 09:57
+// updated: 2026-09-10 16:44
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7636.36,
-      "prev": 7673.52,
-      "chg": -37.16,
-      "chg_pct": -0.48,
+      "price": 7600.29,
+      "prev": 7637.7,
+      "chg": -37.41,
+      "chg_pct": -0.49,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 26253.34,
-      "prev": 26421.41,
-      "chg": -168.07,
-      "chg_pct": -0.64,
+      "price": 26133.54,
+      "prev": 26253.34,
+      "chg": -119.8,
+      "chg_pct": -0.46,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 25504.5,
-      "prev": 25552.47,
-      "chg": -47.97,
-      "chg_pct": -0.19,
+      "price": 25361.15,
+      "prev": 25576.45,
+      "chg": -215.3,
+      "chg_pct": -0.84,
       "ok": true,
       "ytd": null
     },
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-09-10 05:03)"
+      "fetch_note": "cache (2026-09-10 09:57)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-09-10 05:03)"
+      "fetch_note": "cache (2026-09-10 09:57)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-09-10 09:57",
+  "updated": "2026-09-10 16:44",
   "ok": true
 };
