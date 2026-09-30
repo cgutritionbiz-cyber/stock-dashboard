@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-09-30 11:17
+// updated: 2026-09-30 18:12
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7670.84,
-      "prev": 7683.69,
-      "chg": -12.85,
-      "chg_pct": -0.17,
+      "price": 7702.46,
+      "prev": 7671.85,
+      "chg": 30.61,
+      "chg_pct": 0.4,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 26797.54,
-      "prev": 26820.38,
-      "chg": -22.84,
-      "chg_pct": -0.09,
+      "price": 27047.44,
+      "prev": 26797.54,
+      "chg": 249.9,
+      "chg_pct": 0.93,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 25350.65,
-      "prev": 25373.27,
-      "chg": -22.62,
-      "chg_pct": -0.09,
+      "price": 25199.19,
+      "prev": 25399.21,
+      "chg": -200.02,
+      "chg_pct": -0.79,
       "ok": true,
       "ytd": null
     },
@@ -79,9 +79,9 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 3842.19,
+      "price": 3842.2,
       "prev": 3832.66,
-      "chg": 9.53,
+      "chg": 9.54,
       "chg_pct": 0.25,
       "ok": true,
       "ytd": null
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-09-30 05:49)"
+      "fetch_note": "cache (2026-09-30 11:17)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-09-30 05:49)"
+      "fetch_note": "cache (2026-09-30 11:17)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-09-30 11:17",
+  "updated": "2026-09-30 18:12",
   "ok": true
 };
