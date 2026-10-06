@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-10-06 06:42
+// updated: 2026-10-06 12:09
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -43,10 +43,10 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 6939.26,
+      "price": 6941.39,
       "prev": 7003.74,
-      "chg": -64.48,
-      "chg_pct": -0.92,
+      "chg": -62.35,
+      "chg_pct": -0.89,
       "ok": true,
       "ytd": null
     },
@@ -55,10 +55,10 @@ window.LIVE_PRICES = {
       "flag": "🇯🇵",
       "code": "N225",
       "region": "jp",
-      "price": 70773.8,
+      "price": 70683.98,
       "prev": 69928.05,
-      "chg": 845.75,
-      "chg_pct": 1.21,
+      "chg": 755.93,
+      "chg_pct": 1.08,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 25254.21,
-      "prev": 25231.2,
-      "chg": 23.01,
-      "chg_pct": 0.09,
+      "price": 25432.89,
+      "prev": 25242.72,
+      "chg": 190.17,
+      "chg_pct": 0.75,
       "ok": true,
       "ytd": null
     },
@@ -91,10 +91,10 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 24214.03,
+      "price": 24280.56,
       "prev": 24040.34,
-      "chg": 173.69,
-      "chg_pct": 0.72,
+      "chg": 240.22,
+      "chg_pct": 1.0,
       "ok": true,
       "ytd": null
     }
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-10-06 00:59)"
+      "fetch_note": "cache (2026-10-06 06:42)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-10-06 00:59)"
+      "fetch_note": "cache (2026-10-06 06:42)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-10-06 06:42",
+  "updated": "2026-10-06 12:09",
   "ok": true
 };
