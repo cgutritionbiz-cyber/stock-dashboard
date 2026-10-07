@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-10-07 06:18
+// updated: 2026-10-07 11:55
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -43,10 +43,10 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 6829.69,
-      "prev": 6939.39,
-      "chg": -109.7,
-      "chg_pct": -1.58,
+      "price": 6803.9,
+      "prev": 6941.39,
+      "chg": -137.49,
+      "chg_pct": -1.98,
       "ok": true,
       "ytd": null
     },
@@ -55,10 +55,10 @@ window.LIVE_PRICES = {
       "flag": "🇯🇵",
       "code": "N225",
       "region": "jp",
-      "price": 70245.74,
+      "price": 70035.71,
       "prev": 70773.8,
-      "chg": -528.06,
-      "chg_pct": -0.75,
+      "chg": -738.09,
+      "chg_pct": -1.04,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 25449.19,
-      "prev": 25254.21,
-      "chg": 194.98,
-      "chg_pct": 0.77,
+      "price": 25068.91,
+      "prev": 25459.95,
+      "chg": -391.04,
+      "chg_pct": -1.54,
       "ok": true,
       "ytd": null
     },
@@ -91,10 +91,10 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 24155.42,
+      "price": 24130.5,
       "prev": 24280.56,
-      "chg": -125.14,
-      "chg_pct": -0.52,
+      "chg": -150.06,
+      "chg_pct": -0.62,
       "ok": true,
       "ytd": null
     }
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-10-06 23:22)"
+      "fetch_note": "cache (2026-10-07 06:18)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-10-06 23:22)"
+      "fetch_note": "cache (2026-10-07 06:18)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-10-07 06:18",
+  "updated": "2026-10-07 11:55",
   "ok": true
 };
