@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-10-12 06:19
+// updated: 2026-10-12 13:24
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -43,10 +43,10 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 6408.43,
-      "prev": 6668.03,
-      "chg": -259.6,
-      "chg_pct": -3.89,
+      "price": 6384.24,
+      "prev": 6625.93,
+      "chg": -241.69,
+      "chg_pct": -3.65,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 25087.27,
-      "prev": 24806.97,
-      "chg": 280.3,
-      "chg_pct": 1.13,
+      "price": 25266.22,
+      "prev": 25102.78,
+      "chg": 163.44,
+      "chg_pct": 0.65,
       "ok": true,
       "ytd": null
     },
@@ -79,10 +79,10 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 3798.58,
+      "price": 3797.24,
       "prev": 3815.63,
-      "chg": -17.05,
-      "chg_pct": -0.45,
+      "chg": -18.39,
+      "chg_pct": -0.48,
       "ok": true,
       "ytd": null
     },
@@ -91,10 +91,10 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 24239.86,
+      "price": 24271.2,
       "prev": 24211.35,
-      "chg": 28.51,
-      "chg_pct": 0.12,
+      "chg": 59.85,
+      "chg_pct": 0.25,
       "ok": true,
       "ytd": null
     }
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-10-11 23:15)"
+      "fetch_note": "cache (2026-10-12 06:19)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-10-11 23:15)"
+      "fetch_note": "cache (2026-10-12 06:19)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-10-12 06:19",
+  "updated": "2026-10-12 13:24",
   "ok": true
 };
