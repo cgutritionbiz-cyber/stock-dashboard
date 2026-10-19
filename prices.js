@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-10-18 21:57
+// updated: 2026-10-19 05:05
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -7,10 +7,10 @@ window.LIVE_PRICES = {
       "flag": "🇹🇼",
       "code": "TWII",
       "region": "tw",
-      "price": 47111.26,
-      "prev": 46965.97,
-      "chg": 145.29,
-      "chg_pct": 0.31,
+      "price": 46798.88,
+      "prev": 47182.52,
+      "chg": -383.64,
+      "chg_pct": -0.81,
       "ok": true,
       "ytd": null
     },
@@ -43,10 +43,10 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 5668.05,
-      "prev": 5554.22,
-      "chg": 113.83,
-      "chg_pct": 2.05,
+      "price": 5709.82,
+      "prev": 5718.95,
+      "chg": -9.13,
+      "chg_pct": -0.16,
       "ok": true,
       "ytd": null
     },
@@ -55,10 +55,10 @@ window.LIVE_PRICES = {
       "flag": "🇯🇵",
       "code": "N225",
       "region": "jp",
-      "price": 65324.29,
-      "prev": 64485.02,
-      "chg": 839.27,
-      "chg_pct": 1.3,
+      "price": 64829.36,
+      "prev": 65349.89,
+      "chg": -520.53,
+      "chg_pct": -0.8,
       "ok": true,
       "ytd": null
     },
@@ -79,10 +79,10 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 3716.28,
-      "prev": 3706.48,
-      "chg": 9.8,
-      "chg_pct": 0.26,
+      "price": 3722.2,
+      "prev": 3713.15,
+      "chg": 9.05,
+      "chg_pct": 0.24,
       "ok": true,
       "ytd": null
     },
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-10-16 17:04)"
+      "fetch_note": "cache (2026-10-18 21:57)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-10-16 17:04)"
+      "fetch_note": "cache (2026-10-18 21:57)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-10-18 21:57",
+  "updated": "2026-10-19 05:05",
   "ok": true
 };
