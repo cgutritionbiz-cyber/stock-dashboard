@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-10-21 17:45
+// updated: 2026-10-21 22:49
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7766.48,
+      "price": 7757.17,
       "prev": 7711.7,
-      "chg": 54.78,
-      "chg_pct": 0.71,
+      "chg": 45.47,
+      "chg_pct": 0.59,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 26751.81,
+      "price": 26702.86,
       "prev": 26424.82,
-      "chg": 326.99,
-      "chg_pct": 1.24,
+      "chg": 278.04,
+      "chg_pct": 1.05,
       "ok": true,
       "ytd": null
     },
@@ -44,9 +44,9 @@ window.LIVE_PRICES = {
       "code": "KOSPI",
       "region": "kr",
       "price": 5735.66,
-      "prev": 5552.74,
-      "chg": 182.92,
-      "chg_pct": 3.29,
+      "prev": 5529.17,
+      "chg": 206.49,
+      "chg_pct": 3.73,
       "ok": true,
       "ytd": null
     },
@@ -68,9 +68,9 @@ window.LIVE_PRICES = {
       "code": "DAX",
       "region": "eu",
       "price": 25645.04,
-      "prev": 25304.42,
-      "chg": 340.62,
-      "chg_pct": 1.35,
+      "prev": 25305.31,
+      "chg": 339.73,
+      "chg_pct": 1.34,
       "ok": true,
       "ytd": null
     },
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-10-21 10:26)"
+      "fetch_note": "cache (2026-10-21 17:45)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-10-21 10:26)"
+      "fetch_note": "cache (2026-10-21 17:45)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-10-21 17:45",
+  "updated": "2026-10-21 22:49",
   "ok": true
 };
