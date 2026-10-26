@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-10-26 18:55
+// updated: 2026-10-26 23:24
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 26186.81,
+      "price": 26169.38,
       "prev": 25954.02,
-      "chg": 232.79,
-      "chg_pct": 0.9,
+      "chg": 215.36,
+      "chg_pct": 0.83,
       "ok": true,
       "ytd": null
     },
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-10-26 11:23)"
+      "fetch_note": "cache (2026-10-26 18:55)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-10-26 11:23)"
+      "fetch_note": "cache (2026-10-26 18:55)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-10-26 18:55",
+  "updated": "2026-10-26 23:24",
   "ok": true
 };
