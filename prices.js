@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-11-04 06:52
+// updated: 2026-11-04 13:10
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -43,9 +43,9 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 5683.79,
+      "price": 5683.8,
       "prev": 5649.43,
-      "chg": 34.36,
+      "chg": 34.37,
       "chg_pct": 0.61,
       "ok": true,
       "ytd": null
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 25864.62,
-      "prev": 25983.75,
-      "chg": -119.13,
-      "chg_pct": -0.46,
+      "price": 26220.38,
+      "prev": 25900.07,
+      "chg": 320.31,
+      "chg_pct": 1.24,
       "ok": true,
       "ytd": null
     },
@@ -79,10 +79,10 @@ window.LIVE_PRICES = {
       "flag": "🇨🇳",
       "code": "SSEC",
       "region": "cn",
-      "price": 3682.9,
+      "price": 3686.17,
       "prev": 3603.5,
-      "chg": 79.4,
-      "chg_pct": 2.2,
+      "chg": 82.67,
+      "chg_pct": 2.29,
       "ok": true,
       "ytd": null
     },
@@ -91,10 +91,10 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 23822.85,
+      "price": 23919.5,
       "prev": 23525.97,
-      "chg": 296.88,
-      "chg_pct": 1.26,
+      "chg": 393.53,
+      "chg_pct": 1.67,
       "ok": true,
       "ytd": null
     }
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-11-04 00:13)"
+      "fetch_note": "cache (2026-11-04 06:52)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-11-04 00:13)"
+      "fetch_note": "cache (2026-11-04 06:52)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-11-04 06:52",
+  "updated": "2026-11-04 13:10",
   "ok": true
 };
