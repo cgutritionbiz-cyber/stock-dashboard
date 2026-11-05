@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-11-04 20:08
+// updated: 2026-11-05 00:33
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7697.86,
+      "price": 7688.62,
       "prev": 7568.58,
-      "chg": 129.28,
-      "chg_pct": 1.71,
+      "chg": 120.04,
+      "chg_pct": 1.59,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 25801.69,
+      "price": 25736.51,
       "prev": 25365.67,
-      "chg": 436.02,
-      "chg_pct": 1.72,
+      "chg": 370.84,
+      "chg_pct": 1.46,
       "ok": true,
       "ytd": null
     },
@@ -43,10 +43,10 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 5683.8,
-      "prev": 5649.43,
-      "chg": 34.37,
-      "chg_pct": 0.61,
+      "price": 5572.81,
+      "prev": 5651.03,
+      "chg": -78.22,
+      "chg_pct": -1.38,
       "ok": true,
       "ytd": null
     },
@@ -55,10 +55,10 @@ window.LIVE_PRICES = {
       "flag": "🇯🇵",
       "code": "N225",
       "region": "jp",
-      "price": 62188.63,
-      "prev": 63064.51,
-      "chg": -875.88,
-      "chg_pct": -1.39,
+      "price": 62459.68,
+      "prev": 62021.33,
+      "chg": 438.35,
+      "chg_pct": 0.71,
       "ok": true,
       "ytd": null
     },
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-11-04 13:10)"
+      "fetch_note": "cache (2026-11-04 20:08)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-11-04 13:10)"
+      "fetch_note": "cache (2026-11-04 20:08)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-11-04 20:08",
+  "updated": "2026-11-05 00:33",
   "ok": true
 };
