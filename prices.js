@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-11-05 20:23
+// updated: 2026-11-06 00:34
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7383.28,
+      "price": 7353.73,
       "prev": 7688.73,
-      "chg": -305.45,
-      "chg_pct": -3.97,
+      "chg": -335.0,
+      "chg_pct": -4.36,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 24441.77,
+      "price": 24315.0,
       "prev": 25739.71,
-      "chg": -1297.94,
-      "chg_pct": -5.04,
+      "chg": -1424.71,
+      "chg_pct": -5.54,
       "ok": true,
       "ytd": null
     },
@@ -43,10 +43,10 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 5383.8,
-      "prev": 5651.03,
-      "chg": -267.23,
-      "chg_pct": -4.73,
+      "price": 4923.47,
+      "prev": 5341.09,
+      "chg": -417.62,
+      "chg_pct": -7.82,
       "ok": true,
       "ytd": null
     },
@@ -55,10 +55,10 @@ window.LIVE_PRICES = {
       "flag": "🇯🇵",
       "code": "N225",
       "region": "jp",
-      "price": 61077.9,
-      "prev": 62021.33,
-      "chg": -943.43,
-      "chg_pct": -1.52,
+      "price": 57580.7,
+      "prev": 61089.31,
+      "chg": -3508.61,
+      "chg_pct": -5.74,
       "ok": true,
       "ytd": null
     },
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-11-05 13:24)"
+      "fetch_note": "cache (2026-11-05 20:23)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-11-05 13:24)"
+      "fetch_note": "cache (2026-11-05 20:23)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-11-05 20:23",
+  "updated": "2026-11-06 00:34",
   "ok": true
 };
