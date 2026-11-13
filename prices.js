@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-11-12 20:31
+// updated: 2026-11-13 00:44
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 7590.3,
+      "price": 7592.4,
       "prev": 7617.84,
-      "chg": -27.54,
-      "chg_pct": -0.36,
+      "chg": -25.44,
+      "chg_pct": -0.33,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 25315.97,
+      "price": 25366.09,
       "prev": 25464.57,
-      "chg": -148.6,
-      "chg_pct": -0.58,
+      "chg": -98.48,
+      "chg_pct": -0.39,
       "ok": true,
       "ytd": null
     },
@@ -43,10 +43,10 @@ window.LIVE_PRICES = {
       "flag": "🇰🇷",
       "code": "KOSPI",
       "region": "kr",
-      "price": 5342.73,
-      "prev": 5372.43,
-      "chg": -29.7,
-      "chg_pct": -0.55,
+      "price": 5469.76,
+      "prev": 5321.25,
+      "chg": 148.51,
+      "chg_pct": 2.79,
       "ok": true,
       "ytd": null
     },
@@ -55,10 +55,10 @@ window.LIVE_PRICES = {
       "flag": "🇯🇵",
       "code": "N225",
       "region": "jp",
-      "price": 60819.36,
-      "prev": 61285.47,
-      "chg": -466.11,
-      "chg_pct": -0.76,
+      "price": 61578.25,
+      "prev": 60798.84,
+      "chg": 779.41,
+      "chg_pct": 1.28,
       "ok": true,
       "ytd": null
     },
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-11-12 13:55)"
+      "fetch_note": "cache (2026-11-12 20:31)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-11-12 13:55)"
+      "fetch_note": "cache (2026-11-12 20:31)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-11-12 20:31",
+  "updated": "2026-11-13 00:44",
   "ok": true
 };
