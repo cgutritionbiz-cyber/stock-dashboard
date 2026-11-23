@@ -1,5 +1,5 @@
 // auto-generated -- do not edit manually
-// updated: 2026-11-23 07:59
+// updated: 2026-11-23 16:20
 window.LIVE_PRICES = {
   "indices": {
     "TWII": {
@@ -19,10 +19,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "SPX",
       "region": "us",
-      "price": 6910.39,
-      "prev": 7177.56,
-      "chg": -267.17,
-      "chg_pct": -3.72,
+      "price": 7263.57,
+      "prev": 6918.45,
+      "chg": 345.12,
+      "chg_pct": 4.99,
       "ok": true,
       "ytd": null
     },
@@ -31,10 +31,10 @@ window.LIVE_PRICES = {
       "flag": "🇺🇸",
       "code": "IXIC",
       "region": "us",
-      "price": 22617.73,
-      "prev": 23882.1,
-      "chg": -1264.37,
-      "chg_pct": -5.29,
+      "price": 24175.23,
+      "prev": 22651.52,
+      "chg": 1523.71,
+      "chg_pct": 6.73,
       "ok": true,
       "ytd": null
     },
@@ -67,10 +67,10 @@ window.LIVE_PRICES = {
       "flag": "🇩🇪",
       "code": "DAX",
       "region": "eu",
-      "price": 24802.78,
-      "prev": 25498.54,
-      "chg": -695.76,
-      "chg_pct": -2.73,
+      "price": 25355.7,
+      "prev": 24839.47,
+      "chg": 516.23,
+      "chg_pct": 2.08,
       "ok": true,
       "ytd": null
     },
@@ -91,10 +91,10 @@ window.LIVE_PRICES = {
       "flag": "🇭🇰",
       "code": "HSI",
       "region": "hk",
-      "price": 22386.68,
+      "price": 22383.74,
       "prev": 22410.8,
-      "chg": -24.12,
-      "chg_pct": -0.11,
+      "chg": -27.06,
+      "chg_pct": -0.12,
       "ok": true,
       "ytd": null
     }
@@ -112,7 +112,7 @@ window.LIVE_PRICES = {
       "chg": -120.7,
       "chg_pct": -6.14,
       "ok": true,
-      "fetch_note": "cache (2026-11-23 00:29)"
+      "fetch_note": "cache (2026-11-23 07:59)"
     },
     "8064": {
       "name": "東捷",
@@ -126,7 +126,7 @@ window.LIVE_PRICES = {
       "chg": -7.5,
       "chg_pct": -4.93,
       "ok": true,
-      "fetch_note": "cache (2026-11-23 00:29)"
+      "fetch_note": "cache (2026-11-23 07:59)"
     },
     "8027": {
       "name": "鈦昇",
@@ -143,6 +143,6 @@ window.LIVE_PRICES = {
       "err": "'currentTradingPeriod'"
     }
   },
-  "updated": "2026-11-23 07:59",
+  "updated": "2026-11-23 16:20",
   "ok": true
 };
